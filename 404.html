@@ -1,18 +1,39 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta http-equiv="content-type" content="text/html;charset=utf-8;"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="robots" content="all" />
-  <meta name="robots" content="index,follow"/>
-  <link rel="stylesheet" type="text/css" href="https://qzone.qq.com/gy/404/style/404style.css">
-</head>
-<body>
-  <script type="text/plain" src="http://www.qq.com/404/search_children.js"
-          charset="utf-8" homePageUrl="/"
-          homePageName="回到我的主页">
-  </script>
-  <script src="https://qzone.qq.com/gy/404/data.js" charset="utf-8"></script>
-  <script src="https://qzone.qq.com/gy/404/page.js" charset="utf-8"></script>
-</body>
-</html>
+---
+layout: default
+title: 404 - Page not found
+visible: false
+---
+
+<div id="content" class="content">
+    <header class="post-header short-diver">
+        <h1 class="post-title">Page not found</h1>
+        <p>The page you requested could not be found.</p>
+    </header>
+
+    <h3>Similar URLs</h3>
+    <ul class="category recent-posts">
+        <ul class="urlSuggestions"></ul>
+    </ul>
+</div>
+
+<script id="article-template" type="text/x-custom-template">
+    <li>
+        <div class="article">
+            <article class="article" itemscope itemtype="http://schema.org/BlogPosting">
+                <header class="post-header">
+                    <span class="title"><a itemprop="name" href="" title=""></a></span>
+                    <time class="date" itemprop="datePublished" datetime=""></time>
+                </header>
+            </article>
+        </div>
+    </li>
+</script>
+
+<script src="{{ "/js/jquery-1.12.0.min.js" | absolute_url }}"></script>
+<script src="{{ "/js/fuzzyset.js" | absolute_url }}"></script>
+<script src="{{ "/js/offline.js" | absolute_url }}"></script>
+<script>
+    $(document).ready(function () {
+        insertSimilarUrls(String(window.location.href), "{{ "/api/posts.json" | absolute_url }}", "#article-template", ".urlSuggestions", 10);
+    });
+</script>
