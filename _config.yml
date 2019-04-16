@@ -40,3 +40,4 @@ compress_html:
     envs: [local]
   blanklines: true
   startings: [head, body]
+theme: jekyll-theme-cayman
