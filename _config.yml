@@ -1,10 +1,10 @@
 # Site settings
-title: BY Blog
-SEOTitle: 剑豪的博客 | BY Blog
+title: Frederick Hou Blog
+SEOTitle: 剑豪的博客 | Frederick Hou Blog
 header-img: img/post-bg-desk.jpg
 email: frederick_hou@163.com
 description: "Every failure is leading towards success."
-keyword: "BY, BY Blog, 剑豪的博客, FrederickHou, 侯剑豪, iOS, Apple, iPhone"
+keyword: "BY, Frederick Hou Blog, 剑豪的博客, FrederickHou, 侯剑豪, iOS, Apple, iPhone"
 url: "http://FrederickHou.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/FrederickHou/FrederickHou.github.io.git" # you code repository
@@ -102,7 +102,7 @@ friends: [
         title: "WY",
         href: "http://zhengwuyang.com"
     },{
-        title: "简书·BY",
+        title: "简书·Frederick Hou",
         href: "http://www.jianshu.com/u/e71990ada2fd"
     },{
         title: "Apple",
