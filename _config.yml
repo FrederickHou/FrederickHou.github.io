@@ -62,11 +62,11 @@ kramdown:
 # Gitalk
 gitalk:
   enable: true    #是否开启Gitalk评论
-  clientID: f2c84e7629bb1446c1a4                            #生成的clientID
-  clientSecret: ca6d6139d1e1b8c43f8b2e19492ddcac8b322d0d    #生成的clientSecret
-  repo: qiubaiying.github.io    #仓库名称
-  owner: qiubaiying    #github用户名
-  admin: qiubaiying
+  clientID: 9773f8d7d3b21b9b4318                            #生成的clientID
+  clientSecret: 6ded13787b3949f9722495059669573ba071d216    #生成的clientSecret
+  repo: FrederickHou.github.io    #仓库名称
+  owner: frederickhou    #github用户名
+  admin: frederickhou
   distractionFreeMode: true #是否启用类似FB的阴影遮罩
 
 
@@ -98,17 +98,11 @@ service-worker: true
 
 # Friends
 friends: [
-    {
-        title: "WY",
-        href: "http://zhengwuyang.com"
-    },{
-        title: "简书·Frederick",
-        href: "http://www.jianshu.com/u/e71990ada2fd"
-    },{
-        title: "Apple",
-        href: "https://apple.com"
-    },{
-        title: "Apple Developer",
-        href: "https://developer.apple.com/"
-    }
+    # {
+    #     title: "WY",
+    #     href: "http://zhengwuyang.com"
+    # },{
+    #     title: "简书·Frederick",
+    #     href: "http://www.jianshu.com/u/e71990ada2fd"
+    # }
 ]
