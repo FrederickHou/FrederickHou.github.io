@@ -43,3 +43,6 @@ tags:
 道不尽言语，追不了时光，本无所慰籍，却因遇见了你变得如此美丽。你宛若一位美丽的天使，时时撩动着我，让我相信，未来的岁月，有你足矣。
 
 ![](https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/yujian7.jpeg?raw=true)
+
+
+**博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。**
