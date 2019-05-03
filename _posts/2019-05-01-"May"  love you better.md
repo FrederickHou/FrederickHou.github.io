@@ -38,11 +38,26 @@ tags:
 
 ![](https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/yujian3.jpeg?raw=true)
 
+都说锦鲤送福，好运来。坐在桥旁，好像是恰好因为我们在此，吸引了一群吉祥，默默向我们游来，打破了往日湖面的平静。你看那两个锦鲤，跳出水面，为我们为我们送上了祝福，非常应景，这不正是那美好的爱情么。
+
+![](https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/yujian2.jpeg?raw=true)
+
+如果有人问：“你感受过凌晨街道上路灯的明亮么？感受过凌晨12点过后的夜市美味么？”。
+我想说：“不仅感受过而且是和最爱的人一起。”。
+一同散步，走走停停，曲江池是我们的见证。不敢说是第一个，但绝对是为数不多的。拉着你的手，十指相扣，一同漫步在河边。一会我背着你，一会停下相互拥抱。映衬着曲江池的夜景，好像这些都是为我们而安排。
+一看表，我们再一次携手散步跨过零点。返回的途中，散来阵阵的烤肉香，那一定是我们饿了。经过小酒馆，我们看到了烧烤店，看到你的大眼睛，我知道了我们得腐败一下。
+
+![](https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/yujian5.jpeg?raw=true)
+
+![](https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/yujian4.jpeg?raw=true)
+
 没有相遇在快乐单纯的校园学生时代，但是也并不能代表我们没有单纯简单的爱情，真正的相遇，没有早晚，都是恰好。仅一次的遇见，对我们就是永恒。在爱情的道路上，最美好的事情就是你看到了我的同时，我也恰好看到了你。
 
-道不尽言语，追不了时光，本无所慰籍，却因遇见了你变得如此美丽。你宛若一位美丽的天使，时时撩动着我，让我相信，未来的岁月，有你足矣。
-
 ![](https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/yujian7.jpeg?raw=true)
+
+道不尽言语，追不了时光，本无所慰籍，却因遇见了你变得如此美丽。你宛若一位美丽的天使，时时撩动着我，让我相信，**未来的岁月，有你足矣。**
+
+
 
 
 **博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。**
