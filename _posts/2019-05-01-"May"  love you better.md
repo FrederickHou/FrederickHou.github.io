@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      遇见你，遇见未来。
-subtitle:   ''。
+subtitle:   遇见你，是我最大的幸运。
 date:       2019-05-02
 author:     Frederick
 header-img: img/yujian1.jpeg
