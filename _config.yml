@@ -4,10 +4,10 @@ SEOTitle: 剑豪的博客 | Frederick Blog
 header-img: img/post-bg-desk.jpg
 email: frederick_hou@163.com
 description: "Every failure is leading towards success."
-keyword: "BY, Frederick Blog, 剑豪的博客, qiubaiying, 侯剑豪, iOS, Apple, iPhone"
-url: "http://qiubaiying.github.io"          # your host, for absolute URL
+keyword: "BY, Frederick Blog, 剑豪的博客, 侯剑豪"
+url: "http://frederickhou.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
-github_repo: "https://github.com/qiubaiying/qiubaiying.github.io.git" # you code repository
+github_repo: "https://github.com/FrederickHou/FrederickHou.github.io.git" # you code repository
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
@@ -18,7 +18,7 @@ sidebar-avatar: /img/blog.jpg     # use absolute URL, seeing it's used in both `
 
 # SNS settings
 RSS: false
-# weibo_username:     qiubaiying
+# weibo_username:     frederickhou
 zhihu_username:     17691164027
 github_username:    frederickhou
 # facebook_username:  baiying.qiu.7
