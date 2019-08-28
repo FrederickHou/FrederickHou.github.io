@@ -22,7 +22,7 @@ RSS: false
 zhihu_username:     17691164027
 github_username:    frederickhou
 # facebook_username:  baiying.qiu.7
-jianshu_username:   17691164027
+jianshu_username:   frederick_hou
 # twitter_username:   17691164027
 
 
@@ -96,11 +96,11 @@ service-worker: true
 
 # Friends
 friends: [
-    # {
-    #     title: "WY",
-    #     href: "http://zhengwuyang.com"
-    # },{
-    #     title: "简书·Frederick",
-    #     href: "http://www.jianshu.com/u/e71990ada2fd"
-    # }
+    {
+        title: "MY",
+        href: "http://frederickhou.com"
+    },{
+        title: "简书·Frederick",
+        href: "https://www.jianshu.com/u/8b64a5a28e40"
+    }
 ]
