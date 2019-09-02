@@ -12,7 +12,8 @@ tags:
 ---
 
 
-<iframe src="http://link.hhtjim.com/163/1359356908.mp3" ></iframe>
+<iframe src="//music.163.com/outchain/player?type=2&id=34341360&auto=1&height=66"></iframe>
+
 
 ## 基础知识铺垫(什么是分布式文件系统？)
 
