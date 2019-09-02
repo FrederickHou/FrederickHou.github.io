@@ -94,4 +94,6 @@ GlusterFS通过Infiniband RDMA 或者Tcp/Ip 方式将许多廉价的x86 主机�
 
     gluster volume create test-distributed-striped-volume stripe 4 transport tcp server1:/exp1 server2:/exp2 server3:/exp3 server4:/exp4 server5:/exp5 server6:/exp6 server7:/exp7 server8:/exp8
 
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=528478901&auto=1&height=66"></iframe>
+
 **博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。**
