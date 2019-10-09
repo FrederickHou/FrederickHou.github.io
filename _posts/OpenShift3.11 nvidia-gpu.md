@@ -1,4 +1,21 @@
-#Openshift3.11 如何调度GPU任务POD
+---
+layout:     post
+title:      Openshift3.11 nvidia gpu任务调度
+subtitle:   安装部署过程介绍
+date:       2019-10-09
+author:     Frederick
+header-img: img/ldap2.jpg
+catalog: true
+tags:
+    - 大数据
+    - 分布式
+    - Docker
+    - kubernets
+    - 机器学习
+---
+
+
+# Openshift3.11 如何调度GPU任务POD
 **参考**：https://blog.openshift.com/how-to-use-gpus-with-deviceplugin-in-openshift-3-10/
 
 **基础环境安装**：NVIDIA驱动、nvidia-docker安装与测试详见参考链接。
