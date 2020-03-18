@@ -4,7 +4,7 @@
 
 ## 首页
 
-![](https://upload-images.jianshu.io/upload_images/17904159-00d12133c89ff9b2.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](https://upload-images.jianshu.io/upload_images/17904159-cd5349b5922dfbf7.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 关于
 
