@@ -4,7 +4,7 @@ title:      ElasticSearch（一）基础介绍
 subtitle:   大数据 组件
 date:       2020-03-17
 author:     Frederick
-header-img: https://upload-images.jianshu.io/upload_images/17904159-1e67e74d129675d6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240
+header-img: img/es.png
 catalog: true
 tags:
     - ElasticSearch
