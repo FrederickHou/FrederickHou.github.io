@@ -8,8 +8,8 @@
 
 ## 关于
 
-![](https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/about.jpg?raw=true)
+![](https://upload-images.jianshu.io/upload_images/17904159-bd3a2a3ef231e691.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 标签页
 
-![](https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/label.jpg?raw=true)
+![](https://upload-images.jianshu.io/upload_images/17904159-d38fb4164f97762c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
