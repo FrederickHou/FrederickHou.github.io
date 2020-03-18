@@ -36,92 +36,132 @@ tags:
 
         version: '2.2'
         services:
-        es01:
+          es01:
             image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
             container_name: es01
             environment:
-            - node.name=es01
-            - cluster.name=es-docker-cluster
-            - discovery.seed_hosts=es02,es03
-            - cluster.initial_master_nodes=es01,es02,es03
-            - bootstrap.memory_lock=true
-            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+              - node.name=es01
+              - cluster.name=es-docker-cluster
+              - discovery.seed_hosts=es02,es03
+              - cluster.initial_master_nodes=es01,es02,es03
+              - bootstrap.memory_lock=true
+              - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
             ulimits:
-            memlock:
+              memlock:
                 soft: -1
                 hard: -1
             volumes:
-            - data01:/usr/share/elasticsearch/data
+              - data01:/usr/share/elasticsearch/data
             ports:
-            - 9200:9200
+              - 9200:9200
             networks:
-            - elastic
-        es02:
+              - elastic
+          es02:
             image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
             container_name: es02
             environment:
-            - node.name=es02
-            - cluster.name=es-docker-cluster
-            - discovery.seed_hosts=es01,es03
-            - cluster.initial_master_nodes=es01,es02,es03
-            - bootstrap.memory_lock=true
-            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+              - node.name=es02
+              - cluster.name=es-docker-cluster
+              - discovery.seed_hosts=es01,es03
+              - cluster.initial_master_nodes=es01,es02,es03
+              - bootstrap.memory_lock=true
+              - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
             ulimits:
-            memlock:
+              memlock:
                 soft: -1
                 hard: -1
             volumes:
-            - data02:/usr/share/elasticsearch/data
+              - data02:/usr/share/elasticsearch/data
             networks:
-            - elastic
-        es03:
+              - elastic
+          es03:
             image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
             container_name: es03
             environment:
-            - node.name=es03
-            - cluster.name=es-docker-cluster
-            - discovery.seed_hosts=es01,es02
-            - cluster.initial_master_nodes=es01,es02,es03
-            - bootstrap.memory_lock=true
-            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+              - node.name=es03
+              - cluster.name=es-docker-cluster
+              - discovery.seed_hosts=es01,es02
+              - cluster.initial_master_nodes=es01,es02,es03
+              - bootstrap.memory_lock=true
+              - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
             ulimits:
-            memlock:
+              memlock:
                 soft: -1
                 hard: -1
             volumes:
-            - data03:/usr/share/elasticsearch/data
+              - data03:/usr/share/elasticsearch/data
             networks:
-            - elastic
+              - elastic
 
         volumes:
-        data01:
+          data01:
             driver: local
-        data02:
+          data02:
             driver: local
-        data03:
+          data03:
             driver: local
 
         networks:
-        elastic:
+          elastic:
             driver: bridge
 
 此Docker Compose 例子文件将创建一个3个节点的Elasticsearch集群。节点es01 监听 localhost:9200 并且在Docker网络中节点es02 和es03要和es01通信。
 
 请记录此配置文件导出的端口号：9200，并且要在所有网络接口上配置Linux的iptables端口开放信息，这样Elasticsearch服务就有权限公开访问了。如果您不想公开端口9200，而是使用反向代理，请在docker-compose.yml文件中将9200：9200替换为127.0.0.1:9200:9200。 然后只能从主机本身访问Elasticsearch。
 
+    #开发9200端口
+    iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+    service iptables save
+
 卷data01,data02,和data01直接存储着节点数据，没有用持久化存储，此种配置在重启服务后数据可能丢失
 
 - **2 确保为Docker Engine分配了至少4GiB的内存**
 
-    如果docker compose 没有安装请查看docs.docker.com网站进行[安装](https://docs.docker.com/compose/install) 
+    如果docker compose 没有安装请查看docs.docker.com网站进行[安装](https://docs.docker.com/compose/install)
+
+        sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose 
+    查看版本
+
+        # docker-compose --version
+        docker-compose version 1.25.4, build 8d51620a
+
 
 - **3 运行docker compose 来创建拉起集群**
 
-        docker-compose up
+        docker-compose up -d
+    
+    **报错：** 
+    iptables: No chain/target/match by that name
+    **原因：**
+    docker服务启动时定义的自定义链
+    DOCKER由于某种原因被清掉重启docker服务及可重新生成自定义链DOCKER
+    **解决方案：**
 
+        iptables -t filter -F
+
+        iptables -t filter -X
+
+        systemctl restart docker
+
+    **docker 运行查看**
+
+        # docker ps|grep es0
+        86b91ba4732f        docker.elastic.co/elasticsearch/elasticsearch:7.6.1   "/usr/local/bin/do..."   5 minutes ago       Up 5 minutes        0.0.0.0:9200->9200/tcp, 9300/tcp   es01
+        706171c7357b        docker.elastic.co/elasticsearch/elasticsearch:7.6.1   "/usr/local/bin/do..."   5 minutes ago       Up 5 minutes        9200/tcp, 9300/tcp                 es02
+        941ebc831b93        docker.elastic.co/elasticsearch/elasticsearch:7.6.1   "/usr/local/bin/do..."   5 minutes ago       Up 5 minutes        9200/tcp, 9300/tcp                 es03
+        
 - **4 提交一个_cat/nodes 请求来查看节点是否被拉起来以及运行状态**
 
         curl -X GET "localhost:9200/_cat/nodes?v&pretty"
+
+    **查看节点状态结果：**
+
+        # curl -X GET "localhost:9200/_cat/nodes?v&pretty"
+        ip         heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+        172.18.0.4           22          86   8    0.16    0.58     0.70 dilm      -      es03
+        172.18.0.3           16          86   7    0.16    0.58     0.70 dilm      *      es01
+        172.18.0.2           27          86   7    0.16    0.58     0.70 dilm      -      es02
 
 - **5 停止集群**
 
@@ -132,7 +172,7 @@ tags:
         docker-compose down -v
 
         #重启集群
-        docker-compose up
+        docker-compose up -d
         
 ## 产品中使用注意事项
 
