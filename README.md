@@ -4,7 +4,7 @@
 
 ## 首页
 
-![](https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/index.jpg?raw=true)
+![](https://upload-images.jianshu.io/upload_images/17904159-00d12133c89ff9b2.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 关于
 
