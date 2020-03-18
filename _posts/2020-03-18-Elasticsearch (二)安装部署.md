@@ -4,7 +4,7 @@ title:      ElasticSearch（二）安装部署
 subtitle:   大数据 组件
 date:       2020-03-18
 author:     Frederick
-header-img: ![1_BmvPfSSm2G8C-khX1rhCGg.png](https://upload-images.jianshu.io/upload_images/17904159-1e67e74d129675d6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+header-img: https://upload-images.jianshu.io/upload_images/17904159-1e67e74d129675d6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240
 catalog: true
 tags:
     - ElasticSearch
