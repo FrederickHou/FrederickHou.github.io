@@ -4,7 +4,7 @@ title:      Kubernetes(二)之安装部署
 subtitle:   Kubernetes 安装部署
 date:       2020-03-13
 author:     Frederick
-header-img: img/dushu.jpg
+header-img: img/k8s.png
 catalog: true
 tags:
     - Kubernetes

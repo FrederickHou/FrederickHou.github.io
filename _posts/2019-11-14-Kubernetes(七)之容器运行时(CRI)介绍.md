@@ -4,7 +4,7 @@ title:      Kubernetes(k8s)容器运行时(CRI)介绍
 subtitle:   
 date:       2019-11-14
 author:     Frederick
-header-img: img/dushu.jpg
+header-img: img/k8s.png
 catalog: true
 tags:
     - Kubernetes

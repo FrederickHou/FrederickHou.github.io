@@ -4,7 +4,7 @@ title:      Kubernetes(一)之基础介绍
 subtitle:   Kubernetes 基础概念
 date:       2020-03-13
 author:     Frederick
-header-img: img/dushu.jpg
+header-img: img/k8s.png
 catalog: true
 tags:
     - Kubernetes

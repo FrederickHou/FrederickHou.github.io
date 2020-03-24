@@ -4,7 +4,7 @@ title:      Elasticsearch (三)集群部署
 subtitle:   Kubernetes 编排部署Elasticsearch以及Kibana
 date:       2020-03-24
 author:     Frederick
-header-img: img/go.jpeg
+header-img: img/k8s.png
 catalog: true
 tags:
     - Heketi
