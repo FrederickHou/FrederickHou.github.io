@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Elasticsearch(四)自动发现机制
+title:      Elasticsearch(四)自动发现机制-Zen discovery
 subtitle:   Elasticsearch 节点集群服务发现机制
 date:       2020-03-25
 author:     Frederick
@@ -36,7 +36,7 @@ Zen Discovery 使用种子节点(seed nodes)列表来开始发现过程。在启
 
 另外，discovery.zen.ping.unicast.resolve_timeout 配置在每轮ping操作中等待DNS查找的时间。需要指定时间单位，默认为5秒。
 
-或者在Kubernetes平台中创建Headless Service 通过9300端口来发现待加入的种子节点。具体事例请参照：[Elasticsearch (三)容器化方案](https://www.frederickhou.com/2020/03/24/Elasticsearch-(%E4%B8%89)%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/)
+或者在Kubernetes平台中创建Headless Service 通过9300端口来发现待加入的种子节点。具体事例请参照：[Elasticsearch (三)容器化方案](https://www.frederickhou.com/2020/03/24/Elasticsearch-(%E4%B8%89)%E5%AE%B9%E5%99%A8%E5%8C%96%E6%96%B9%E6%A1%88/)
 
     discovery.zen.ping.unicast.hosts: es-cluster-discovery
 
