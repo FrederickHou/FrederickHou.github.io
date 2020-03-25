@@ -226,7 +226,7 @@ Kibana 的docker镜像运用 Centos:7作为基础镜像。发布过的相关Dock
 ### 创建Kibana 服务
 #### 参数说明：
 - **ELASTICSEARCH_URL**: 连接es的url，如："http://es-cluster-service:9200" 其中“es-cluster-service”是es集群的9200 service name。
-- **- name: "elasticsearch.hosts"**：es的host列表，一般也是设置成es 9200 service name。通过服务名字可以解析出对应节点的IP。
+- **elasticsearch.hosts**：es的host列表，一般也是设置成es 9200 service name。通过服务名字可以解析出对应节点的IP。
 
 #### 创建服务：
 
