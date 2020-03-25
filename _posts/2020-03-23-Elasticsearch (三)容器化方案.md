@@ -7,7 +7,7 @@ author:     Frederick
 header-img: img/k8s.png
 catalog: true
 tags:
-    - Heketi
+    - Elasticsearch
     - Kubernetes
 ---
 
