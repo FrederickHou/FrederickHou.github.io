@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Elasticsearch (三)集群部署
+title:      Elasticsearch (三)容器化方案
 subtitle:   Kubernetes 编排部署Elasticsearch以及Kibana
 date:       2020-03-24
 author:     Frederick
