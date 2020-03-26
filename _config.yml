@@ -1,10 +1,10 @@
 # Site settings
-title: Frederick Blog
-SEOTitle: 剑豪的博客 | Frederick Blog
+title: Frederick Hou Blog
+SEOTitle: 剑豪的博客 | Frederick Hou Blog
 header-img: img/bk.jpg
 email: frederick_hou@163.com
 description: "Every failure is leading towards success."
-keyword: "BY, Frederick Blog, 剑豪的博客, 侯剑豪"
+keyword: "BY, Frederick Hou Blog, 剑豪的博客, 侯剑豪"
 url: "http://frederickhou.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/FrederickHou/FrederickHou.github.io.git" # you code repository
