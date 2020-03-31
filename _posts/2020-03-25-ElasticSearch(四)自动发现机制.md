@@ -7,7 +7,7 @@ author:     Frederick
 header-img: img/es.png
 catalog: true
 tags:
-    - Elasticsearch
+    - ElasticSearch
 ---
 # ElasticSearch(四)发现机制 - Zen discovery
 
