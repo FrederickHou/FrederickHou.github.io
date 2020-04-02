@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Golang goroutine讲解
+title:      Golang channel讲解
 subtitle:   
 date:       2020-04-02
 author:     Frederick
