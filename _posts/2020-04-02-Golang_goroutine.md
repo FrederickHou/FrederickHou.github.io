@@ -4,7 +4,7 @@ title:      Golang goroutine
 subtitle:   
 date:       2020-04-02
 author:     Frederick
-header-img: img/img/bk_go.jpg
+header-img: img/bk_go.jpg
 catalog: true
 tags:
     - Golang
