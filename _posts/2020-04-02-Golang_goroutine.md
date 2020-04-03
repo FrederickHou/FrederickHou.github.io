@@ -11,11 +11,13 @@ tags:
 ---
 
 ## goroutine简介
+
 goroutine是go语言中最为NB的设计，也是其魅力所在，goroutine的本质是协程，是实现并行计算的核心。goroutine使用方式非常的简单，只需使用go关键字即可启动一个协程，并且它是处于异步方式运行，你不需要等它运行完成以后在执行以后的代码。GO默认是使用一个CPU核的，除非设置runtime.GOMAXPROCS。
 
     go func()//通过go关键字启动一个协程来运行函数   
 
 ## 概念普及
+
 - **并发**：
 **一个cpu上**能同时执行多项任务，在很短时间内，cpu来回切换任务执行(在某段很短时间内执行程序a，然后又迅速得切换到程序b去执行)，有时间上的重叠（宏观上是同时的，微观仍是顺序执行）,这样看起来多个任务像是同时执行，这就是并发。
 - **并行**
@@ -30,14 +32,15 @@ cpu切换多个进程的时候，会花费不少的时间，因为切换进程�
 ## 调度模型简介
 groutine能拥有强大的并发实现是通过GPM调度模型实现。
 Go的调度器内部有四个重要的结构：M，P，G，Sched
-- **M**:代表内核级线程，一个M就是一个线程，goroutine就是跑在M之上的；M是一个很大的结构，里面维护小对象内存cache（mcache）、当前执行的goroutine、随机数发生器等等非常多的信息。
-- **G**:代表一个goroutine，它有自己的栈，instruction pointer和其他信息（正在等待的channel等等），用于调度。
-- **P**:全称是Processor，处理器，它的主要用途就是用来执行goroutine的，所以它也维护了一个goroutine队列，里面存储了所有需要它来执行的goroutine。
-- **Sched**：代表调度器，它维护有存储M和G的队列以及调度器的一些状态信息等。
+- **M** :代表内核级线程，一个M就是一个线程，goroutine就是跑在M之上的；M是一个很大的结构，里面维护小对象内存cache（mcache）、当前执行的goroutine、随机数发生器等等非常多的信息。
+- **G** :代表一个goroutine，它有自己的栈，instruction pointer和其他信息（正在等待的channel等等），用于调度。
+- **P** :全称是Processor，处理器，它的主要用途就是用来执行goroutine的，所以它也维护了一个goroutine队列，里面存储了所有需要它来执行的goroutine。
+- **Sched** ：代表调度器，它维护有存储M和G的队列以及调度器的一些状态信息等。
 
 ## 调度实现场景
 
 **一般调度如下图所示：**
+
 ![goroutine.png](https://upload-images.jianshu.io/upload_images/17904159-cb5bc6d48c41a052.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240) 
 
 从上图中看，有2个物理线程M1和M2，每一个M都拥有一个处理器P，每一个也都有一个正在运行的goroutine。
@@ -56,7 +59,7 @@ P转而在运行M2，图中的M2可能是正被创建，或者从线程缓存中
 
 ![goroutine1.png](https://upload-images.jianshu.io/upload_images/17904159-5ee5fd44bfd36c3e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-P所分配的任务G很快就执行完了（分配不均），这就导致了这个处理器P很忙，但是其他的P还有任务，此时如果global runqueue没有任务G了，那么P不得不从其他的P里拿一些G来执行。一般来说，如果P从其他的P那里要拿任务的话，**一般就拿run queue的一半**，这就确保了每个OS线程都能充分的使用。
+P所分配的任务G很快就执行完了（分配不均），这就导致了这个处理器P很忙，但是其他的P还有任务，此时如果global runqueue没有任务G了，那么P不得不从其他的P里拿一些G来执行。一般来说，如果P从其他的P那里要拿任务的话，**一般就拿run queue的一半** ，这就确保了每个OS线程都能充分的使用。
 
 ## 使用goroutine
 
@@ -89,9 +92,11 @@ P所分配的任务G很快就执行完了（分配不均），这就导致了这
     }
 
 ### 同步的goroutine
+
 由于goroutine是异步执行的，那很有可能出现主程序退出时还有goroutine没有执行完，此时goroutine也会跟着退出。此时如果想等到所有goroutine任务执行完毕才退出，go提供了sync包和channel来解决同步问题，当然如果你能预测每个goroutine执行的时间，你还可以通过time.Sleep方式等待所有的groutine执行完成以后在退出程序(如上面的列子)。
 
 **示例一：使用sync包同步goroutine**
+
 sync大致实现方式:
 WaitGroup 等待一组goroutinue执行完毕. 主程序调用 Add 添加等待的goroutinue数量. 每个goroutinue在执行结束时调用 Done ，此时等待队列数量减1.，主程序通过Wait阻塞，直到等待队列为0.
 
@@ -119,6 +124,7 @@ WaitGroup 等待一组goroutinue执行完毕. 主程序调用 Add 添加等待�
     }
 
 **示例二：通过channel实现goroutine之间的同步。**
+
 channel实现方式：
 通过channel能在多个groutine之间通讯，当一个goroutine完成时候向channel发送退出信号,等所有goroutine退出时候，利用for循环channel,取channel中的信号，若取不到数据便会阻塞原理，等待所有goroutine执行完毕，使用该方法有个前提是你已经知道了你启动了多少个goroutine。
 
@@ -149,6 +155,7 @@ channel实现方式：
     }
 
 ### goroutine之间的通讯
+
 goroutine本质上是协程，可以理解为不受内核调度，而受go调度器管理的线程。goroutine之间可以通过channel进行通信或者说是数据共享，当然你也可以使用全局变量来进行数据共享。
 示例代码：采用生产者和消费者模式
 

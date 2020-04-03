@@ -11,7 +11,8 @@ tags:
 ---
 
 ## channel简介
-channel俗称管道，用于数据传递或数据共享，其本质是一个先进先出的队列，使用goroutine+channel进行数据通讯简单高效，同时也线程安全，多个goroutine可同时修改一个channel，**不需要加锁**。
+
+channel俗称管道，用于数据传递或数据共享，其本质是一个先进先出的队列，使用goroutine+channel进行数据通讯简单高效，同时也线程安全，多个goroutine可同时修改一个channel，**不需要加锁** 。
 
 channel可分为三种类型：
 
@@ -42,6 +43,7 @@ channel可分为三种类型：
     a, ok := <- read_only  //优雅的读取数据
 
 **注：**
+
 - 读写操作注意：
   - 管道如果未关闭，在读取超时会则会引发deadlock异常
   - 管道如果关闭进行写入数据会pannic
@@ -137,6 +139,7 @@ channel可分为三种类型：
     }
 
 ### select-case实现非阻塞channel
+
 原理通过select+case加入一组管道，当满足（这里说的满足意思是有数据可读或者可写)select中的某个case时候，那么该case返回，若都不满足case，则走default分支。
 
     package main
