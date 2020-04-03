@@ -1,10 +1,10 @@
 ---
 layout:     post
-title:      Golang goroutine讲解
+title:      Golang goroutine
 subtitle:   
 date:       2020-04-02
 author:     Frederick
-header-img: img/go.jpeg
+header-img: img/img/bk_go.jpg
 catalog: true
 tags:
     - Golang
@@ -87,7 +87,6 @@ P所分配的任务G很快就执行完了（分配不均），这就导致了这
         }
         time.Sleep(time.Second * 2)
     }
-    //结果
 
 ### 同步的goroutine
 由于goroutine是异步执行的，那很有可能出现主程序退出时还有goroutine没有执行完，此时goroutine也会跟着退出。此时如果想等到所有goroutine任务执行完毕才退出，go提供了sync包和channel来解决同步问题，当然如果你能预测每个goroutine执行的时间，你还可以通过time.Sleep方式等待所有的groutine执行完成以后在退出程序(如上面的列子)。

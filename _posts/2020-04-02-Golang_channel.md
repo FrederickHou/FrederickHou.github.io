@@ -1,10 +1,10 @@
 ---
 layout:     post
-title:      Golang channel讲解
+title:      Golang channel
 subtitle:   
 date:       2020-04-02
 author:     Frederick
-header-img: img/go.jpeg
+header-img: img/img/bk_go.jpg
 catalog: true
 tags:
     - Golang
@@ -168,7 +168,7 @@ func main() {
     }
 }
 
-### Schannel频率控制
+### channel频率控制
 
 在对channel进行读写的时，go还提供了非常人性化的操作，那就是对读写的频率控制，通过time.Ticke实现
 
