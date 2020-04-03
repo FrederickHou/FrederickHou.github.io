@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Golang 闭包
+title:      Golang 数组和切片
 subtitle:   
 date:       2020-04-03
 author:     Frederick
