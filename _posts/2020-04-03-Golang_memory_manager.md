@@ -4,7 +4,7 @@ title:      Golang 内存分配
 subtitle:   
 date:       2020-04-08
 author:     Frederick
-header-img: img/go_memory.png
+header-img: img/go_memory.jpg
 catalog: true
 tags:
     - Golang
