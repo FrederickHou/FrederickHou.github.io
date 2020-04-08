@@ -384,22 +384,16 @@ Go语言内置运行时（就是runtime），不同于传统的内存分配方�
 　　1. 判定对象是大对象、小对象还是微小对象。
 
 　　2. 如果是微小对象：
-
-　　　　直接从 mcache 的alloc 找到对应 classsize 的 mspan；
-
-　　　　若当前mspan有足够空间，分配并修改mspan的相关属性（nextFreeFast函数中实现）；
-
-　　　　若当前mspan的空间不足，则从 mcentral重新获取一块 对应 classsize的 mspan，替换原先的mspan，然后分配并修改mspan的相关属性；
-
-　　对于微小对象，它不能是指针，因为多个微小对象被组合到一个object里，显然无法应对辣鸡扫描。其次它从span.freelist获取一个16字节的object，然后利用偏移量来记录下一次分配的位置。
+- 直接从 mcache 的alloc 找到对应 classsize 的 mspan；
+- 如果当前mspan有足够空间，分配并修改mspan的相关属性（nextFreeFast函数中实现）；
+- 如果当前mspan的空间不足，则从 mcentral重新获取一块 对应 classsize的 mspan，替换原先的mspan，然后分配并修改mspan的相关属性；
+- 对于微小对象，它不能是指针，因为多个微小对象被组合到一个object里，显然无法应对辣鸡扫描。其次它从span.freelist获取一个16字节的object，然后利用偏移量来记录下一次分配的位置。
 
 　　3. 如果是小对象，内存分配逻辑大致同微小对象：
+- 首先查表，以确定 需要分配内存的对象的 sizeclass，并找到 对应 classsize的 mspan；
 
-　　　　首先查表，以确定 需要分配内存的对象的 sizeclass，并找到 对应 classsize的 mspan；
-
-　　　　若当前mspan有足够的空间，分配并修改mspan的相关属性（nextFreeFast函数中实现）；
-
-　　　　若当前mspan没有足够的空间，从 mcentral重新获取一块对应 classsize的 mspan，替换原先的mspan，然后分配并修改mspan的相关属性；
+- 若当前mspan有足够的空间，分配并修改mspan的相关属性（nextFreeFast函数中实现）；
+- 若当前mspan没有足够的空间，从 mcentral重新获取一块对应 classsize的 mspan，替换原先的mspan，然后分配并修改mspan的相关属性；
 
 　　4. 如果是大对象，直接从mheap进行分配，这里的实现依靠 largeAlloc 函数实现。
 
