@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      享内存的使用实现原理
+title:      共享内存的使用实现原理
 subtitle:   ""
 date:       2020-04-09
 author:     Frederick
