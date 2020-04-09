@@ -68,11 +68,11 @@ gitalk:
   distractionFreeMode: true #是否启用类似FB的阴影遮罩
 
 
-# # 统计
+# 统计
 
-# # Analytics settings
-# # Baidu Analytics
-# ba_track_id: b50bf2b12b5338a1845e33832976fd68
+# Analytics settings
+# Baidu Analytics
+ba_track_id: c9a7c17cc51ad5aae5db3c12ae1f725d
 
 # # Google Analytics
 # ga_track_id: 'UA-90855596-1'            # Format: UA-xxxxxx-xx
