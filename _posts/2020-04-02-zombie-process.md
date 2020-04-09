@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      僵尸进程与孤儿进程
-subtitle:   进程基础知识ß
+subtitle:   进程基础知识
 date:       2020-04-02
 author:     Frederick
 header-img: img/post-bg-os-metro.jpg
