@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Kubernetes(k8s)容器运行时(CRI)介绍
+title:      Kubernetes(七)之容器运行时(CRI)介绍
 subtitle:   
 date:       2019-11-14
 author:     Frederick
