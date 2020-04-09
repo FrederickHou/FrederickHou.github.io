@@ -8,7 +8,7 @@ header-img: img/post-bg-os-metro.jpg
 catalog: true
 tags:
     - 效率
-    - Linux
+    - 操作系统
 ---
 
 # 什么是死锁？

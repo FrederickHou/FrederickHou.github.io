@@ -8,7 +8,7 @@ header-img: img/post-bg-os-metro.jpg
 catalog: true
 tags:
     - 效率
-    - Linux
+    - 操作系统
 ---
 
 # 僵尸进程与孤儿进程
