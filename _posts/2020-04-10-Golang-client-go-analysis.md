@@ -4,7 +4,7 @@ title:      Golang client-go 源码分析
 subtitle:   
 date:       2020-04-10
 author:     Frederick
-header-img: img/Go.png
+header-img: img/go.jpg
 catalog: true
 tags:
     - Golang

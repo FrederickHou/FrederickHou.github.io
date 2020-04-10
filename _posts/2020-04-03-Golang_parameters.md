@@ -4,7 +4,7 @@ title:      Golang 不定参数
 subtitle:   
 date:       2020-04-03
 author:     Frederick
-header-img: img/Go.png
+header-img: img/go.jpg
 catalog: true
 tags:
     - Golang
