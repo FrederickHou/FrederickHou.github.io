@@ -4,7 +4,7 @@ title:      Golang interface
 subtitle:   
 date:       2020-04-09
 author:     Frederick
-header-img: img/bk_go.jpg
+header-img: img/Go.png
 catalog: true
 tags:
     - Golang

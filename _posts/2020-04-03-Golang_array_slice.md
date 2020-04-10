@@ -4,7 +4,7 @@ title:      Golang 数组和切片
 subtitle:   
 date:       2020-04-03
 author:     Frederick
-header-img: img/bk_go.jpg
+header-img: img/Go.png
 catalog: true
 tags:
     - Golang
