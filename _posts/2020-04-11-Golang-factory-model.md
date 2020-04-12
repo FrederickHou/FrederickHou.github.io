@@ -1,3 +1,15 @@
+---
+layout:     post
+title:      Golang 工厂模式
+subtitle:   
+date:       2020-04-12
+author:     Frederick
+header-img: img/go.jpg
+catalog: true
+tags:
+    - Golang
+---
+
 # Golang 工厂模式
 
 ## 工厂方法模式
