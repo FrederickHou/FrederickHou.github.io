@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Golang 工厂模式
-subtitle:   
+subtitle:   三种不同的工厂模式介绍
 date:       2020-04-12
 author:     Frederick
 header-img: img/go.jpg
