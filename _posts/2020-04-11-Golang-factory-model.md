@@ -63,13 +63,14 @@ tags:
     type XianDumplings struct{}
 
     func(* BeijingDumplings)Generate(t string) *Dumplings{
-        switch t{}
+        switch t { 
         case "chives" :
         return new(BeijingDumplingsChives) 
         case "meat" :
         return new(BeijingDumplingsMeat) 
         default:
         return nil
+        }
     }
 
     func(* XianDumplings)Generate(t string) *Dumplings{
