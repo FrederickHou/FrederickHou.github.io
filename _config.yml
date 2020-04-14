@@ -98,5 +98,9 @@ service-worker: true
 friends: [
     {
         title: "MY",
-        href: "http://frederickhou.com"
+        href: "https://frederickhou.com"
+    },
+        {
+        title: "skyfireitdiy",
+        href: "https://skyfireitdiy.cn/blog"
     }
