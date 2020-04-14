@@ -2,7 +2,7 @@
 layout:     post
 title:      Kubernetes(十三)之Service资源对象
 subtitle:   
-date:       2020-04-013
+date:       2020-04-14
 author:     Frederick
 header-img: img/k8s.png
 catalog: true
