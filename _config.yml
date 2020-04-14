@@ -12,7 +12,7 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://dusign.net       # Note: don't forget to modify the CNAME file to your url
+url: https://www.frederickhou.com       # Note: don't forget to modify the CNAME file to your url
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -29,7 +29,7 @@ signature: true #show signature
 signature-img: img/signature/dusign.png
 
 # SNS settings
-github_username:    dusign
+github_username:    frederickhou
 twitter_username:   dusignr
 facebook_username:  Gang Du
 zhihu_username: dusignr
