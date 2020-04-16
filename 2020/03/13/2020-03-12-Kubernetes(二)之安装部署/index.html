@@ -1,0 +1,268 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kubernetes(二)之安装部署 | Frederick Hou Blog</title><meta name="description" content="Kubernetes(二)之安装部署"><meta name="keywords" content="Kubernetes"><meta name="author" content="Frederick Hou"><meta name="copyright" content="Frederick Hou"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://hm.baidu.com"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Kubernetes(二)之安装部署"><meta name="twitter:description" content="Kubernetes(二)之安装部署"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><meta property="og:type" content="article"><meta property="og:title" content="Kubernetes(二)之安装部署"><meta property="og:url" content="http://yoursite.com/2020/03/13/2020-03-12-Kubernetes(%E4%BA%8C)%E4%B9%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/"><meta property="og:site_name" content="Frederick Hou Blog"><meta property="og:description" content="Kubernetes(二)之安装部署"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '2'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="http://yoursite.com/2020/03/13/2020-03-12-Kubernetes(%E4%BA%8C)%E4%B9%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/"><link rel="prev" title="ElasticSearch（一）基础介绍" href="http://yoursite.com/2020/03/17/2020-03-18-ElasticSearch%EF%BC%88%E4%B8%80%EF%BC%89%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/"><link rel="next" title="Kubernetes(三)之组件介绍" href="http://yoursite.com/2020/03/13/2020-03-13-Kubernetes(%E4%B8%89)%E4%B9%8B%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c9a7c17cc51ad5aae5db3c12ae1f725d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: {"text":"富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善","fontSize":"15px"},
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">57</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">22</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> 娱乐</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li><li><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> Gallery</span></a></li></ul></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Kubernetes-安装部署"><span class="toc-number">1.</span> <span class="toc-text">Kubernetes 安装部署</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-环境准备"><span class="toc-number">1.1.</span> <span class="toc-text">1.环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-部署机器准备"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 部署机器准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-基础配置安装-每台机器都需执行"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 基础配置安装(每台机器都需执行)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-配置节点信息"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">1.2.1 配置节点信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-配置国内yum源"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">1.2.2 配置国内yum源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-关闭防火墙、selinux和swap"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">1.2.3 关闭防火墙、selinux和swap</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-4-安装docker"><span class="toc-number">1.1.2.4.</span> <span class="toc-text">1.2.4 安装docker</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-4-k8s组件"><span class="toc-number">1.1.2.5.</span> <span class="toc-text">1.2.4 k8s组件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-部署集群"><span class="toc-number">1.2.</span> <span class="toc-text">2.部署集群</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-master节点安装"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 master节点安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-master节点k8s集群初始化"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">2.1.1 master节点k8s集群初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-node节点加入"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">2.1.2 node节点加入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-集群状态查看"><span class="toc-number">1.3.</span> <span class="toc-text">3.集群状态查看</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-集群节点状态如图所示"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 集群节点状态如图所示</span></a></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Frederick Hou Blog</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> 娱乐</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li><li><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> Gallery</span></a></li></ul></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">Kubernetes(二)之安装部署</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-03-13 00:00:00"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2020-03-13</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-04-16 16:31:04"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-04-16</span></time></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon fa fa-file-word-o" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">922</span><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-clock-o" aria-hidden="true"></i><span>阅读时长: 4 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-comment-o" aria-hidden="true"></i><span>评论数:</span><a href="/2020/03/13/2020-03-12-Kubernetes(%E4%BA%8C)%E4%B9%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div id="article-container"><h1 id="Kubernetes-安装部署"><a href="#Kubernetes-安装部署" class="headerlink" title="Kubernetes 安装部署"></a>Kubernetes 安装部署</h1><h2 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1.环境准备"></a>1.环境准备</h2><h3 id="1-1-部署机器准备"><a href="#1-1-部署机器准备" class="headerlink" title="1.1 部署机器准备"></a>1.1 部署机器准备</h3><table>
+<thead>
+<tr>
+<th>机器IP</th>
+<th>主机名</th>
+<th>角色</th>
+<th>系统版本</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>192.168.3.120</td>
+<td>kube-master</td>
+<td>master</td>
+<td>CentOS  7.4.1708</td>
+<td>内存2G</td>
+</tr>
+<tr>
+<td>192.168.3.122</td>
+<td>kube-node01</td>
+<td>node</td>
+<td>CentOS   7.4.1708</td>
+<td>内存2G</td>
+</tr>
+<tr>
+<td>192.168.3.123</td>
+<td>kube-node02</td>
+<td>node</td>
+<td>CentOS   7.4.1708</td>
+<td>内存2G</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-基础配置安装-每台机器都需执行"><a href="#1-2-基础配置安装-每台机器都需执行" class="headerlink" title="1.2 基础配置安装(每台机器都需执行)"></a>1.2 基础配置安装(每台机器都需执行)</h3><h4 id="1-2-1-配置节点信息"><a href="#1-2-1-配置节点信息" class="headerlink" title="1.2.1 配置节点信息"></a>1.2.1 配置节点信息</h4><ul>
+<li><p><strong>修改对应节点主机hostname</strong></p>
+<pre><code>hostnamectl set-hostname kube-master</code></pre></li>
+<li><p><strong>配置DNS</strong></p>
+<pre><code>cat &lt;&lt;EOF &gt;&gt;/etc/hosts
+192.168.3.120 kube-master
+192.168.3.123 kube-node01
+192.168.3.122 kube-node02
+EOF</code></pre></li>
+</ul>
+<h4 id="1-2-2-配置国内yum源"><a href="#1-2-2-配置国内yum源" class="headerlink" title="1.2.2 配置国内yum源"></a>1.2.2 配置国内yum源</h4><pre><code>mkdir /etc/yum.repos.d/bak &amp;&amp; mv /etc/yum.repos.d/*.repo /etc/yum.repos.d/bak
+
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+
+yum makecache
+
+yum -y update</code></pre><h4 id="1-2-3-关闭防火墙、selinux和swap"><a href="#1-2-3-关闭防火墙、selinux和swap" class="headerlink" title="1.2.3 关闭防火墙、selinux和swap"></a>1.2.3 关闭防火墙、selinux和swap</h4><ul>
+<li><p><strong>1 关闭防火墙</strong></p>
+<pre><code>systemctl stop firewalld &amp; systemctl disable firewalld</code></pre></li>
+<li><p><strong>2 关闭selinux</strong></p>
+<pre><code>setenforce 0
+sed -i &apos;s/^SELINUX=enforcing$/SELINUX=disabled/&apos; /etc/selinux/config</code></pre></li>
+<li><p><strong>3 关闭swap</strong></p>
+<pre><code>swapoff -a
+yes | cp /etc/fstab /etc/fstab_bak
+cat /etc/fstab_bak |grep -v swap &gt; /etc/fstab
+echo vm.swappiness=0 &gt;&gt;/etc/sysctl.conf
+sysctl -p</code></pre></li>
+<li><p><strong>4 设置路由</strong></p>
+<pre><code>yum install -y bridge-utils.x86_64
+
+cat &lt;&lt; EOF &gt;  /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+sysctl --system  # 重新加载所有配置文件</code></pre></li>
+</ul>
+<h4 id="1-2-4-安装docker"><a href="#1-2-4-安装docker" class="headerlink" title="1.2.4 安装docker"></a>1.2.4 安装docker</h4><ul>
+<li><p><strong>配置docker源</strong></p>
+<pre><code>yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+yum makecache</code></pre></li>
+<li><p><strong>安装对应版本docker</strong></p>
+<pre><code>本次安装笔者选用:V18.09.9
+yum -y install docker-ce-18.09.9</code></pre></li>
+<li><p><strong>安装版本查看如图所示</strong></p>
+<p>  <img src="/" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-ef16886398457ffd.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="docker_version.jpg"></p>
+</li>
+<li><p><strong>启动docker服务并设置服务开机自启动</strong></p>
+<pre><code>systemctl start docker &amp; systemctl enable docker</code></pre></li>
+<li><p><strong>修改docker cgroup驱动，与k8s一致</strong></p>
+<pre><code># 修改docker cgroup驱动：native.cgroupdriver=systemd
+cat &gt; /etc/docker/daemon.json &lt;&lt;EOF
+{
+&quot;exec-opts&quot;: [&quot;native.cgroupdriver=systemd&quot;],
+&quot;log-driver&quot;: &quot;json-file&quot;,
+&quot;log-opts&quot;: {
+    &quot;max-size&quot;: &quot;100m&quot;
+},
+&quot;storage-driver&quot;: &quot;overlay2&quot;,
+&quot;storage-opts&quot;: [
+    &quot;overlay2.override_kernel_check=true&quot;
+]
+}
+EOF
+
+# 重启使配置生效
+systemctl restart docker  </code></pre><h4 id="1-2-4-k8s组件"><a href="#1-2-4-k8s组件" class="headerlink" title="1.2.4 k8s组件"></a>1.2.4 k8s组件</h4></li>
+<li><p><strong>配置k8s yum源</strong></p>
+<pre><code>cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
+    http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF
+#更新yum
+yum makecache</code></pre></li>
+<li><p><strong>master节点安装kubelet kubeadm kubectl</strong></p>
+<pre><code>#指定版本安装V1-.17.3
+yum install -y kubelet-1.17.3 kubeadm-1.17.3 kubectl-1.17.3 --disableexcludes=kubernetes</code></pre></li>
+<li><p><strong>安装结果如图所示</strong><br><img src="/" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-27ee25ccef4b200a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="k8sversion.jpg"></p>
+</li>
+<li><p><strong>设置开机自启动kubelet</strong></p>
+<pre><code>systemctl enable --now kubelet </code></pre></li>
+</ul>
+<h2 id="2-部署集群"><a href="#2-部署集群" class="headerlink" title="2.部署集群"></a>2.部署集群</h2><h3 id="2-1-master节点安装"><a href="#2-1-master节点安装" class="headerlink" title="2.1 master节点安装"></a>2.1 master节点安装</h3><h4 id="2-1-1-master节点k8s集群初始化"><a href="#2-1-1-master节点k8s集群初始化" class="headerlink" title="2.1.1 master节点k8s集群初始化"></a>2.1.1 master节点k8s集群初始化</h4><ul>
+<li><p><strong>安装相应版本的k8s:V1.17.3</strong></p>
+<pre><code>kubeadm init --kubernetes-version=1.17.3 --apiserver-advertise-address=192.168.3.120 --image-repository registry.aliyuncs.com/google_containers --service-cidr=192.1.0.0/16 --pod-network-cidr=192.244.0.0/16</code></pre></li>
+<li><p><strong>安装结果如图所示：</strong><br><img src="/" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-fcc89e9d2054dd6d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="1584073519(1).jpg"></p>
+</li>
+<li><p><strong>记录安装终端末尾显示的内容，此内容需要在其它节点加入k8s集群时执行。</strong></p>
+<pre><code>kubeadm join 192.168.3.120:6443 --token 76d8po.jgo5pniao8pomjwc \
+    --discovery-token-ca-cert-hash sha256:69f401a7aabcc841b5dd857a66b753a6df4133f280bd7560903f2433144a99ec</code></pre></li>
+<li><p><strong>配置kubectl工具</strong></p>
+<pre><code>#此文件用来连接集群
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config</code></pre></li>
+<li><p><strong>设置master节点为工作节点，可调度</strong></p>
+<pre><code>kubectl taint nodes --all node-role.kubernetes.io/master-</code></pre></li>
+<li><p><strong>master节点部署flannel网络</strong></p>
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</code></pre></li>
+<li><p><strong>查看节点状态</strong></p>
+</li>
+</ul>
+<h4 id="2-1-2-node节点加入"><a href="#2-1-2-node节点加入" class="headerlink" title="2.1.2 node节点加入"></a>2.1.2 node节点加入</h4><ul>
+<li><p><strong>执行加入集群命令</strong></p>
+<pre><code>kubeadm join 192.168.3.120:6443 --token 76d8po.jgo5pniao8pomjwc \
+    --discovery-token-ca-cert-hash sha256:69f401a7aabcc841b5dd857a66b753a6df4133f280bd7560903f2433144a99ec</code></pre></li>
+<li><p><strong>执行结果如图所示</strong><br><img src="/" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-6931e2d38cc70c98.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="node_join.jpg"></p>
+<h2 id="3-集群状态查看"><a href="#3-集群状态查看" class="headerlink" title="3.集群状态查看"></a>3.集群状态查看</h2><h3 id="3-1-集群节点状态如图所示"><a href="#3-1-集群节点状态如图所示" class="headerlink" title="3.1 集群节点状态如图所示"></a>3.1 集群节点状态如图所示</h3></li>
+</ul>
+<p><img src="/" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-ab25997231ce2d94.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="1584081461(1).jpg"></p>
+<p>注：状态为Ready表示节点健康，并且正常加入。</p>
+<p><strong>博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。</strong></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Frederick Hou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yoursite.com/2020/03/13/2020-03-12-Kubernetes(%E4%BA%8C)%E4%B9%8B%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/">http://yoursite.com/2020/03/13/2020-03-12-Kubernetes(二)之安装部署/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yoursite.com" target="_blank">Frederick Hou Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Kubernetes/">Kubernetes</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg" alt="微信"/><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg" alt="支付寶"/><div class="post-qr-code__desc">支付寶</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2020/03/17/2020-03-18-ElasticSearch%EF%BC%88%E4%B8%80%EF%BC%89%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/"><img class="prev_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">ElasticSearch（一）基础介绍</div></div></a></div><div class="next-post pull_right"><a href="/2020/03/13/2020-03-13-Kubernetes(%E4%B8%89)%E4%B9%8B%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D/"><img class="next_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Kubernetes(三)之组件介绍</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/04/14/2020-04-13-Kubernetes(十三)之Service资源对象/" title="Kubernetes(十三)之Service资源对象"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-14</div><div class="relatedPosts_title">Kubernetes(十三)之Service资源对象</div></div></a></div><div class="relatedPosts_item"><a href="/2020/04/02/2020-04-02-Kubernetes(十二)之ConfigMap资源对象/" title="Kubernetes(十二)之ConfigMap资源对象"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-02</div><div class="relatedPosts_title">Kubernetes(十二)之ConfigMap资源对象</div></div></a></div><div class="relatedPosts_item"><a href="/2020/03/30/2020-03-13-Kubernetes(五)之POD控制器对象ReplicaSet/" title="Kubernetes(五)之POD控制器对象ReplicaSet"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg2.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-03-30</div><div class="relatedPosts_title">Kubernetes(五)之POD控制器对象ReplicaSet</div></div></a></div><div class="relatedPosts_item"><a href="/2020/03/27/2020-03-27-Kubernetes(八)亲和性与返亲和性/" title="Kubernetes(八)亲和性与反亲和性"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg2.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-03-27</div><div class="relatedPosts_title">Kubernetes(八)亲和性与反亲和性</div></div></a></div><div class="relatedPosts_item"><a href="/2020/03/24/2020-03-23-Elasticsearch (三)容器化方案/" title="Elasticsearch (三)容器化方案"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-03-24</div><div class="relatedPosts_title">Elasticsearch (三)容器化方案</div></div></a></div><div class="relatedPosts_item"><a href="/2020/03/13/2020-03-13-Kubernetes(三)之组件介绍/" title="Kubernetes(三)之组件介绍"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-03-13</div><div class="relatedPosts_title">Kubernetes(三)之组件介绍</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '9773f8d7d3b21b9b4318',
+  clientSecret: '6ded13787b3949f9722495059669573ba071d216',
+  repo: 'FrederickHou.github.io',
+  owner: 'frederickhou',
+  admin: ['frederickhou'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2020 By Frederick Hou</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.frederickhou.com/" target="_blank" rel="noopener">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="ribbon_piao" mobile="false" src="/js/third-party/piao.js"></script><script src="/js/third-party/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script><script src="/js/third-party/ClickShowText.js"></script><script src="/js/search/local-search.js"></script></body></html>
