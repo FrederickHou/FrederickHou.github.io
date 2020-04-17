@@ -1,0 +1,243 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Golang 异常处理 | Frederick Hou Blog</title><meta name="description" content="Golang 异常处理"><meta name="keywords" content="Golang"><meta name="author" content="Frederick Hou"><meta name="copyright" content="Frederick Hou"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://hm.baidu.com"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Golang 异常处理"><meta name="twitter:description" content="Golang 异常处理"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png"><meta property="og:type" content="article"><meta property="og:title" content="Golang 异常处理"><meta property="og:url" content="https://www.frederickhou.com/2020/04/03/2020-04-03-Golang_exception/"><meta property="og:site_name" content="Frederick Hou Blog"><meta property="og:description" content="Golang 异常处理"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '2'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="https://www.frederickhou.com/2020/04/03/2020-04-03-Golang_exception/"><link rel="prev" title="Golang 数组和切片" href="https://www.frederickhou.com/2020/04/03/2020-04-03-Golang_array_slice/"><link rel="next" title="Golang 闭包" href="https://www.frederickhou.com/2020/04/03/2020-04-03-Golang_closure/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c9a7c17cc51ad5aae5db3c12ae1f725d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: {"text":"富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善","fontSize":"15px"},
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/my.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">53</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">21</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Golang-异常处理"><span class="toc-number">1.</span> <span class="toc-text">Golang 异常处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-number">1.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#defer函数"><span class="toc-number">1.2.</span> <span class="toc-text">defer函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#介绍"><span class="toc-number">1.2.1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#defer函数示例"><span class="toc-number">1.2.2.</span> <span class="toc-text">defer函数示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#defer-在匿名函数中的坑"><span class="toc-number">1.2.3.</span> <span class="toc-text">defer 在匿名函数中的坑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#判断执行没有err之后，再defer释放资源"><span class="toc-number">1.2.4.</span> <span class="toc-text">判断执行没有err之后，再defer释放资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调用os-Exit时defer不会被执行"><span class="toc-number">1.2.5.</span> <span class="toc-text">调用os.Exit时defer不会被执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#panic-和recover-函数"><span class="toc-number">1.3.</span> <span class="toc-text">panic()和recover()函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#panic-函数"><span class="toc-number">1.3.1.</span> <span class="toc-text">panic()函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#recover-函数"><span class="toc-number">1.3.2.</span> <span class="toc-text">recover()函数</span></a></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Frederick Hou Blog</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">Golang 异常处理</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-04-03 00:00:00"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2020-04-03</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-04-17 11:02:51"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-04-17</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">技术笔记</a><i class="fa fa-angle-right post-meta__separator" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/Golang-%E7%AC%94%E8%AE%B0/">Golang 笔记</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon fa fa-file-word-o" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">1.5k</span><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-clock-o" aria-hidden="true"></i><span>阅读时长: 5 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-comment-o" aria-hidden="true"></i><span>评论数:</span><a href="/2020/04/03/2020-04-03-Golang_exception/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div id="article-container"><h1 id="Golang-异常处理"><a href="#Golang-异常处理" class="headerlink" title="Golang 异常处理"></a>Golang 异常处理</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Go语言追求简洁优雅，所以，Go语言不支持传统的 try…catch…finally 这种异常，因为Go语言的设计者们认为，将异常与控制结构混在一起会很容易使得代码变得混乱。因为开发者很容易滥用异常，甚至一个小小的错误都抛出一个异常。在Go语言中，使用多值返回来返回错误。不要用异常代替错误，更不要用来控制流程。在极个别的情况下，也就是说，遇到真正的异常的情况下（比如除数为0了）。才使用Go中引入的Exception处理：defer, panic, recover。</p>
+<h2 id="defer函数"><a href="#defer函数" class="headerlink" title="defer函数"></a>defer函数</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>defer语句是Go中一个非常有用的特性，可以将一个方法延迟到包裹该方法的方法返回时执行，在实际应用中，defer语句可以充当其他语言中try…catch…的角色，也可以用来处理关闭文件句柄等收尾操作。</p>
+<p> <strong>有以下特点：</strong></p>
+<ul>
+<li><p><strong>1.</strong> defer在声明时不会执行，而是推迟执行，在return执行前，<strong>倒序执行defer[先进后出]</strong>，一般用于释放资源，清理数据，记录日志，异常处理等。</p>
+</li>
+<li><p><strong>2.</strong> defer有一个特性：<strong>即使函数抛出异常，defer仍会被执行</strong>，这样不会出现程序错误导致资源不被释放，或者因为第三方包的异常导致程序崩溃。</p>
+</li>
+</ul>
+<h3 id="defer函数示例"><a href="#defer函数示例" class="headerlink" title="defer函数示例"></a>defer函数示例</h3><pre><code>package main
+
+import &quot;fmt&quot;
+
+func stackingDefers() {
+    defer func() {
+        fmt.Println(&quot;1&quot;)
+    }()
+    defer func() {
+        fmt.Println(&quot;2&quot;)
+    }()
+    defer func() {
+        fmt.Println(&quot;3&quot;)
+    }()
+}
+func main() {
+    stackingDefers()
+}</code></pre><p><strong>输出结果：</strong></p>
+<pre><code>3
+2
+1</code></pre><p><strong>注释：</strong> 根据输出结果发现：当一个方法中有多个defer时， defer会将要延迟执行的方法“压栈”，当defer被触发时，将所有“压栈”的方法“出栈”并执行。所以defer的执行顺序是LIFO的。</p>
+<h3 id="defer-在匿名函数中的坑"><a href="#defer-在匿名函数中的坑" class="headerlink" title="defer 在匿名函数中的坑"></a>defer 在匿名函数中的坑</h3><pre><code>package main
+
+import &quot;fmt&quot;
+
+func returnValues() int {
+    var result int
+    defer func() {
+        result++
+        fmt.Println(&quot;defer&quot;)
+    }()
+    return result
+}
+
+func namedReturnValues() (result int) {
+    defer func() {
+        result++
+        fmt.Println(&quot;defer&quot;)
+    }()
+    return result
+}
+
+func main() {
+    fmt.Println(returnValues())
+    fmt.Println(namedReturnValues())
+}</code></pre><p><strong>输出结果：</strong></p>
+<pre><code>defer
+0
+defer
+1</code></pre><p><strong>注释:</strong> 上面的方法看到输出0，下面的方法输出1。上面的方法使用了匿名返回值，下面的使用了命名返回值，除此之外其他的逻辑均相同，为什么输出的结果会有区别呢？</p>
+<p>要搞清这个问题首先需要了解defer的执行逻辑，文档中说defer语句在方法返回“时”触发，也就是说return和defer是“同时”执行的。以匿名返回值方法举例，过程如下。</p>
+<p>将result赋值给返回值（可以理解成Go自动创建了一个返回值retValue，相当于执行retValue = result）<br>然后检查是否有defer，如果有则执行<br>返回刚才创建的返回值（retValue）<br>在这种情况下，defer中的修改是对result执行的，而不是retValue，所以defer返回的依然是retValue。在命名返回值方法中，由于返回值在方法定义时已经被定义，所以没有创建retValue的过程，result就是retValue，defer对于result的修改也会被直接返回。</p>
+<h3 id="判断执行没有err之后，再defer释放资源"><a href="#判断执行没有err之后，再defer释放资源" class="headerlink" title="判断执行没有err之后，再defer释放资源"></a>判断执行没有err之后，再defer释放资源</h3><pre><code>resp, err := http.Get(url)
+// 先判断操作是否成功
+if err != nil {
+    return err
+}
+// 如果操作成功，再进行Close操作
+defer resp.Body.Close()</code></pre><p><strong>注释：</strong> 一些获取资源的操作可能会返回err参数，我们可以选择忽略返回的err参数，但是如果要使用defer进行延迟释放的的话，需要在使用defer之前先判断是否存在err，如果资源没有获取成功，即没有必要也不应该再对资源执行释放操作。如果不判断获取资源是否成功就执行释放操作的话，还有可能导致释放方法执行错误。</p>
+<h3 id="调用os-Exit时defer不会被执行"><a href="#调用os-Exit时defer不会被执行" class="headerlink" title="调用os.Exit时defer不会被执行"></a>调用os.Exit时defer不会被执行</h3><pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;os&quot;)
+
+func deferExit() {
+    defer func() {
+        fmt.Println(&quot;defer&quot;)
+    }()
+    fmt.Println(&quot;exit&quot;)
+    os.Exit(0)
+}
+
+func main() {
+    deferExit()
+}</code></pre><p><strong>结果输出：</strong></p>
+<pre><code>exit</code></pre><p><strong>注释:</strong> 当发生panic时，所在goroutine的所有defer会被执行，但是当调用os.Exit()方法退出程序时，defer并不会被执行。</p>
+<h2 id="panic-和recover-函数"><a href="#panic-和recover-函数" class="headerlink" title="panic()和recover()函数"></a>panic()和recover()函数</h2><p>Golang 语言内置函数panic()和recover()来处理程序中的错误。</p>
+<pre><code>func recover() interface{}
+func panic(interface{})</code></pre><h3 id="panic-函数"><a href="#panic-函数" class="headerlink" title="panic()函数"></a>panic()函数</h3><p>当函数执行触发了panic()函数时，如果没有使用到defer关键字，函数执行流程会被立即终止；如果使用了defer关键字，则会逐层执行defer语句，直到所有的函数被终止。</p>
+<p>错误信息，包括panic函数传入的参数，将会被报告出来。</p>
+<pre><code>package main
+
+
+func raiseErr(err interface{}){
+    panic(err)
+}
+
+func main() {
+    raiseErr(&quot;Unknow err&quot;)
+}</code></pre><p><strong>输出结果：</strong></p>
+<pre><code>panic: Unknow err
+
+goroutine 1 [running]:
+main.raiseErr(...)
+        E:/coding/go/test/test.go:5
+main.main()
+        E:/coding/go/test/test.go:9 +0x40</code></pre><p><strong>注释:</strong> 以上程序直接终止抛出异常。、相当于C++/Python里面的异常抛出，如果外围函数没有接住异常，便使得程序终止退出。</p>
+<h3 id="recover-函数"><a href="#recover-函数" class="headerlink" title="recover()函数"></a>recover()函数</h3><p>recover()函数用于终止错误处理流程。一般使用在defer关键字后以有效截取错误处理流程。如果没有在发生异常的goroutine中明确调用恢复过程（使用recover关键字） ，会导致该goroutine所属的进程打印异常信息后直接退出。</p>
+<pre><code>package main
+import (
+    &quot;fmt&quot;
+)
+
+func raiseErr(err interface{}){
+    panic(err)
+}
+
+func main() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Printf(&quot;Exception error caught: %v\n&quot;, r)
+        }
+    }()
+    raiseErr(&quot;Unknow err&quot;)
+}</code></pre><p><strong>结果输出：</strong></p>
+<pre><code>Exception error caught: Unknow err</code></pre><p><strong>注释:</strong> raiseErr(“Unknow err”))中触发了错误处理流程，该匿名defer函数都将在函数退出时得到执行。 recover()函数执行将使得该错误处理过程终止。此时错误处理流程被触发时，程序传给panic函数的参数不为nil，则该函数还会打印详细的错误信息。</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Frederick Hou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.frederickhou.com/2020/04/03/2020-04-03-Golang_exception/">https://www.frederickhou.com/2020/04/03/2020-04-03-Golang_exception/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.frederickhou.com" target="_blank">Frederick Hou Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Golang/">Golang</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg" alt="微信"/><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg" alt="支付宝"/><div class="post-qr-code__desc">支付宝</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2020/04/03/2020-04-03-Golang_array_slice/"><img class="prev_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Golang 数组和切片</div></div></a></div><div class="next-post pull_right"><a href="/2020/04/03/2020-04-03-Golang_closure/"><img class="next_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Golang 闭包</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/04/14/2020-04-14-Golang-select/" title="Golang select介绍"><img class="relatedPosts_cover lazyload"data-src="http://img0.imgtn.bdimg.com/it/u=102464302,3836629562&fm=26&gp=0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-14</div><div class="relatedPosts_title">Golang select介绍</div></div></a></div><div class="relatedPosts_item"><a href="/2020/04/14/2020-04-14-Golang-range/" title="Golang range 的坑"><img class="relatedPosts_cover lazyload"data-src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1587104469995&di=78cdb590d86d269986999e34b809a620&imgtype=0&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D2094856847%2C1485015268%26fm%3D214%26gp%3D0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-14</div><div class="relatedPosts_title">Golang range 的坑</div></div></a></div><div class="relatedPosts_item"><a href="/2020/04/12/2020-04-11-Golang-factory-model/" title="Golang 工厂模式"><img class="relatedPosts_cover lazyload"data-src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1587104469995&di=78cdb590d86d269986999e34b809a620&imgtype=0&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D2094856847%2C1485015268%26fm%3D214%26gp%3D0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-12</div><div class="relatedPosts_title">Golang 工厂模式</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '9773f8d7d3b21b9b4318',
+  clientSecret: '6ded13787b3949f9722495059669573ba071d216',
+  repo: 'FrederickHou.github.io',
+  owner: 'frederickhou',
+  admin: ['frederickhou'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2020 By Frederick Hou</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.frederickhou.com/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="ribbon_piao" mobile="false" src="/js/third-party/piao.js"></script><script src="/js/third-party/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script><script src="/js/third-party/ClickShowText.js"></script><script src="/js/search/local-search.js"></script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>

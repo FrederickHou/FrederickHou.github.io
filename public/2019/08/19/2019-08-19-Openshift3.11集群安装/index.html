@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Openshift3.11集群安装 | Frederick Hou Blog</title><meta name="description" content="Openshift3.11集群安装"><meta name="keywords" content="分布式,大数据,Docker,Openshift"><meta name="author" content="Frederick Hou"><meta name="copyright" content="Frederick Hou"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://hm.baidu.com"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Openshift3.11集群安装"><meta name="twitter:description" content="Openshift3.11集群安装"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><meta property="og:type" content="article"><meta property="og:title" content="Openshift3.11集群安装"><meta property="og:url" content="https://www.frederickhou.com/2019/08/19/2019-08-19-Openshift3.11%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/"><meta property="og:site_name" content="Frederick Hou Blog"><meta property="og:description" content="Openshift3.11集群安装"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '2'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="https://www.frederickhou.com/2019/08/19/2019-08-19-Openshift3.11%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/"><link rel="prev" title="Gluster Fs(一)基础知识介绍" href="https://www.frederickhou.com/2019/08/19/2019-08-23-Gluster%20FS%20(%E4%B8%80)%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/"><link rel="next" title="SSO基础概念介绍" href="https://www.frederickhou.com/2019/08/01/2019-08-01-SSO/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c9a7c17cc51ad5aae5db3c12ae1f725d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: {"text":"富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善","fontSize":"15px"},
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/my.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">53</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">21</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装环境"><span class="toc-number">1.</span> <span class="toc-text">安装环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集群信息"><span class="toc-number">2.</span> <span class="toc-text">集群信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#离线安装包准备"><span class="toc-number">3.</span> <span class="toc-text">离线安装包准备</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#离线docker镜像准备"><span class="toc-number">3.1.</span> <span class="toc-text">离线docker镜像准备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#离线rpm包准备"><span class="toc-number">3.2.</span> <span class="toc-text">离线rpm包准备</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基础依赖包安装"><span class="toc-number">4.</span> <span class="toc-text">基础依赖包安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置网络安全"><span class="toc-number">5.</span> <span class="toc-text">配置网络安全</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#关闭防火墙"><span class="toc-number">5.1.</span> <span class="toc-text">关闭防火墙</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置iptables"><span class="toc-number">6.</span> <span class="toc-text">配置iptables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#先在一个节点上DNS配置"><span class="toc-number">7.</span> <span class="toc-text">先在一个节点上DNS配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主机hostname配置"><span class="toc-number">8.</span> <span class="toc-text">主机hostname配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置时区、配置chrony时钟同步"><span class="toc-number">9.</span> <span class="toc-text">设置时区、配置chrony时钟同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#节点间ansible-免密登录配置"><span class="toc-number">10.</span> <span class="toc-text">节点间ansible 免密登录配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-openshift-ansible"><span class="toc-number">11.</span> <span class="toc-text">安装 openshift ansible</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#配置ansible-文件"><span class="toc-number">11.1.</span> <span class="toc-text">配置ansible 文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DNS-配置下发"><span class="toc-number">11.2.</span> <span class="toc-text">DNS 配置下发</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动docker"><span class="toc-number">12.</span> <span class="toc-text">启动docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#执行安装检查"><span class="toc-number">13.</span> <span class="toc-text">执行安装检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#执行安装"><span class="toc-number">14.</span> <span class="toc-text">执行安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装完成"><span class="toc-number">15.</span> <span class="toc-text">安装完成</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#创建用户名和密码"><span class="toc-number">15.1.</span> <span class="toc-text">创建用户名和密码</span></a></li></ol></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Frederick Hou Blog</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">Openshift3.11集群安装</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2019-08-19 00:00:00"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2019-08-19</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-04-17 11:07:56"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-04-17</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">技术笔记</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon fa fa-file-word-o" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">1.8k</span><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-clock-o" aria-hidden="true"></i><span>阅读时长: 10 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-comment-o" aria-hidden="true"></i><span>评论数:</span><a href="/2019/08/19/2019-08-19-Openshift3.11%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div id="article-container"><h3 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h3><pre><code>CentOS Linux release 7.6.1810 (Core) </code></pre><h3 id="集群信息"><a href="#集群信息" class="headerlink" title="集群信息"></a>集群信息</h3><table>
+<thead>
+<tr>
+<th>主机</th>
+<th>IP</th>
+<th>内存</th>
+<th>硬盘大小</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>host-192-168-1-12</td>
+<td>192.168.1.12</td>
+<td>31G</td>
+<td>40G+500G</td>
+<td>MASTER</td>
+</tr>
+<tr>
+<td>host-192-168-1-13</td>
+<td>192.168.1.13</td>
+<td>31G</td>
+<td>40G+500G</td>
+<td>INFRA</td>
+</tr>
+<tr>
+<td>host-192-168-1-14</td>
+<td>192.168.1.14</td>
+<td>31G</td>
+<td>40G+500G</td>
+<td>COMPUTER</td>
+</tr>
+</tbody></table>
+<h3 id="离线安装包准备"><a href="#离线安装包准备" class="headerlink" title="离线安装包准备"></a>离线安装包准备</h3><h4 id="离线docker镜像准备"><a href="#离线docker镜像准备" class="headerlink" title="离线docker镜像准备"></a>离线docker镜像准备</h4><pre><code>yum install docker -y
+systemctl start docker; systemctl enable docker
+
+docker pull docker.io/openshift/origin-node:v3.11
+docker pull docker.io/openshift/origin-control-plane:v3.11
+docker pull docker.io/openshift/origin-deployer:v3.11.0
+docker pull docker.io/openshift/origin-haproxy-router:v3.11
+docker pull docker.io/openshift/origin-pod:v3.11.0
+docker pull docker.io/openshift/origin-web-console:v3.11
+docker pull docker.io/openshift/origin-docker-registry:v3.11
+docker pull docker.io/openshift/origin-metrics-server:v3.11
+docker pull docker.io/openshift/origin-console:v3.11
+docker pull docker.io/openshift/origin-metrics-heapster:v3.11
+docker pull docker.io/openshift/origin-metrics-hawkular-metrics:v3.11
+docker pull docker.io/openshift/origin-metrics-schema-installer:v3.11
+docker pull docker.io/openshift/origin-metrics-cassandra:v3.11
+docker pull docker.io/cockpit/kubernetes:latest
+docker pull quay.io/coreos/cluster-monitoring-operator:v0.1.1
+docker pull quay.io/coreos/prometheus-config-reloader:v0.23.2
+docker pull quay.io/coreos/prometheus-operator:v0.23.2
+docker pull docker.io/openshift/prometheus-alertmanager:v0.15.2
+docker pull docker.io/openshift/prometheus-node-exporter:v0.16.0
+docker pull docker.io/openshift/prometheus:v2.3.2
+docker pull docker.io/grafana/grafana:5.2.1
+docker pull quay.io/coreos/kube-rbac-proxy:v0.3.1
+docker pull quay.io/coreos/etcd:v3.2.22
+docker pull quay.io/coreos/kube-state-metrics:v1.3.1
+docker pull docker.io/openshift/oauth-proxy:v1.1.0
+docker pull quay.io/coreos/configmap-reload:v0.0.1</code></pre><h4 id="离线rpm包准备"><a href="#离线rpm包准备" class="headerlink" title="离线rpm包准备"></a>离线rpm包准备</h4><pre><code>origin-3.11.0-1.el7.git.0.62803d0.x86_64.rpm 
+origin-hyperkube-3.11.0-1.el7.git.0.62803d0.x86_64.rpm
+origin-clients-3.11.0-1.el7.git.0.62803d0.x86_64.rpm
+origin-node-3.11.0-1.el7.git.0.62803d0.x86_64.rpm</code></pre><p><strong>执行如下命名：</strong></p>
+<pre><code>yum install -y origin-node-3.11.0  origin-hyperkube-3.11.0 origin-clients-3.11.0 conntrack-tools
+# master安装
+yum install -y origin-3.11.0</code></pre><h3 id="基础依赖包安装"><a href="#基础依赖包安装" class="headerlink" title="基础依赖包安装"></a>基础依赖包安装</h3><pre><code>yum install wget git net-tools bind-utils yum-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct vim python-setuptools unzip tree docker –y
+yum install atomic -y
+yum install -y centos-release-openshift-origin311 ceph-common container-selinux docker epel extras python-docker</code></pre><h3 id="配置网络安全"><a href="#配置网络安全" class="headerlink" title="配置网络安全"></a>配置网络安全</h3><h4 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h4><pre><code>sudo systemctl stop firewalld.service; sudo systemctl disable firewalld.service</code></pre><h3 id="配置iptables"><a href="#配置iptables" class="headerlink" title="配置iptables"></a>配置iptables</h3><pre><code>cp /etc/sysconfig/iptables /etc/sysconfig/iptables.bak.$(date &quot;+%Y%m%d%H%M%S&quot;);
+sed -i &apos;/.*--dport 22 -j ACCEPT.*/a\-A INPUT -p tcp -m state --state NEW -m tcp --dport 53 -j ACCEPT&apos; /etc/sysconfig/iptables;
+sed -i &apos;/.*--dport 22 -j ACCEPT.*/a\-A INPUT -p udp -m state --state NEW -m udp --dport 53 -j ACCEPT&apos; /etc/sysconfig/iptables;
+sed -i &apos;/.*--dport 22 -j ACCEPT.*/a\-A INPUT -p tcp -m state --state NEW -m tcp --dport 5000 -j ACCEPT&apos; /etc/sysconfig/iptables;
+sed -i &apos;/.*--dport 22 -j ACCEPT.*/a\-A INPUT -p tcp -m state --state NEW -m tcp --dport 81 -j ACCEPT&apos; /etc/sysconfig/iptables;
+
+#在master节点允许 8443 for node join
+sed -i &apos;/.*--dport 22 -j ACCEPT.*/a\-A INPUT -p tcp -m state --state NEW -m tcp --dport 8443 -j ACCEPT &apos; /etc/sysconfig/iptables;
+sed -i &apos;/.*--dport 22 -j ACCEPT.*/a\-A INPUT -p tcp -m state --state NEW -m tcp --dport 8443 -j ACCEPT &apos; /etc/sysconfig/iptables;
+
+systemctl restart iptables;systemctl enable iptables</code></pre><h3 id="先在一个节点上DNS配置"><a href="#先在一个节点上DNS配置" class="headerlink" title="先在一个节点上DNS配置"></a>先在一个节点上DNS配置</h3><p>编辑/etc/hosts文件加入以下内容：</p>
+<pre><code>192.168.1.12 openshift1
+192.168.1.13 openshift2
+192.168.1.14 openshift3</code></pre><h3 id="主机hostname配置"><a href="#主机hostname配置" class="headerlink" title="主机hostname配置"></a>主机hostname配置</h3><p><strong>注意：</strong> 此时DNS 配置需要与主机名保持一致</p>
+<pre><code>hostnamectl set-hostname openshift1/openshift2/openshift3
+hostnamectl --pretty
+hostnamectl --static
+hostnamectl --transient
+cat /etc/hostname</code></pre><p>分别在节点上执行以上命令</p>
+<h3 id="设置时区、配置chrony时钟同步"><a href="#设置时区、配置chrony时钟同步" class="headerlink" title="设置时区、配置chrony时钟同步"></a>设置时区、配置chrony时钟同步</h3><p><strong>Openshift默认使用ntp来进行时间同步。如果使用chrony来做时间同步，步骤如下：</strong></p>
+<ul>
+<li><p><strong>(1)设置时区</strong></p>
+<pre><code>查看时区: timedatectl
+设置时区: timedatectl set-timezone Asia/Shanghai</code></pre></li>
+<li><p><strong>(2)开通chrony server的123端口的访问策略（iptables）</strong></p>
+<pre><code>sudo iptables -I INPUT -p udp --dport 123 -j ACCEPT
+sudo vi /etc/sysconfig/iptables，增加: -I INPUT -p udp --dport 123 -j ACCEPT
+重启iptables。</code></pre></li>
+<li><p><strong>(3)每台主机开启网络时间同步：</strong></p>
+<pre><code>查看时间同步状态：timedatectl status
+开启时间同步状态：sudo timedatectl set-ntp true</code></pre><pre><code># timedatectl status 
+Local time: Mon 2019-08-19 11:20:52 CST 
+Universal time: Mon 2019-08-19 03:20:52 UTC 
+RTC time: Mon 2019-08-19 03:40:59 Time zone: Asia/Shanghai (CST, +0800)
+NTP enabled: yes
+NTP synchronized: yes
+RTC in local TZ: no
+DST active: n/a</code></pre></li>
+<li><p><strong>(4)配置chrony服务端与客户端</strong><br>可以在集群内选择一台作为chrony服务器，其他节点从该server同步时间。<br>chrony一般情况下会已安装，rpm -aq|grep chrony</p>
+<p>  <strong>Chrony Server端配置：</strong><br>  sudo vi /etc/chrony.conf<br>  server 10.1.234.164 iburst  #指定本机IP或者上游的时间服务器<br>  allow 10.1.0.0/16</p>
+<p>  <strong>Chrony客户端配置：</strong> vi /etc/chrony.conf<br>  server 10.1.234.164 iburst  #指定上游的时间服务器</p>
+<p>  启动chrony：<br>  ansible -i dfhosts.cfg all -b -m shell -a “sudo systemctl start chronyd”<br>  ansible -i dfhosts.cfg all -b -m shell -a “sudo systemctl enable chronyd”<br>  ansible -i dfhosts.cfg all -b -m shell -a “chronyc sources -v” #查看chrony server源（同步的server的状态显示为^*）</p>
+</li>
+</ul>
+<pre><code>210 Number of sources = 5
+
+.-- Source mode  &apos;^&apos; = server, &apos;=&apos; = peer, &apos;#&apos; = local clock.
+/ .- Source state &apos;*&apos; = current synced, &apos;+&apos; = combined , &apos;-&apos; = not combined,
+| /   &apos;?&apos; = unreachable, &apos;x&apos; = time may be in error, &apos;~&apos; = time too variable.
+||                                                 .- xxxx [ yyyy ] +/- zzzz
+||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+||                                \     |          |  zzzz = estimated error.
+||                                 |    |           \
+MS Name/IP address         Stratum Poll Reach LastRx Last sample
+===============================================================================
+^* openshift1                    3   7   377    97    +70us[ +154us] +/-   90ms
+^? undefined.hostname.local&gt;     0  10     0     -     +0ns[   +0ns] +/-    0ns
+^? 139.199.214.202               0  10     0     -     +0ns[   +0ns] +/-    0ns
+^? ntp7.flashdance.cx            0  10     0     -     +0ns[   +0ns] +/-    0ns
+^? amy.chl.la                    0  10     0     -     +0ns[   +0ns] +/-    0ns</code></pre><h3 id="节点间ansible-免密登录配置"><a href="#节点间ansible-免密登录配置" class="headerlink" title="节点间ansible 免密登录配置"></a>节点间ansible 免密登录配置</h3><pre><code>ssh-keygen -t rsa
+
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa):
+/root/.ssh/id_rsa already exists.
+Overwrite (y/n)? y
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:UqtSrQUgOe0WeA9rfqDSMn5U3J4LzQQ2Ks+hWUbDKMA root@ldap
+The key&apos;s randomart image is:
++---[RSA 2048]----+
+|+ ++.            |
+|.E+===           |
+|. .+=== .        |
+| . =*o.* .       |
+| .O=o.B S        |
+|+oo+.o.X         |
+|.+. ..+ .        |
+| . . . .         |
+|  .              |
++----[SHA256]-----+
+
+ssh-copy-id -i ~/.ssh/id_rsa.pub openshift1/openshift2/openshift3;</code></pre><h3 id="安装-openshift-ansible"><a href="#安装-openshift-ansible" class="headerlink" title="安装 openshift ansible"></a>安装 openshift ansible</h3><pre><code>yum install -y ansible-2.6.14-1.el7
+yum install -y openshift-ansible</code></pre><h4 id="配置ansible-文件"><a href="#配置ansible-文件" class="headerlink" title="配置ansible 文件"></a>配置ansible 文件</h4><pre><code>[root@openshift1 ~]# cat /etc/ansible/hosts
+# Create an OSEv3 group that contains the masters, nodes, and etcd groups
+[OSEv3:children]
+masters
+nodes
+etcd
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+# SSH user, this user should allow ssh based auth without requiring a password
+ansible_ssh_user=root
+#openshift_deployment_type=openshift-enterprise
+openshift_deployment_type=origin
+openshift_release=&quot;3.11&quot;
+openshift_image_tag=v3.11
+openshift_pkg_version=-3.11.0
+openshift_use_openshift_sdn=true
+# If ansible_ssh_user is not root, ansible_become must be set to true
+#ansible_become=true
+#containerized=false
+
+# default selectors for router and registry services
+# openshift_router_selector=&apos;node-role.kubernetes.io/infra=true&apos;
+# openshift_registry_selector=&apos;node-role.kubernetes.io/infra=true&apos;
+
+# uncomment the following to enable htpasswd authentication; defaults to DenyAllPasswordIdentityProvider
+openshift_master_identity_providers=[{&apos;name&apos;: &apos;htpasswd_auth&apos;, &apos;login&apos;: &apos;true&apos;, &apos;challenge&apos;: &apos;true&apos;, &apos;kind&apos;: &apos;HTPasswdPasswordIdentityProvider&apos;}]
+#openshift_master_default_subdomain=ai.com
+openshift_disable_check=memory_availability,disk_availability,docker_image_availability
+
+os_sdn_network_plugin_name=&apos;redhat/openshift-ovs-networkpolicy&apos;
+
+openshift_master_cluster_method=native
+openshift_master_cluster_hostname=openshift1
+openshift_master_cluster_public_hostname=openshift1
+# false
+ansible_service_broker_install=false
+openshift_enable_service_catalog=false
+template_service_broker_install=false
+openshift_logging_install_logging=false
+enable_excluders=false
+# registry passwd
+#oreg_url=10.1.236.77:5000/openshift3/ose-${component}:${version}
+#oreg_url=10.1.236.77:5000/openshift/origin-${component}:${version}
+#openshift_examples_modify_imagestreams=true
+
+# docker config
+#openshift_docker_additional_registries=10.1.236.77:5000
+#openshift_docker_insecure_registries=10.1.236.77:5000
+#openshift_docker_blocked_registries
+openshift_docker_options=&quot;--log-driver json-file --log-opt max-size=1M --log-opt max-file=3&quot;
+
+# openshift_cluster_monitoring_operator_install=false
+# openshift_metrics_install_metrics=true
+# openshift_enable_unsupported_configurations=True
+#openshift_logging_es_nodeselector=&apos;node-role.kubernetes.io/infra: &quot;true&quot;&apos;
+#openshift_logging_kibana_nodeselector=&apos;node-role.kubernetes.io/infra: &quot;true&quot;&apos;
+# host group for masters
+
+[masters]
+openshift1
+
+# host group for etcd
+[etcd]
+openshift1
+
+# host group for nodes, includes region info
+[nodes]
+openshift1 openshift_node_group_name=&apos;node-config-master&apos;
+openshift2 openshift_node_group_name=&apos;node-config-compute&apos;
+openshift3 openshift_node_group_name=&apos;node-config-compute&apos;
+openshift2  openshift_node_group_name=&apos;node-config-infra&apos;</code></pre><h4 id="DNS-配置下发"><a href="#DNS-配置下发" class="headerlink" title="DNS 配置下发"></a>DNS 配置下发</h4><pre><code>ansible all -m copy -a &quot;src=/etc/hosts dest=/etc/hosts &quot;</code></pre><h3 id="启动docker"><a href="#启动docker" class="headerlink" title="启动docker"></a>启动docker</h3><pre><code>ansible all -a &apos;systemctl start docker&apos;;ansible all -a &apos;systemctl enable docker&apos;</code></pre><h3 id="执行安装检查"><a href="#执行安装检查" class="headerlink" title="执行安装检查"></a>执行安装检查</h3><pre><code>ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml</code></pre><h3 id="执行安装"><a href="#执行安装" class="headerlink" title="执行安装"></a>执行安装</h3><pre><code>ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml -vvv</code></pre><h3 id="安装完成"><a href="#安装完成" class="headerlink" title="安装完成"></a>安装完成</h3><p><img src="/img/loading.gif" class="lazyload" data-src="https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/openshift1.jpg?raw=true"  alt=""></p>
+<h4 id="创建用户名和密码"><a href="#创建用户名和密码" class="headerlink" title="创建用户名和密码"></a>创建用户名和密码</h4><pre><code>htpasswd -cb /etc/origin/master/htpasswd admin abc123
+oc adm policy add-cluster-role-to-user cluster-admin admin</code></pre><p>进入openshift WEB主页面：<a href="https://openshift1:8443" target="_blank" rel="noopener">https://openshift1:8443</a></p>
+<p><img src="/img/loading.gif" class="lazyload" data-src="https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/openshift2.jpg?raw=true"  alt=""></p>
+<p><strong>username:admin</strong></p>
+<p><strong>password: abc123</strong></p>
+<p><img src="/img/loading.gif" class="lazyload" data-src="https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/openshift3.jpg?raw=true"  alt=""></p>
+<p><strong>博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。</strong></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Frederick Hou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.frederickhou.com/2019/08/19/2019-08-19-Openshift3.11%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/">https://www.frederickhou.com/2019/08/19/2019-08-19-Openshift3.11集群安装/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.frederickhou.com" target="_blank">Frederick Hou Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><a class="post-meta__tags" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><a class="post-meta__tags" href="/tags/Docker/">Docker</a><a class="post-meta__tags" href="/tags/Openshift/">Openshift</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg" alt="微信"/><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg" alt="支付宝"/><div class="post-qr-code__desc">支付宝</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2019/08/19/2019-08-23-Gluster%20FS%20(%E4%B8%80)%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/"><img class="prev_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg2.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Gluster Fs(一)基础知识介绍</div></div></a></div><div class="next-post pull_right"><a href="/2019/08/01/2019-08-01-SSO/"><img class="next_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SSO基础概念介绍</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2019/10/09/2019-10-09-OpenShift3.11之nvidia-gpu/" title="Openshift3.11 nvidia gpu任务调度"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg2.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2019-10-09</div><div class="relatedPosts_title">Openshift3.11 nvidia gpu任务调度</div></div></a></div><div class="relatedPosts_item"><a href="/2019/08/01/2019-08-01-SSO/" title="SSO基础概念介绍"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2019-08-01</div><div class="relatedPosts_title">SSO基础概念介绍</div></div></a></div><div class="relatedPosts_item"><a href="/2019/07/30/2019-07-30-LDAP(二)/" title="LDAP(二)之安装部署"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2019-07-30</div><div class="relatedPosts_title">LDAP(二)之安装部署</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '9773f8d7d3b21b9b4318',
+  clientSecret: '6ded13787b3949f9722495059669573ba071d216',
+  repo: 'FrederickHou.github.io',
+  owner: 'frederickhou',
+  admin: ['frederickhou'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2020 By Frederick Hou</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.frederickhou.com/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="ribbon_piao" mobile="false" src="/js/third-party/piao.js"></script><script src="/js/third-party/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script><script src="/js/third-party/ClickShowText.js"></script><script src="/js/search/local-search.js"></script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
