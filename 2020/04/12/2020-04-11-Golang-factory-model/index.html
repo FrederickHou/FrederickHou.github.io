@@ -1,0 +1,282 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Golang 工厂模式 | Frederick Hou Blog</title><meta name="description" content="Golang 工厂模式"><meta name="keywords" content="Golang"><meta name="author" content="Frederick Hou"><meta name="copyright" content="Frederick Hou"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://hm.baidu.com"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Golang 工厂模式"><meta name="twitter:description" content="Golang 工厂模式"><meta name="twitter:image" content="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1587104469995&amp;di=78cdb590d86d269986999e34b809a620&amp;imgtype=0&amp;src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D2094856847%2C1485015268%26fm%3D214%26gp%3D0.jpg"><meta property="og:type" content="article"><meta property="og:title" content="Golang 工厂模式"><meta property="og:url" content="https://www.frederickhou.com/2020/04/12/2020-04-11-Golang-factory-model/"><meta property="og:site_name" content="Frederick Hou Blog"><meta property="og:description" content="Golang 工厂模式"><meta property="og:image" content="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1587104469995&amp;di=78cdb590d86d269986999e34b809a620&amp;imgtype=0&amp;src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D2094856847%2C1485015268%26fm%3D214%26gp%3D0.jpg"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '2'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="https://www.frederickhou.com/2020/04/12/2020-04-11-Golang-factory-model/"><link rel="prev" title="Golang select介绍" href="https://www.frederickhou.com/2020/04/14/2020-04-14-Golang-select/"><link rel="next" title="Golang client-go 源码分析" href="https://www.frederickhou.com/2020/04/10/2020-04-10-Golang-client-go-analysis/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c9a7c17cc51ad5aae5db3c12ae1f725d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: {"text":"富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善","fontSize":"15px"},
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/my.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">53</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">21</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Golang-工厂模式"><span class="toc-number">1.</span> <span class="toc-text">Golang 工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#简单工厂模式"><span class="toc-number">1.1.</span> <span class="toc-text">简单工厂模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#简单工厂需要"><span class="toc-number">1.1.1.</span> <span class="toc-text">简单工厂需要:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例说明"><span class="toc-number">1.1.2.</span> <span class="toc-text">示例说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#简单工厂模式优缺点"><span class="toc-number">1.2.</span> <span class="toc-text">简单工厂模式优缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工厂方法模式"><span class="toc-number">1.3.</span> <span class="toc-text">工厂方法模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#工厂方法需要"><span class="toc-number">1.3.1.</span> <span class="toc-text">工厂方法需要:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例说明-1"><span class="toc-number">1.3.2.</span> <span class="toc-text">示例说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#工厂方法模式的优缺点"><span class="toc-number">1.3.3.</span> <span class="toc-text">工厂方法模式的优缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抽象工厂模式"><span class="toc-number">1.4.</span> <span class="toc-text">抽象工厂模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#示例说明-2"><span class="toc-number">1.5.</span> <span class="toc-text">示例说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#抽象工厂模式的优缺点"><span class="toc-number">1.5.1.</span> <span class="toc-text">抽象工厂模式的优缺点</span></a></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1587104469995&amp;di=78cdb590d86d269986999e34b809a620&amp;imgtype=0&amp;src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D2094856847%2C1485015268%26fm%3D214%26gp%3D0.jpg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Frederick Hou Blog</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">Golang 工厂模式</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-04-12 00:00:00"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2020-04-12</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-04-17 11:33:44"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-04-17</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">技术笔记</a><i class="fa fa-angle-right post-meta__separator" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/Golang-%E7%AC%94%E8%AE%B0/">Golang 笔记</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon fa fa-file-word-o" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">1.8k</span><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-clock-o" aria-hidden="true"></i><span>阅读时长: 6 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-comment-o" aria-hidden="true"></i><span>评论数:</span><a href="/2020/04/12/2020-04-11-Golang-factory-model/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div id="article-container"><h1 id="Golang-工厂模式"><a href="#Golang-工厂模式" class="headerlink" title="Golang 工厂模式"></a>Golang 工厂模式</h1><h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><p><strong>简单工厂模式（Simple Factory Pattern）</strong> ：定义一个工厂类，它可以根据参数的不同返回不同类的实例，被创建的实例通常都具有共同的父类。因为在简单工厂模式中用于创建实例的方法是静态（static）方法，因此简单工厂模式又被称为静态工厂方法（Static Factory Method）模式，它属于类创建型模式。</p>
+<h3 id="简单工厂需要"><a href="#简单工厂需要" class="headerlink" title="简单工厂需要:"></a>简单工厂需要:</h3><ul>
+<li>工厂结构体</li>
+<li>产品接口</li>
+<li>产品结构体</li>
+</ul>
+<h3 id="示例说明"><a href="#示例说明" class="headerlink" title="示例说明"></a>示例说明</h3><p>创建一个饺子店工厂结构体，和饺子类的接口。该工厂的其中一个方法用来生产不同口味的饺子，如韭菜的猪肉馅的。</p>
+<pre><code>type DumplingsShop struct{
+    Generate(t string) *Dumplings
+}
+
+
+type Dumplingsinterface interface {
+    create()
+}</code></pre><p>创建肉馅和韭菜馅的饺子结构体，并且实现对应接口的方法。</p>
+<pre><code>  type DumplingsMeat struct{}
+
+  func (* DumplingsMeat)create(){
+      fmt.Println(&quot;DumplingsMeat create&quot;)
+  }
+
+  type DumplingsChives struct{}
+
+  func (* DumplingsChives)create(){
+      fmt.Println(&quot;DumplingsMeat create&quot;)
+  }
+
+func(* DumplingsShop)Create(type string)*Dumplings{
+    switch type {
+        case &quot;meat&quot;:
+        return new(DumplingsMeat)
+        case &quot;chives&quot;:
+        return new(DumplingsChives)
+        default:
+        return nil
+    }
+}</code></pre><p>工厂实例化调用</p>
+<pre><code>var type string
+dumplingFactory := DumplingsShop{}
+type = &quot;meat&quot;
+meat := dumplingFactory.Create(type)//返回肉馅饺子对象
+meat.create()
+type = &quot;chives&quot;
+chives := dumplingFactory.Create(type) //返回韭菜馅饺子对象
+chives.create()</code></pre><h2 id="简单工厂模式优缺点"><a href="#简单工厂模式优缺点" class="headerlink" title="简单工厂模式优缺点"></a>简单工厂模式优缺点</h2><ul>
+<li><p><strong>优点:</strong> 工厂类是整个工厂模式的核心，我们只需要传入给定的信息，就可以创建所需实例，在多人协作的时候，无需知道对象之间的内部依赖，可以直接创建，有利于整个软件体系结构的优化。</p>
+</li>
+<li><p><strong>缺点:</strong> 工厂类中包含了所有实例的创建逻辑，一旦这个工厂类出现问题，所有实例都会受到影响，并且，工厂类中生产的产品都基于一个共同的接口，一旦要添加不同种类的产品，这就会增加工厂类的复杂度，将不同种类的产品混合在一起，违背了单一职责，系统的灵活性和可维护性都会降低，并且当新增产品的时候，必须要修改工厂类，违背了『系统对扩展开放，对修改关闭』的原则。</p>
+</li>
+</ul>
+<h2 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h2><p><strong>工厂方法模式（英语：Factory method pattern）</strong> 是一种实现了“工厂”概念的面向对象设计模式。就像其他创建型模式一样，它也是处理在不指定对象具体类型的情况下创建对象的问题。工厂方法模式的实质是“定义一个创建对象的接口，但让实现这个接口的类来决定实例化哪个类。工厂方法让类的实例化推迟到子类中进行。”，实际应用中工厂方法模式针对的是一个产品等级结构。</p>
+<h3 id="工厂方法需要"><a href="#工厂方法需要" class="headerlink" title="工厂方法需要:"></a>工厂方法需要:</h3><ul>
+<li>工厂接口</li>
+<li>工厂结构体</li>
+<li>产品接口</li>
+<li>产品结构体</li>
+</ul>
+<h3 id="示例说明-1"><a href="#示例说明-1" class="headerlink" title="示例说明"></a>示例说明</h3><p>创建一个饺子店工厂接口，和饺子类的接口。该工厂用来生产不同口味的饺子，如韭菜的猪肉馅的。</p>
+<pre><code>type DumplingsShopinterface interface{
+    Generate(t string) *Dumplings
+}
+
+type Dumplingsinterface interface {
+    create()
+}</code></pre><p>创建北京和西安对应馅的饺子结构体，并且实现对应接口的方法。</p>
+<pre><code>type BeijingDumplingsMeat struct{}
+
+func (* BeijingDumplingsMeat)create(){
+    fmt.Println(&quot;BeijingDumplingsMeat create&quot;)
+}
+
+type BeijingDumplingsChives struct{}
+...
+type XianDumplingsMeat struct{}
+...
+type XianDumplingsChives struct{}
+...</code></pre><p>创建北京和西安工厂</p>
+<pre><code>type BeijingDumplings struct{}
+type XianDumplings struct{}
+
+func(* BeijingDumplings)Generate(t string) *Dumplings{
+    switch t { 
+    case &quot;chives&quot; :
+    return new(BeijingDumplingsChives) 
+    case &quot;meat&quot; :
+    return new(BeijingDumplingsMeat) 
+    default:
+    return nil
+    }
+}
+
+func(* XianDumplings)Generate(t string) *Dumplings{
+    switch t{}
+    case &quot;chives&quot; :
+    return new(XianDumplingsChives) 
+    case &quot;meat&quot; :
+    return new(XianDumplingsMeat) 
+    default:
+    return nil
+}</code></pre><p>工厂实例化调用</p>
+<pre><code>var DumplingsShopFactory DumplingsShopinterface
+DumplingsShopFactory := new(BeijingDumplings)
+b = DumplingsShopFactory.Generate(&quot;meat&quot;)  // 传入肉馅的参数，会返回北京市的肉馅饺子
+b.create()
+
+DumplingsShopFactory := new(XianDumplings)
+b = DumplingsShopFactory.Generate(&quot;meat&quot;) // 同样传入肉馅的参数，会返回北京市的肉馅饺子
+b.create()</code></pre><h3 id="工厂方法模式的优缺点"><a href="#工厂方法模式的优缺点" class="headerlink" title="工厂方法模式的优缺点"></a>工厂方法模式的优缺点</h3><ul>
+<li><p><strong>优点:</strong> 符合“开闭”原则，具有很强的的扩展性、弹性和可维护性。修改时只需要添加对应的工厂类即可使用了依赖倒置原则，依赖抽象而不是具体，使用（客户）和实现（具体类）松耦合。客户只需要知道所需产品的具体工厂，而无须知道具体工厂的创建产品的过程，甚至不需要知道具体产品的类名。</p>
+</li>
+<li><p><strong>缺点:</strong> 每增加一个产品时，都需要一个具体类和一个具体创建者，使得类的个数成倍增加，导致系统类数目过多，复杂性增加对简单工厂，增加功能修改的是工厂类；对工厂方法，增加功能修改的是产品类。</p>
+</li>
+</ul>
+<h2 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h2><p><strong>抽象工厂模式（英语：Abstract factory pattern）</strong> 是一种软件开发设计模式。抽象工厂模式提供了一种方式，可以将一组具有同一主题的单独的工厂封装起来。在正常使用中，客户端程序需要创建抽象工厂的具体实现，然后使用抽象工厂作为接口来创建这一主题的具体对象。客户端程序不需要知道（或关心）它从这些内部的工厂方法中获得对象的具体类型，因为客户端程序仅使用这些对象的通用接口。抽象工厂模式将一组对象的实现细节与他们的一般使用分离开来。实际应用中针对的多个产品等级结构。</p>
+<h2 id="示例说明-2"><a href="#示例说明-2" class="headerlink" title="示例说明"></a>示例说明</h2><p>创建一个肉馅饺子店工厂接口和韭菜馅饺子店工厂接口，以及饺子类的接口。</p>
+<pre><code>type DumplingsShopinterface interface{
+    GenerateMeatDumpling() *Dumplingsinterface
+    GenerateChivesDumpling() *Dumplingsinterface
+}
+
+type Dumplingsinterface interface {
+    create()
+}</code></pre><p>实现北京肉馅饺子、北京韭菜饺子、西安肉馅饺子、西安韭菜饺子4中实例对象。</p>
+<pre><code>type BeijingDumplingsMeat struct{}
+
+func (* BeijingDumplingsMeat)create(){
+    fmt.Println(&quot;BeijingDumplingsMeat create&quot;)
+}
+
+type BeijingDumplingsChives struct{}
+...
+type XianDumplingsMeat struct{}
+...
+type XianDumplingsChives struct{}
+...</code></pre><p>创建北京和西安工厂</p>
+<pre><code>type BeijingDumplingsFactory struct{}
+type XianDumplingsFactory struct{}
+
+func(* BeijingDumplingsFactory)GenerateMeatDumpling() *Dumplings{
+    return new(BeijingDumplingsMeat) 
+    }
+}
+func(* BeijingDumplingsFactory)GenerateChivesDumpling() *Dumplings{
+    return new(BeijingDumplingsChives) 
+    }
+}
+
+func(* XianDumplingsFactory)GenerateMeatDumpling() *Dumplings{
+    return new(XianDumplingsMeat) 
+    }
+}
+func(* XianDumplingsFactory)GenerateChivesDumpling() *Dumplings{
+    return new(XianDumplingsChives) 
+    }
+}</code></pre><p>工厂示例调用</p>
+<pre><code>var DumplingsShopFactory DumplingsShopinterface
+DumplingsShopFactory := new(BeijingDumplingsFactory)
+b = DumplingsShopFactory.GenerateMeatDumpling()  // 传入肉馅的参数，会返回北京市的肉馅饺子
+b.create()
+...</code></pre><h3 id="抽象工厂模式的优缺点"><a href="#抽象工厂模式的优缺点" class="headerlink" title="抽象工厂模式的优缺点"></a>抽象工厂模式的优缺点</h3><ul>
+<li><p><strong>优点:</strong> 抽象工厂模式除了具有工厂方法模式的优点外，最主要的优点就是可以在类的内部对产品族进行约束。所谓的产品族，一般或多或少的都存在一定的关联，抽象工厂模式就可以在类内部对产品族的关联关系进行定义和描述，而不必专门引入一个新的类来进行管理。</p>
+</li>
+<li><p><strong>缺点:</strong> 产品族的扩展将是一件十分费力的事情，假如产品族中需要增加一个新的产品，则几乎所有的工厂类都需要进行修改。所以使用抽象工厂模式时，对产品等级结构的划分是非常重要的</p>
+</li>
+</ul>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Frederick Hou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.frederickhou.com/2020/04/12/2020-04-11-Golang-factory-model/">https://www.frederickhou.com/2020/04/12/2020-04-11-Golang-factory-model/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.frederickhou.com" target="_blank">Frederick Hou Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Golang/">Golang</a></div><div class="post_share"><div class="social-share" data-image="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1587104469995&amp;di=78cdb590d86d269986999e34b809a620&amp;imgtype=0&amp;src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D2094856847%2C1485015268%26fm%3D214%26gp%3D0.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg" alt="微信"/><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg" alt="支付宝"/><div class="post-qr-code__desc">支付宝</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2020/04/14/2020-04-14-Golang-select/"><img class="prev_cover lazyload" data-src="http://img0.imgtn.bdimg.com/it/u=102464302,3836629562&amp;fm=26&amp;gp=0.jpg" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Golang select介绍</div></div></a></div><div class="next-post pull_right"><a href="/2020/04/10/2020-04-10-Golang-client-go-analysis/"><img class="next_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Golang client-go 源码分析</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/04/14/2020-04-14-Golang-select/" title="Golang select介绍"><img class="relatedPosts_cover lazyload"data-src="http://img0.imgtn.bdimg.com/it/u=102464302,3836629562&fm=26&gp=0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-14</div><div class="relatedPosts_title">Golang select介绍</div></div></a></div><div class="relatedPosts_item"><a href="/2020/04/14/2020-04-14-Golang-range/" title="Golang range 的坑"><img class="relatedPosts_cover lazyload"data-src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1587104469995&di=78cdb590d86d269986999e34b809a620&imgtype=0&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D2094856847%2C1485015268%26fm%3D214%26gp%3D0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-14</div><div class="relatedPosts_title">Golang range 的坑</div></div></a></div><div class="relatedPosts_item"><a href="/2020/04/10/2020-04-10-Golang-client-go-analysis/" title="Golang client-go 源码分析"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-04-10</div><div class="relatedPosts_title">Golang client-go 源码分析</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '9773f8d7d3b21b9b4318',
+  clientSecret: '6ded13787b3949f9722495059669573ba071d216',
+  repo: 'FrederickHou.github.io',
+  owner: 'frederickhou',
+  admin: ['frederickhou'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" style="background-image: url(https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1587104469995&amp;di=78cdb590d86d269986999e34b809a620&amp;imgtype=0&amp;src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D2094856847%2C1485015268%26fm%3D214%26gp%3D0.jpg)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2020 By Frederick Hou</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.frederickhou.com/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="ribbon_piao" mobile="false" src="/js/third-party/piao.js"></script><script src="/js/third-party/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script><script src="/js/third-party/ClickShowText.js"></script><script src="/js/search/local-search.js"></script></body></html>
