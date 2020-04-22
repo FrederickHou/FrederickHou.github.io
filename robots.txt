@@ -8,5 +8,5 @@ Disallow: /css/
 Disallow: /fonts/
 Disallow: /vendors/
 Disallow: /fancybox/
-Sitemap: http://www.frederickhou.com/sitemap.xml
-Sitemap: http://www.frederickhou.com/baidusitemap.xml
+Sitemap: https://www.frederickhou.com/sitemap.xml
+Sitemap: https://www.frederickhou.com/baidusitemap.xml

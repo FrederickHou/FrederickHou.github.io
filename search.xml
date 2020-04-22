@@ -31,33 +31,6 @@
     
     
     <entry>
-      <title>Kubernetes(十三)之Service资源对象</title>
-      <link href="/2020-04-13-Kubernetes(%E5%8D%81%E4%B8%89)%E4%B9%8BService%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/"/>
-      <url>/2020-04-13-Kubernetes(%E5%8D%81%E4%B8%89)%E4%B9%8BService%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Service资源对象"><a href="#Service资源对象" class="headerlink" title="Service资源对象"></a>Service资源对象</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在生产环境中，我们不能期望Pod一直是健壮的。假设Pod的容器很可能因为各种原因发送故障而挂掉。Deployment等Controller会通过动态创建和销毁Pod来保证应用整体的健壮性。</p><p>在创建的每个Pod中，都有自己的IP地址，当Controller用新Pod替代发生故障的Pod时，新Pod会分配到新的IP地址。那么这样就产生一个问题，如果在Pod是对外提供服务的，如HTTP服务，它们在重新创建时，IP地址也就发生了变化，那么客户如何找到并访问这个服务呢？此时Kubernetes就会有了Service。</p><p>Service是一个抽象概念，定义了一个服务的多个pod逻辑合集和访问pod的策略，一般把Service称为微服务。借助 Service，应用可以方便的实现服务发现与负载均衡，并实现应用的零宕机升级。Service 通过标签来选取服务后端，一般配合 Replication Controller 或者 Deployment 来保证后端容器的正常运行。这些匹配标签的 Pod IP 和端口列表组成 endpoints，由 kube-proxy 负责将服务 IP 负载均衡到这些 endpoints 上。</p><h2 id="Service类型—发布服务"><a href="#Service类型—发布服务" class="headerlink" title="Service类型—发布服务"></a>Service类型—发布服务</h2><ul><li><strong>ClusterIP：</strong> 默认类型，自动分配一个仅 cluster 内部可以访问的虚拟 IP。</li><li><strong>NodePort：</strong> 在 ClusterIP 基础上为 Service 在每台机器上绑定一个端口，这样就可以通过 NodeIP:NodePort 来访问该服务。如果 kube-proxy 设置了 – - nodeport-addresses=10.240.0.0/16（v1.10 支持），那么仅该 NodePort 仅对设置在范围内的 IP 有效。</li><li><strong>LoadBalancer：</strong> 在 NodePort 的基础上，借助 cloud provider 创建一个外部的负载均衡器，并将请求转发到 :NodePort</li><li><strong>ExternalName：</strong> 将服务通过 DNS CNAME 记录方式转发到指定的域名（通过 spec.externlName 设定）。需要 kube-dns 版本在 1.7 以上。</li></ul><h2 id="网络代理模式"><a href="#网络代理模式" class="headerlink" title="网络代理模式"></a>网络代理模式</h2><ul><li><p><strong>userspace</strong> ：client先请求serviceip，经由iptables转发到kube-proxy上之后再转发到pod上去。这种方式效率比较低。</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://d33wubrfki0l68.cloudfront.net/e351b830334b8622a700a8da6568cb081c464a9b/13020/images/docs/services-userspace-overview.svg"  alt="userspace.jpg"></p></li><li><p><strong>iptables</strong> ：lient请求serviceip后会直接转发到pod上。这种模式性能会高很多。kube-proxy就会负责将pod地址生成在node节点iptables规则中。</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://d33wubrfki0l68.cloudfront.net/27b2978647a8d7bdc2a96b213f0c0d3242ef9ce0/e8c9b/images/docs/services-iptables-overview.svg"  alt="iptables.jpg"></p></li><li><p><strong>ipvs</strong> ：它是直接有内核中的ipvs规则来接受Client Pod请求，并处理该请求,再有内核封包后，直接发给指定的Server Pod。</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://d33wubrfki0l68.cloudfront.net/2d3d2b521cf7f9ff83238218dac1c019c270b1ed/9ac5c/images/docs/services-ipvs-overview.svg"  alt="ipvs.jpg"></p></li></ul><p><strong>注：</strong></p><p>　以上不论哪种，kube-proxy都通过watch的方式监控着kube-APIServer写入etcd中关于Pod的最新状态信息,它一旦检查到一个Pod资源被删除了或新建，它立即将这些变化，反应在iptables 或 ipvs规则中，以便iptables和ipvs在调度Clinet Pod请求到Server Pod时，不会出现Server Pod不存在的情况。</p><h2 id="创建服务"><a href="#创建服务" class="headerlink" title="创建服务"></a>创建服务</h2><pre><code>apiVersion: v1kind: Servicemetadata:  name: &quot;maxscale&quot;  labels:    mariadb: &quot;mariadb&quot;    entrypoint.mariadb: &quot;mariadb&quot;spec:  type: NodePort  ports:    - name: maxscale-readwrite      port: 4006      targetPort: 4006      nodePort: 31783    - name: maxscale-readonly      port: 4008      targetPort: 4008  selector:    maxscale.mariadb: &quot;mariadb&quot;</code></pre><h3 id="yaml说明："><a href="#yaml说明：" class="headerlink" title="yaml说明："></a>yaml说明：</h3><ul><li><strong>selector：</strong> 指定了为哪一个标签的app进行负载均衡。</li><li><strong>nodePort：</strong> 节点数监听的端口。</li><li><strong>targetPort:</strong> Pod监听的端口。</li></ul><h2 id="服务发现"><a href="#服务发现" class="headerlink" title="服务发现"></a>服务发现</h2><h3 id="headless-service-无头service"><a href="#headless-service-无头service" class="headerlink" title="headless service(无头service)"></a>headless service(无头service)</h3><p><strong>headless service:</strong> 没有ClusterIP的service, 它仅有一个service name.这个服务名解析得到的不是service的集群IP，而是Pod的IP,当其它人访问该service时，将直接获得Pod的IP,进行直接访问。</p><h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><pre><code>apiVersion: v1kind: Servicemetadata:  labels:    app: &quot;es-cluster-discovery&quot;  name: &quot;es-cluster-discovery&quot;spec:  selector:    app: &quot;es-node-instanceid&quot;  ports:    - port: 9300      name: discovery      targetPort: 9300</code></pre><p>以上es-cluster-discovery服务是用作es集群通过9300来发现其他待加入节点的Pod IP。es的“DISCOVERY_ZEN_PING_UNICAST_HOSTS”参数是待加入集群节点列表，此时可以将”es-cluster-discovery”作为该参数的值，进行解析，直接获取到Pod的Ip。具体详见 <a href="https://www.frederickhou.com/2020/03/24/Elasticsearch-(%E4%B8%89)%E5%AE%B9%E5%99%A8%E5%8C%96%E6%96%B9%E6%A1%88/">Elasticsearch容器化</a>。</p><p>参考：<a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/" target="_blank" rel="external nofollow noopener noreferrer">https://kubernetes.io/zh/docs/concepts/services-networking/service/</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-          <category> Kubernetes 笔记 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Kubernetes </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Golang range 的坑</title>
       <link href="/2020-04-14-Golang-range/"/>
       <url>/2020-04-14-Golang-range/</url>
@@ -77,6 +50,33 @@
         <tags>
             
             <tag> Golang </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Kubernetes(十三)之Service资源对象</title>
+      <link href="/2020-04-13-Kubernetes(%E5%8D%81%E4%B8%89)%E4%B9%8BService%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/"/>
+      <url>/2020-04-13-Kubernetes(%E5%8D%81%E4%B8%89)%E4%B9%8BService%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Service资源对象"><a href="#Service资源对象" class="headerlink" title="Service资源对象"></a>Service资源对象</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在生产环境中，我们不能期望Pod一直是健壮的。假设Pod的容器很可能因为各种原因发送故障而挂掉。Deployment等Controller会通过动态创建和销毁Pod来保证应用整体的健壮性。</p><p>在创建的每个Pod中，都有自己的IP地址，当Controller用新Pod替代发生故障的Pod时，新Pod会分配到新的IP地址。那么这样就产生一个问题，如果在Pod是对外提供服务的，如HTTP服务，它们在重新创建时，IP地址也就发生了变化，那么客户如何找到并访问这个服务呢？此时Kubernetes就会有了Service。</p><p>Service是一个抽象概念，定义了一个服务的多个pod逻辑合集和访问pod的策略，一般把Service称为微服务。借助 Service，应用可以方便的实现服务发现与负载均衡，并实现应用的零宕机升级。Service 通过标签来选取服务后端，一般配合 Replication Controller 或者 Deployment 来保证后端容器的正常运行。这些匹配标签的 Pod IP 和端口列表组成 endpoints，由 kube-proxy 负责将服务 IP 负载均衡到这些 endpoints 上。</p><h2 id="Service类型—发布服务"><a href="#Service类型—发布服务" class="headerlink" title="Service类型—发布服务"></a>Service类型—发布服务</h2><ul><li><strong>ClusterIP：</strong> 默认类型，自动分配一个仅 cluster 内部可以访问的虚拟 IP。</li><li><strong>NodePort：</strong> 在 ClusterIP 基础上为 Service 在每台机器上绑定一个端口，这样就可以通过 NodeIP:NodePort 来访问该服务。如果 kube-proxy 设置了 – - nodeport-addresses=10.240.0.0/16（v1.10 支持），那么仅该 NodePort 仅对设置在范围内的 IP 有效。</li><li><strong>LoadBalancer：</strong> 在 NodePort 的基础上，借助 cloud provider 创建一个外部的负载均衡器，并将请求转发到 :NodePort</li><li><strong>ExternalName：</strong> 将服务通过 DNS CNAME 记录方式转发到指定的域名（通过 spec.externlName 设定）。需要 kube-dns 版本在 1.7 以上。</li></ul><h2 id="网络代理模式"><a href="#网络代理模式" class="headerlink" title="网络代理模式"></a>网络代理模式</h2><ul><li><p><strong>userspace</strong> ：client先请求serviceip，经由iptables转发到kube-proxy上之后再转发到pod上去。这种方式效率比较低。</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://d33wubrfki0l68.cloudfront.net/e351b830334b8622a700a8da6568cb081c464a9b/13020/images/docs/services-userspace-overview.svg"  alt="userspace.jpg"></p></li><li><p><strong>iptables</strong> ：lient请求serviceip后会直接转发到pod上。这种模式性能会高很多。kube-proxy就会负责将pod地址生成在node节点iptables规则中。</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://d33wubrfki0l68.cloudfront.net/27b2978647a8d7bdc2a96b213f0c0d3242ef9ce0/e8c9b/images/docs/services-iptables-overview.svg"  alt="iptables.jpg"></p></li><li><p><strong>ipvs</strong> ：它是直接有内核中的ipvs规则来接受Client Pod请求，并处理该请求,再有内核封包后，直接发给指定的Server Pod。</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://d33wubrfki0l68.cloudfront.net/2d3d2b521cf7f9ff83238218dac1c019c270b1ed/9ac5c/images/docs/services-ipvs-overview.svg"  alt="ipvs.jpg"></p></li></ul><p><strong>注：</strong></p><p>　以上不论哪种，kube-proxy都通过watch的方式监控着kube-APIServer写入etcd中关于Pod的最新状态信息,它一旦检查到一个Pod资源被删除了或新建，它立即将这些变化，反应在iptables 或 ipvs规则中，以便iptables和ipvs在调度Clinet Pod请求到Server Pod时，不会出现Server Pod不存在的情况。</p><h2 id="创建服务"><a href="#创建服务" class="headerlink" title="创建服务"></a>创建服务</h2><pre><code>apiVersion: v1kind: Servicemetadata:  name: &quot;maxscale&quot;  labels:    mariadb: &quot;mariadb&quot;    entrypoint.mariadb: &quot;mariadb&quot;spec:  type: NodePort  ports:    - name: maxscale-readwrite      port: 4006      targetPort: 4006      nodePort: 31783    - name: maxscale-readonly      port: 4008      targetPort: 4008  selector:    maxscale.mariadb: &quot;mariadb&quot;</code></pre><h3 id="yaml说明："><a href="#yaml说明：" class="headerlink" title="yaml说明："></a>yaml说明：</h3><ul><li><strong>selector：</strong> 指定了为哪一个标签的app进行负载均衡。</li><li><strong>nodePort：</strong> 节点数监听的端口。</li><li><strong>targetPort:</strong> Pod监听的端口。</li></ul><h2 id="服务发现"><a href="#服务发现" class="headerlink" title="服务发现"></a>服务发现</h2><h3 id="headless-service-无头service"><a href="#headless-service-无头service" class="headerlink" title="headless service(无头service)"></a>headless service(无头service)</h3><p><strong>headless service:</strong> 没有ClusterIP的service, 它仅有一个service name.这个服务名解析得到的不是service的集群IP，而是Pod的IP,当其它人访问该service时，将直接获得Pod的IP,进行直接访问。</p><h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><pre><code>apiVersion: v1kind: Servicemetadata:  labels:    app: &quot;es-cluster-discovery&quot;  name: &quot;es-cluster-discovery&quot;spec:  selector:    app: &quot;es-node-instanceid&quot;  ports:    - port: 9300      name: discovery      targetPort: 9300</code></pre><p>以上es-cluster-discovery服务是用作es集群通过9300来发现其他待加入节点的Pod IP。es的“DISCOVERY_ZEN_PING_UNICAST_HOSTS”参数是待加入集群节点列表，此时可以将”es-cluster-discovery”作为该参数的值，进行解析，直接获取到Pod的Ip。具体详见 <a href="https://www.frederickhou.com/2020/03/24/Elasticsearch-(%E4%B8%89)%E5%AE%B9%E5%99%A8%E5%8C%96%E6%96%B9%E6%A1%88/">Elasticsearch容器化</a>。</p><p>参考：<a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/" target="_blank" rel="external nofollow noopener noreferrer">https://kubernetes.io/zh/docs/concepts/services-networking/service/</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+          <category> Kubernetes 笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Kubernetes </tag>
             
         </tags>
       
