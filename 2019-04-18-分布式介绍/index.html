@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>分布式系统技术概要 | Frederick Hou Blog</title><meta name="description" content="分布式系统技术概要"><meta name="keywords" content="分布式"><meta name="author" content="Frederick Hou"><meta name="copyright" content="Frederick Hou"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="https://hm.baidu.com"><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"><link rel="preconnect" href="//busuanzi.ibruce.info"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="分布式系统技术概要"><meta name="twitter:description" content="分布式系统技术概要"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png"><meta property="og:type" content="article"><meta property="og:title" content="分布式系统技术概要"><meta property="og:url" content="https://www.frederickhou.com/2019-04-18-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%8B%E7%BB%8D/"><meta property="og:site_name" content="Frederick Hou Blog"><meta property="og:description" content="分布式系统技术概要"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '2'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="https://www.frederickhou.com/2019-04-18-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%8B%E7%BB%8D/"><link rel="prev" title="Redis(一)之入门详解" href="https://www.frederickhou.com/2019-04-28-Redis(%E4%B8%80)%E4%B9%8B%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/"><link rel="next" title="「体能训练理论」之金字塔" href="https://www.frederickhou.com/2017-07-10-%E3%80%8C%E4%BD%93%E8%83%BD%E8%AE%AD%E7%BB%83%E7%90%86%E8%AE%BA%E3%80%8D%E4%B9%8B%E9%87%91%E5%AD%97%E5%A1%94/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c9a7c17cc51ad5aae5db3c12ae1f725d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: {"text":"富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善","fontSize":"15px"},
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/my.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">54</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">21</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">7</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分布式系统技术概要"><span class="toc-number">1.</span> <span class="toc-text">分布式系统技术概要</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-集群管理"><span class="toc-number">1.1.</span> <span class="toc-text">1 集群管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-远程调用"><span class="toc-number">1.2.</span> <span class="toc-text">2 远程调用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-IO"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1. IO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2序列化技术"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2序列化技术</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#消息中间件"><span class="toc-number">1.3.</span> <span class="toc-text">消息中间件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Apache-Kafka"><span class="toc-number">1.3.1.</span> <span class="toc-text">Apache Kafka</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Queue-模式和-Topic-模式"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">Queue 模式和 Topic 模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RabbitMQ"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">RabbitMQ</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分布式文件系统"><span class="toc-number">1.4.</span> <span class="toc-text">分布式文件系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#块存储与对象存储"><span class="toc-number">1.4.1.</span> <span class="toc-text">块存储与对象存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分布式文件系统的高可用"><span class="toc-number">1.4.2.</span> <span class="toc-text">分布式文件系统的高可用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分布式数据库"><span class="toc-number">1.5.</span> <span class="toc-text">分布式数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关系型数据库"><span class="toc-number">1.5.1.</span> <span class="toc-text">关系型数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NoSQL"><span class="toc-number">1.5.2.</span> <span class="toc-text">NoSQL</span></a></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Frederick Hou Blog</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">分布式系统技术概要</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2019-04-18 00:00:00"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2019-04-18</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-04-17 11:06:43"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-04-17</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">技术笔记</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon fa fa-file-word-o" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">3.3k</span><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-clock-o" aria-hidden="true"></i><span>阅读时长: 10 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-comment-o" aria-hidden="true"></i><span>评论数:</span><a href="/2019-04-18-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%8B%E7%BB%8D/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div id="article-container"><h1 id="分布式系统技术概要"><a href="#分布式系统技术概要" class="headerlink" title="分布式系统技术概要"></a>分布式系统技术概要</h1><p>现在互联网应用，尤其是大型互联网公司的应用已经发展为大规模或超大规模的分布式的，集群化的应用。而中小规模的分布式应用也已广泛出现在各个领域。未来，随着云计算向社会生活的方方面面去渗透，分布式应用将更加地普及。所以，任何一个要从事服务器端应用开发的人员，都有具备对分布式应用的基本认识。<br>本文将简要介绍分布式应用的各基本领域的相关技术。这些技术在一个分布式应用中都会有或多或少的设计，即便暂时没有涉及到，设计人员也要有所考虑，保证系统有进一步发展的空间。<br><img src="/img/loading.gif" class="lazyload" data-src="img/fenbushi.jpeg" alt></p>
+<h2 id="1-集群管理"><a href="#1-集群管理" class="headerlink" title="1 集群管理"></a>1 集群管理</h2><p> 在一个分布式系统中，存在着一些和系统运行，以及重要业务紧密相关的数据，如节点相关的数据、应用服务和数据服务相关的数据等，这些数据对集群的正常运行至关重要。</p>
+<ul>
+<li><strong>服务器节点相关数据：</strong>服务器的地址、状态</li>
+<li><strong>服务相关数据：</strong>服务的IP、端口、版本、协议、状态、主备节点信息</li>
+<li><strong>数据库相关数据：</strong>路由规则、分库分表规则</li>
+</ul>
+<p>这些重要的数据在分布式系统中存在着多份拷贝，以保证高可用性。但这产生了另外一个问题，就是如何保证这些数据的一致性。因为这些数据是如此重要，不一致的数据会产生严重甚至致命的错误。在一个小规模的分布式系统中，因为可以用一两台服务器去做集群管理，所以数据的一致性容易实现。但是对于一个大规模的分布式系统，一两台集群配置管理服务器无法支撑整个集群所带来的大量并发读写操作，所以要使用几台、十几台，甚至更多的服务器去支撑这些请求。此时，就需要一个保持这些服务器中集群配置数据的一致性的方案了。</p>
+<p> 这众多方案中，Paxos 算法算是最佳方案之一。关于 Paxos 算法的内容，不在这里详述了。简单描述就是集群中各节点相互以提议的方式通信（对一项数据的修改），提议中带有不断增加的 ID 号，节点永远同意当前 ID 号最大的提议，并拒绝其它提议。当有半数以上节点同意一项提议之后，这个提议便被整个节点所接受并采纳</p>
+<h2 id="2-远程调用"><a href="#2-远程调用" class="headerlink" title="2 远程调用"></a>2 远程调用</h2><p> 分布式系统中，模块间的调用通常需要用远程调用来实现。而且随着微服务架构模式的流行，使用远程调用的比例会越来越高。其实远程调用这种方式很早以前就出现了，早年的技术有诸如 COBRA、EJB、SOAP 等，但这些技术存在着用法复杂、性能差等缺点。这些缺点限制着远程调用的普及。这些年，随着异步 IO 技术、序列化技术的发展进步，以及像 Zookeeper 这样的集群管理服务的出现普及，妨碍远程调用普及的技术障碍逐渐被打破。</p>
+<p> 使用 HTTP + JSON 的方式同样可以实现模块之间的远程调用，但这种方式通常用来实现 Public API。在系统内部，远程调用要求更快的速度，更小的延迟，还有还有异步调用的需求，所以 HTTP + JSON 通常无法满足这样的要求。远程调用有两个重要的技术点，一个是 IO 技术、一个是序列化技术。另外，远程调用还引出来另两个问题：1. 服务注册、发现、路由的问题。这个问题的需要结合例如 Zookeeper 服务去解决；2. 如何简化远程调用的使用，使其如同本地调用一样简单。这个问题需要结合 AOP 之类的技术。这两个问题的具体解决不在本节讨论范围之内。</p>
+<h3 id="2-1-IO"><a href="#2-1-IO" class="headerlink" title="2.1. IO"></a>2.1. IO</h3><p>(这里只说 Socket IO）常见的 IO 模型有阻塞 IO、非阻塞 IO 和异步 IO。阻塞 IO 指的是如果一个线程要在 Socket 连接上进行某种 IO 操作时（读或写数据），当没有操作不可执行时（没有数据可读或无法写数据），执行操作的线程便会被挂起，操作便会被阻塞，直到操作可以执行。这种方式的好处是业务代码编写起来很简单，缺点是资源利用率不高。因为一个连接必须有一个线程去处理。当有大量连接时，便会消耗大量的线程。这个缺点放在服务器端开发领域就显得非常严重了。</p>
+<p>非阻塞 IO 实现了线程的多路复用，一个线程被用来可以处理多个连接；异步 IO 则是由操作系统来实现 IO 的读写操作。在数据 ready 之后，通知业务线程处理。</p>
+<p>上面只是对阻塞 IO 和非阻塞 IO 的一个笼统的介绍。从具体的技术来看，Linux 通过 epoll 技术提供了对非阻塞 IO 的支持。epoll 是 Linux 内核的一个系统调用，最早在 2.5.44 版中被加入。epoll 的意思是 event poll。简单来说就是当有一个 IO 事件发生时，Linux 内核便会通知用户。使用方式是在创建 epoll 句柄之后，用户在其上不断地循环以获取新的事件（当有事件发生时）。这些事件是来自多个连接的，从而实现了线程的多路复用。<br>在 Java 1.4 中，也引入了 NIO 的支持 (java.nio.*)。在 Java NIO API 中，用户的程序可以将一个连接 (SelectableChannel.register(Selector sel, int ops)) 注册到一个 Selector 上（一个 Selector 可以有多个连接注册）。注册之后，用户的程序便可以通过不断地循环调用 Selector.selectedKeys() 方法获得这个连接上的事件并进行处理（通常会使用另外的线程去处理事件，即 Reactor 模型）</p>
+<p>虽然 Java 为 NIO 开发提供了良好的 API 支持（从 1.7 开始还支持了 AIO），但是 IO 开发依旧有很高的复杂性，且 Java NIO 类库的是 JDK 中 bug 较多的部分。故不推荐普通开发者直接基于 JDK 开发网络 IO 功能，而是建议使用 Netty 进行开发。关于 Netty 这里就不做介绍了</p>
+<h3 id="2-2序列化技术"><a href="#2-2序列化技术" class="headerlink" title="2.2序列化技术"></a>2.2序列化技术</h3><p>序列化技术是远程调用的通信协议中的重要一部分，它定义了编程语言中的数据结构和数据传输协议中的数据结构之间如何相互转化。序列化技术的性能的好坏会影响到对远程调用性能的好坏在序列化方面。序列化技术性能的好坏主要包含两方面的含义：一个是序列化时占用的资源（CPU、内存、所需时间）；另一个是序列化之后数据的大小。SOAP WebService 和 REST WebService 通常会把数据序列化成 XML 格式或者 JSON 格式。这两种格式因为都是文本格式，所以有着良好的可读性，但是对于需要频繁使用的远程调用来说，它们的体积偏大。所以边有了性能更好的序列化解决方案，被大家所熟知的有 Protocol Buffers 和 Apache Arvo。此外，Apache Thrift 的序列化的性能也很好，但是 Thrift 无法被当做一个单独的序列化技术被使用，而是一个完整的远程调用解决方案。其序列化部分不太容易被剥离出来，没有完整的 API 被开放使用。这里列出了常见的序列化技术的性能比较。</p>
+<h2 id="消息中间件"><a href="#消息中间件" class="headerlink" title="消息中间件"></a>消息中间件</h2><h3 id="Apache-Kafka"><a href="#Apache-Kafka" class="headerlink" title="Apache Kafka"></a>Apache Kafka</h3><p>Apache Kafka 充分利用了机械磁盘顺序读写速度快的特点，在接受消息之后同步地写入到磁盘中，保证数据可靠性的同时，也保证了非常快的速度。每个 Kafka 集群上都有多个 Topic，Topic 相当于一个 category，消费者可以订阅一个或多个 Topic。每个 Topic 由多个 Partition 组成。消息被顺序的添加到 Partition 中，每条消息有一个唯一的、有序的 ID，这个 ID 被称为 Offset。Consumer 需要维护自己消费到的消息的位置 (Offset)。</p>
+<p>Apache Kafka 不同于传统的消息中间件，它采用“拉”消息模式，而不是传统的“推”消息模式。即客户端需要主动从消息中间件获取消息，好处是客户端可以更好地控制请求量。</p>
+<h4 id="Queue-模式和-Topic-模式"><a href="#Queue-模式和-Topic-模式" class="headerlink" title="Queue 模式和 Topic 模式"></a>Queue 模式和 Topic 模式</h4><p>传统消息队列服务中有队列模式和发布订阅模式两种模式，前者一条消息只会被一个消费者消费；后者一条消息会发布给所有的订阅这个 Topic 的消费者。在 Kafka 中，这两种模式是使用一种方式 —— 消费者组来实现的。在同一个消费者组中的不同消费者不会受到相同的消息。如果想实现发布订阅模式，消费者必须处于不同的消费者组中。</p>
+<h4 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h4><p>RabbitMQ 是一个使用 Erlang 开发的 AMQP (Advanced Message Queue Protocol) 实现。现在 RabbitMQ 是由 VMware 旗下的 SpringSource 负责开发。AMQP 是一个语言无关的消息队列协议。在 RabbitMQ 中，有三个概念：Exchange、Queue 和 Route key。Exchange 用来标示生产者，Queue 用来标示消费者，而 Route key 用来关联这两者。RabbitMQ 中这种方式提供了更灵活的应用模式。</p>
+<h2 id="分布式文件系统"><a href="#分布式文件系统" class="headerlink" title="分布式文件系统"></a>分布式文件系统</h2><h3 id="块存储与对象存储"><a href="#块存储与对象存储" class="headerlink" title="块存储与对象存储"></a>块存储与对象存储</h3><p>块存储是将一块裸盘提供给客户使用，但是这块裸盘可能是来自一块物理硬盘，也有可能是多块，或是来自不同服务器上的硬盘。对象存储提供了更高级的接口，通过这些接口可以读写文件以及相关的元数据。其中的元数据包含了文件每一个块的存储信息。通过文件元数据，文件可以被并行地操作。</p>
+<h3 id="分布式文件系统的高可用"><a href="#分布式文件系统的高可用" class="headerlink" title="分布式文件系统的高可用"></a>分布式文件系统的高可用</h3><p>为了保证数据的安全，分布式文件系统通常会将文件复制为三份。这三份数据会位于不同的服务器上，对应要求更高的系统，比如公有云存储。其中的一份数据会放置在另一个机房中，以保证即便整个机房出现故障，整个文件系统仍是可用的。</p>
+<h2 id="分布式数据库"><a href="#分布式数据库" class="headerlink" title="分布式数据库"></a>分布式数据库</h2><h3 id="关系型数据库"><a href="#关系型数据库" class="headerlink" title="关系型数据库"></a>关系型数据库</h3><p>在大规模的分布式应用中，单库或者简单的读写分离已经无法满足要求，因此必须对数据库进行水平和垂直的划分和分库分表。在对数据库进行分库分表之后，应用对数据库的访问便不再是一件简单的事情了。应用在进行一次数据库操作时，其所对应的数据库的地址和表名必须通过某种逻辑运算才能得到。例如，ID从1到1,000,000的User数据是数据库1的User_1表中，ID从1,000,001到2,000,000的User数据在数据库1的User_2表中，而其它的User数据又会在不同的数据库的不同的表中。同时，还要考虑主从数据库，读写分离的问题。这样的数据库使用方式会使数据操作变得极为复杂，也会增加数据迁移，增容扩容时的难度。</p>
+<p>对于这样复杂的问题，靠应用自己解决显然是不合适的。所以各家分布式应用的使用大户——互联网厂商，都自己实现了相应的解决方案。这些解决方案可分为中间间方式和框架方式，前者作为数据库访问的代理，使得分布式的数据库对应用是透明的。后者作为一个框架嵌入到应用中，也能起到类似的作用。这两种方式各有优劣，分别适合不同的场合。</p>
+<h3 id="NoSQL"><a href="#NoSQL" class="headerlink" title="NoSQL"></a>NoSQL</h3><p>大部分 NoSQL 虽然对分布式的支持是友好的，但这并不意味着使用这些 NoSQL 数据库就可以轻轻松松地实现一个集群。例如著名的 Key/Value 数据库 Redis。它 3.0 之前一直没有官方的集群方案，所以各个大规模使用 Redis 都需要自己实现分布式方案，例如 Twitter 的 Twemproxy、豌豆荚的 Codis 等等。</p>
+<p><strong>博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。</strong></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" rel="external nofollow noopener noreferrer" target="_blank">Frederick Hou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.frederickhou.com/2019-04-18-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%8B%E7%BB%8D/">https://www.frederickhou.com/2019-04-18-分布式介绍/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.frederickhou.com" target="_blank">Frederick Hou Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg" alt="微信"><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg" alt="支付宝"><div class="post-qr-code__desc">支付宝</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2019-04-28-Redis(%E4%B8%80)%E4%B9%8B%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/"><img class="prev_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg2.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Redis(一)之入门详解</div></div></a></div><div class="next-post pull_right"><a href="/2017-07-10-%E3%80%8C%E4%BD%93%E8%83%BD%E8%AE%AD%E7%BB%83%E7%90%86%E8%AE%BA%E3%80%8D%E4%B9%8B%E9%87%91%E5%AD%97%E5%A1%94/"><img class="next_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg2.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">「体能训练理论」之金字塔</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2019-10-09-OpenShift3.11之nvidia-gpu/" title="Openshift3.11 nvidia gpu任务调度"><img class="relatedPosts_cover lazyload" data-src="/img/post.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2019-10-09</div><div class="relatedPosts_title">Openshift3.11 nvidia gpu任务调度</div></div></a></div><div class="relatedPosts_item"><a href="/2019-08-19-Openshift3.11集群安装/" title="Openshift3.11集群安装"><img class="relatedPosts_cover lazyload" data-src="/img/post.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2019-08-19</div><div class="relatedPosts_title">Openshift3.11集群安装</div></div></a></div><div class="relatedPosts_item"><a href="/2019-08-23-Gluster FS (一)基础介绍/" title="Gluster Fs(一)基础知识介绍"><img class="relatedPosts_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2019-08-19</div><div class="relatedPosts_title">Gluster Fs(一)基础知识介绍</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '9773f8d7d3b21b9b4318',
+  clientSecret: '6ded13787b3949f9722495059669573ba071d216',
+  repo: 'FrederickHou.github.io',
+  owner: 'frederickhou',
+  admin: ['frederickhou'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg3.png)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2020 By Frederick Hou</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="external nofollow noopener noreferrer"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="external nofollow noopener noreferrer"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.frederickhou.com/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="external nofollow noopener noreferrer" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="ribbon_piao" mobile="false" src="/js/third-party/piao.js"></script><script src="/js/third-party/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async></script><script src="/js/third-party/ClickShowText.js"></script><script src="/js/search/local-search.js"></script></body></html>
