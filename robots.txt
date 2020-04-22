@@ -9,4 +9,4 @@ Disallow: /fonts/
 Disallow: /vendors/
 Disallow: /fancybox/
 Sitemap: https://www.frederickhou.com/sitemap.xml
-Sitemap: https://www.frederickhou.com/baidusitemap.txt
+Sitemap: https://www.frederickhou.com/baidusitemap.xml
