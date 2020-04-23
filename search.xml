@@ -193,33 +193,6 @@
     
     
     <entry>
-      <title>Golang interface</title>
-      <link href="/2020-04-09-Golang-interface/"/>
-      <url>/2020-04-09-Golang-interface/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Golang-interface"><a href="#Golang-interface" class="headerlink" title="Golang interface"></a>Golang interface</h1><h2 id="接口概念"><a href="#接口概念" class="headerlink" title="接口概念"></a>接口概念</h2><p><strong>接口</strong> 即一组方法定义的集合，定义了对象的一组行为，由具体的类型实例实现具体的方法。换句话说，一个接口就是定义（规范或约束），而方法就是实现，接口的作用应该是将定义与实现分离，降低耦合度。习惯用“er”结尾来命名，例如“Reader”。接口与对象的关系是多对多，即一个对象可以实现多个接口，一个接口也可以被多个对象实现。</p><p><strong>​接口(interface)</strong> 是Go语言整个类型系统的基石，其他语言的接口是不同组件之间的契约的存在，对契约的实现是强制性的，必须显式声明实现了该接口，这类接口称之为“侵入式接口”。而Go语言的接口是隐式存在，只要实现了该接口的所有函数则代表已经实现了该接口，并不需要显式的接口声明。</p><h2 id="接口的作用"><a href="#接口的作用" class="headerlink" title="接口的作用"></a>接口的作用</h2><p>​接口是实现语言的多态性，<strong>多态性（polymorphisn）</strong> 是允许你将父对象设置成为和一个或更多的他的子对象相等的技术，赋值之后，父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。</p><p>简而言之，就是允许将子类类型的指针赋值给父类类型的指针。</p><p>即一个引用变量倒底会指向哪个类的实例对象，该引用变量发出的方法调用到底是哪个类中实现的方法，必须在由程序运行期间才能决定。不修改程序代码就可以改变程序运行时所绑定的具体代码，让程序可以选择多个运行状态，这就是多态性。多态分为编译时多态（静态多态）和运行时多态（动态多态），编译时多态一般通过方法重载实现，运行时多态一般通过方法重写实现。</p><h2 id="接口示例"><a href="#接口示例" class="headerlink" title="接口示例"></a>接口示例</h2><p><strong>非侵入式接口：</strong> 一个类只需要实现了接口要求的所有函数就表示实现了该接口，并不需要显式声明</p><pre><code>package mainimport (    &quot;fmt&quot;)// 接口1type File interface{    Read(buf []byte)error    Write(buf []byte)error    Close()error}// 接口2type Receiver interface{    Close()error}type Note struct{}func (* Note)Read(buf []byte)error{    fmt.Println(&quot;Note Read&quot;)    return nil}func (* Note)Write(buf []byte)error{    fmt.Println(&quot;Note Write&quot;)    return nil}func (*Note)Close()error{    fmt.Println(&quot;Note Close&quot;)    return nil}func main() {    //接口赋值,Note类实现了File和Receiver接口，即接口所包含的所有方法    var file File = new(Note)    var recv Receiver = new(Note)    file.Close()    recv.Close()}</code></pre><h3 id="接口赋值给另一个接口"><a href="#接口赋值给另一个接口" class="headerlink" title="接口赋值给另一个接口"></a>接口赋值给另一个接口</h3><ul><li><p><strong>1.</strong> 只要两个接口拥有相同的方法列表（与次序无关），即是两个相同的接口，可以相互赋值</p></li><li><p><strong>2.</strong> 接口赋值只需要接口A的方法列表是接口B的子集（即假设接口A中定义的所有方法，都在接口B中有定义），那么B接口的实例可以赋值给A的对象。反之不成立，即子接口B包含了父接口A，因此可以将子接口的实例赋值给父接口。<br>即子接口实例实现了子接口的所有方法，而父接口的方法列表是子接口的子集，则子接口实例自然实现了父接口的所有方法，因此可以将子接口实例赋值给父接口。</p><pre><code>package mainimport (    &quot;fmt&quot;)type Writer interface{    //父接口 父接口是子接口的子集    Write(buf []byte)error}type ReadWriter interface{    //子接口    Read(buf []byte)error    Write(buf []byte)error}type Note struct{}func (* Note)Read(buf []byte)error{    fmt.Println(&quot;Note Read&quot;)    return nil}func (* Note)Write(buf []byte)error{    fmt.Println(&quot;Note Write&quot;)    return nil}func main() {    var file1 ReadWriter=new(Note)   //子接口实例    var file2 Writer=file1     file1.Write(nil)     file2.Write(nil)}</code></pre></li></ul><h3 id="接口组合"><a href="#接口组合" class="headerlink" title="接口组合"></a>接口组合</h3><pre><code>//接口组合类似类型组合，只不过只包含方法，不包含成员变量package mainimport (    &quot;fmt&quot;)type Receiver interface{    //父接口 父接口是子接口的子集    Close(buf []byte)error}type ReadWriter interface{    //子接口    Read(buf []byte)error    Write(buf []byte)error}type File interface{    Receiver    ReadWriter}type Note struct{}func (* Note)Read(buf []byte)error{    fmt.Println(&quot;Note Read&quot;)    return nil}func (* Note)Write(buf []byte)error{    fmt.Println(&quot;Note Write&quot;)    return nil}func (* Note)Close(buf []byte)error{    fmt.Println(&quot;Note Close&quot;)    return nil}func main() {    var file1 File=new(Note)   //子接口实例    file1.Write(nil) }</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-          <category> Golang 笔记 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Golang </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>死锁介绍</title>
       <link href="/2020-04-09-linux_dead_mutex/"/>
       <url>/2020-04-09-linux_dead_mutex/</url>
@@ -241,6 +214,33 @@
             <tag> 效率 </tag>
             
             <tag> 操作系统 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Golang interface</title>
+      <link href="/2020-04-09-Golang-interface/"/>
+      <url>/2020-04-09-Golang-interface/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Golang-interface"><a href="#Golang-interface" class="headerlink" title="Golang interface"></a>Golang interface</h1><h2 id="接口概念"><a href="#接口概念" class="headerlink" title="接口概念"></a>接口概念</h2><p><strong>接口</strong> 即一组方法定义的集合，定义了对象的一组行为，由具体的类型实例实现具体的方法。换句话说，一个接口就是定义（规范或约束），而方法就是实现，接口的作用应该是将定义与实现分离，降低耦合度。习惯用“er”结尾来命名，例如“Reader”。接口与对象的关系是多对多，即一个对象可以实现多个接口，一个接口也可以被多个对象实现。</p><p><strong>​接口(interface)</strong> 是Go语言整个类型系统的基石，其他语言的接口是不同组件之间的契约的存在，对契约的实现是强制性的，必须显式声明实现了该接口，这类接口称之为“侵入式接口”。而Go语言的接口是隐式存在，只要实现了该接口的所有函数则代表已经实现了该接口，并不需要显式的接口声明。</p><h2 id="接口的作用"><a href="#接口的作用" class="headerlink" title="接口的作用"></a>接口的作用</h2><p>​接口是实现语言的多态性，<strong>多态性（polymorphisn）</strong> 是允许你将父对象设置成为和一个或更多的他的子对象相等的技术，赋值之后，父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。</p><p>简而言之，就是允许将子类类型的指针赋值给父类类型的指针。</p><p>即一个引用变量倒底会指向哪个类的实例对象，该引用变量发出的方法调用到底是哪个类中实现的方法，必须在由程序运行期间才能决定。不修改程序代码就可以改变程序运行时所绑定的具体代码，让程序可以选择多个运行状态，这就是多态性。多态分为编译时多态（静态多态）和运行时多态（动态多态），编译时多态一般通过方法重载实现，运行时多态一般通过方法重写实现。</p><h2 id="接口示例"><a href="#接口示例" class="headerlink" title="接口示例"></a>接口示例</h2><p><strong>非侵入式接口：</strong> 一个类只需要实现了接口要求的所有函数就表示实现了该接口，并不需要显式声明</p><pre><code>package mainimport (    &quot;fmt&quot;)// 接口1type File interface{    Read(buf []byte)error    Write(buf []byte)error    Close()error}// 接口2type Receiver interface{    Close()error}type Note struct{}func (* Note)Read(buf []byte)error{    fmt.Println(&quot;Note Read&quot;)    return nil}func (* Note)Write(buf []byte)error{    fmt.Println(&quot;Note Write&quot;)    return nil}func (*Note)Close()error{    fmt.Println(&quot;Note Close&quot;)    return nil}func main() {    //接口赋值,Note类实现了File和Receiver接口，即接口所包含的所有方法    var file File = new(Note)    var recv Receiver = new(Note)    file.Close()    recv.Close()}</code></pre><h3 id="接口赋值给另一个接口"><a href="#接口赋值给另一个接口" class="headerlink" title="接口赋值给另一个接口"></a>接口赋值给另一个接口</h3><ul><li><p><strong>1.</strong> 只要两个接口拥有相同的方法列表（与次序无关），即是两个相同的接口，可以相互赋值</p></li><li><p><strong>2.</strong> 接口赋值只需要接口A的方法列表是接口B的子集（即假设接口A中定义的所有方法，都在接口B中有定义），那么B接口的实例可以赋值给A的对象。反之不成立，即子接口B包含了父接口A，因此可以将子接口的实例赋值给父接口。<br>即子接口实例实现了子接口的所有方法，而父接口的方法列表是子接口的子集，则子接口实例自然实现了父接口的所有方法，因此可以将子接口实例赋值给父接口。</p><pre><code>package mainimport (    &quot;fmt&quot;)type Writer interface{    //父接口 父接口是子接口的子集    Write(buf []byte)error}type ReadWriter interface{    //子接口    Read(buf []byte)error    Write(buf []byte)error}type Note struct{}func (* Note)Read(buf []byte)error{    fmt.Println(&quot;Note Read&quot;)    return nil}func (* Note)Write(buf []byte)error{    fmt.Println(&quot;Note Write&quot;)    return nil}func main() {    var file1 ReadWriter=new(Note)   //子接口实例    var file2 Writer=file1     file1.Write(nil)     file2.Write(nil)}</code></pre></li></ul><h3 id="接口组合"><a href="#接口组合" class="headerlink" title="接口组合"></a>接口组合</h3><pre><code>//接口组合类似类型组合，只不过只包含方法，不包含成员变量package mainimport (    &quot;fmt&quot;)type Receiver interface{    //父接口 父接口是子接口的子集    Close(buf []byte)error}type ReadWriter interface{    //子接口    Read(buf []byte)error    Write(buf []byte)error}type File interface{    Receiver    ReadWriter}type Note struct{}func (* Note)Read(buf []byte)error{    fmt.Println(&quot;Note Read&quot;)    return nil}func (* Note)Write(buf []byte)error{    fmt.Println(&quot;Note Write&quot;)    return nil}func (* Note)Close(buf []byte)error{    fmt.Println(&quot;Note Close&quot;)    return nil}func main() {    var file1 File=new(Note)   //子接口实例    file1.Write(nil) }</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+          <category> Golang 笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Golang </tag>
             
         </tags>
       
@@ -467,6 +467,33 @@
     
     
     <entry>
+      <title>Kubernetes(十二)之ConfigMap资源对象</title>
+      <link href="/2020-04-02-Kubernetes(%E5%8D%81%E4%BA%8C)%E4%B9%8BConfigMap%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/"/>
+      <url>/2020-04-02-Kubernetes(%E5%8D%81%E4%BA%8C)%E4%B9%8BConfigMap%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="ConfigMap资源对象"><a href="#ConfigMap资源对象" class="headerlink" title="ConfigMap资源对象"></a>ConfigMap资源对象</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>ConfigMap对象实现了将配置文件从容器镜像中解耦，从而增强了容器应用的可移植性。简而言之，一个ConfigMap就是一系列配置数据的集合(如单个属性，或粗粒度信息如整个配置文件或JSON对象)，这些数据可“注入”到Pod对象中，并为容器应用所使用，注入方式有挂载为存储卷和传递为环境变量两种。</p><p>ConfigMap 对象将配置数据以键值对的形式存储，这些数据可以在Pod对象中使用或者为系统组件提供配置。</p><h2 id="ConfigMap使用方式"><a href="#ConfigMap使用方式" class="headerlink" title="ConfigMap使用方式"></a>ConfigMap使用方式</h2><ul><li>填充环境变量</li><li>设置容器内的命令行参数</li><li>填充卷的配置文件</li></ul><h2 id="ConfigMap创建方式"><a href="#ConfigMap创建方式" class="headerlink" title="ConfigMap创建方式"></a>ConfigMap创建方式</h2><ul><li><p>直接在命令行中指定configmap参数创建，即–from-literal</p></li><li><p>指定文件创建，即将一个配置文件创建为一个ConfigMap–from-file=&lt;文件&gt;</p></li><li><p>指定目录创建，即将一个目录下的所有配置文件创建为一个ConfigMap，–from-file=&lt;目录&gt;</p></li><li><p>先写好标准的configmap的yaml文件，然后kubectl create -f 创建</p></li></ul><h2 id="Yaml创建方式示例"><a href="#Yaml创建方式示例" class="headerlink" title="Yaml创建方式示例"></a>Yaml创建方式示例</h2><h3 id="场景介绍"><a href="#场景介绍" class="headerlink" title="场景介绍"></a>场景介绍</h3><p>在Kubernetes中部署Elasticsearch集群创建时，需要配置集群名称以及集群待加入节点信息，和设置集群master最少节点要求等配置，使用confmap来作为填充卷方式让Pod进行挂载容器内的文件路径/usr/share/elasticsearch/config/elasticsearch.yml，来提供elasticsearch.yml配置文件内容。</p><h3 id="ConfigMap-Yaml"><a href="#ConfigMap-Yaml" class="headerlink" title="ConfigMap Yaml"></a>ConfigMap Yaml</h3><pre><code>apiVersion: v1kind: ConfigMapmetadata:  name: &quot;es-config&quot;data:  elasticsearch.yml: |    cluster.name: ${CLUSTER_NAME}    network.host: &quot;0.0.0.0&quot;    bootstrap.memory_lock: false    node.master: ${NODE_MASTER}    discovery.zen.ping.unicast.hosts: ${DISCOVERY_ZEN_PING_UNICAST_HOSTS}    discovery.zen.minimum_master_nodes: ${DISCOVERY_ZEN_MINIMUM_MASTER_NODES}</code></pre><h3 id="Pod-局部定义YAML"><a href="#Pod-局部定义YAML" class="headerlink" title="Pod 局部定义YAML"></a>Pod 局部定义YAML</h3><pre><code>spec:  initContainers:    - name: fix-permissions      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;chown -R 1000:1000 /usr/share/elasticsearch/data&quot;]      securityContext:        privileged: true      volumeMounts:        - name: data          mountPath: /usr/share/elasticsearch/data    - name: increase-vm-max-map      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sysctl&quot;, &quot;-w&quot;, &quot;vm.max_map_count=262144&quot;]      securityContext:        privileged: true    - name: increase-fd-ulimit      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;ulimit -n 65536&quot;]      securityContext:        privileged: true  containers:    - name: elasticsearch      image: &quot;{{ .ImageEs}}&quot;      imagePullPolicy: Always      env:        - name: CLUSTER_NAME          value: &quot;sb-{{ .InstanceID }}-es-cluster&quot;        - name:  NODE_MASTER          value: &quot;true&quot;        - name: ES_JAVA_OPTS          value: &quot;-Xms512m -Xmx512m&quot;        - name: DISCOVERY_ZEN_PING_UNICAST_HOSTS          value: &quot;sb-{{ .InstanceID }}-es-cluster-discovery&quot;        - name: DISCOVERY_ZEN_MINIMUM_MASTER_NODES          value: &quot;{{ .MasterMinNumber }}&quot;      # - name: &quot;bootstrap.memory_lock&quot;      #   value: &quot;true&quot;      ports:        - containerPort: 9200          protocol: TCP          name: discovery        - containerPort: 9300          protocol: TCP          name: transport      volumeMounts:        - mountPath: /usr/share/elasticsearch/data          name: data        - mountPath: /usr/share/elasticsearch/logs          name: data        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml          name: elasticsearch-config          subPath: elasticsearch.yml      resources:        limits:          memory: &quot;{{ .ContainerMemory }}Gi&quot;          cpu: &quot;{{ .ContainerCPU }}&quot;  nodeSelector:    kubernetes.io/hostname: &quot;{{ .TempHost }}&quot;  volumes:    - name: data      hostPath:        path: &quot;{{ .TempDataPath}}&quot;    - name: elasticsearch-config      configMap:        name: &quot;es-config&quot;</code></pre><p>volumeMounts:将容器内要替换的配置文件路径/usr/share/elasticsearch/config/elasticsearch.yml设置为挂载点。将configmap设置成挂载卷的防止进行使用。</p><h3 id="容器内部查看"><a href="#容器内部查看" class="headerlink" title="容器内部查看"></a>容器内部查看</h3><pre><code>[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# pwd/usr/share/elasticsearch/config[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# lselasticsearch.keystore  jvm.options        role_mapping.yml  userselasticsearch.yml       log4j2.properties  roles.yml         users_roles[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# cat elasticsearch.ymlcluster.name: ${CLUSTER_NAME}network.host: &quot;0.0.0.0&quot;bootstrap.memory_lock: falsenode.master: ${NODE_MASTER}discovery.zen.ping.unicast.hosts: ${DISCOVERY_ZEN_PING_UNICAST_HOSTS}discovery.zen.minimum_master_nodes: ${DISCOVERY_ZEN_MINIMUM_MASTER_NODES}[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]#</code></pre><p>通过运行起来的服务我们进容器中查看目标挂载文件，已经从configmap设置的配置文件挂载进来了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+          <category> Kubernetes 笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Kubernetes </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>僵尸进程与孤儿进程</title>
       <link href="/2020-04-02-zombie-process/"/>
       <url>/2020-04-02-zombie-process/</url>
@@ -488,33 +515,6 @@
             <tag> 效率 </tag>
             
             <tag> 操作系统 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Kubernetes(十二)之ConfigMap资源对象</title>
-      <link href="/2020-04-02-Kubernetes(%E5%8D%81%E4%BA%8C)%E4%B9%8BConfigMap%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/"/>
-      <url>/2020-04-02-Kubernetes(%E5%8D%81%E4%BA%8C)%E4%B9%8BConfigMap%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="ConfigMap资源对象"><a href="#ConfigMap资源对象" class="headerlink" title="ConfigMap资源对象"></a>ConfigMap资源对象</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>ConfigMap对象实现了将配置文件从容器镜像中解耦，从而增强了容器应用的可移植性。简而言之，一个ConfigMap就是一系列配置数据的集合(如单个属性，或粗粒度信息如整个配置文件或JSON对象)，这些数据可“注入”到Pod对象中，并为容器应用所使用，注入方式有挂载为存储卷和传递为环境变量两种。</p><p>ConfigMap 对象将配置数据以键值对的形式存储，这些数据可以在Pod对象中使用或者为系统组件提供配置。</p><h2 id="ConfigMap使用方式"><a href="#ConfigMap使用方式" class="headerlink" title="ConfigMap使用方式"></a>ConfigMap使用方式</h2><ul><li>填充环境变量</li><li>设置容器内的命令行参数</li><li>填充卷的配置文件</li></ul><h2 id="ConfigMap创建方式"><a href="#ConfigMap创建方式" class="headerlink" title="ConfigMap创建方式"></a>ConfigMap创建方式</h2><ul><li><p>直接在命令行中指定configmap参数创建，即–from-literal</p></li><li><p>指定文件创建，即将一个配置文件创建为一个ConfigMap–from-file=&lt;文件&gt;</p></li><li><p>指定目录创建，即将一个目录下的所有配置文件创建为一个ConfigMap，–from-file=&lt;目录&gt;</p></li><li><p>先写好标准的configmap的yaml文件，然后kubectl create -f 创建</p></li></ul><h2 id="Yaml创建方式示例"><a href="#Yaml创建方式示例" class="headerlink" title="Yaml创建方式示例"></a>Yaml创建方式示例</h2><h3 id="场景介绍"><a href="#场景介绍" class="headerlink" title="场景介绍"></a>场景介绍</h3><p>在Kubernetes中部署Elasticsearch集群创建时，需要配置集群名称以及集群待加入节点信息，和设置集群master最少节点要求等配置，使用confmap来作为填充卷方式让Pod进行挂载容器内的文件路径/usr/share/elasticsearch/config/elasticsearch.yml，来提供elasticsearch.yml配置文件内容。</p><h3 id="ConfigMap-Yaml"><a href="#ConfigMap-Yaml" class="headerlink" title="ConfigMap Yaml"></a>ConfigMap Yaml</h3><pre><code>apiVersion: v1kind: ConfigMapmetadata:  name: &quot;es-config&quot;data:  elasticsearch.yml: |    cluster.name: ${CLUSTER_NAME}    network.host: &quot;0.0.0.0&quot;    bootstrap.memory_lock: false    node.master: ${NODE_MASTER}    discovery.zen.ping.unicast.hosts: ${DISCOVERY_ZEN_PING_UNICAST_HOSTS}    discovery.zen.minimum_master_nodes: ${DISCOVERY_ZEN_MINIMUM_MASTER_NODES}</code></pre><h3 id="Pod-局部定义YAML"><a href="#Pod-局部定义YAML" class="headerlink" title="Pod 局部定义YAML"></a>Pod 局部定义YAML</h3><pre><code>spec:  initContainers:    - name: fix-permissions      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;chown -R 1000:1000 /usr/share/elasticsearch/data&quot;]      securityContext:        privileged: true      volumeMounts:        - name: data          mountPath: /usr/share/elasticsearch/data    - name: increase-vm-max-map      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sysctl&quot;, &quot;-w&quot;, &quot;vm.max_map_count=262144&quot;]      securityContext:        privileged: true    - name: increase-fd-ulimit      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;ulimit -n 65536&quot;]      securityContext:        privileged: true  containers:    - name: elasticsearch      image: &quot;{{ .ImageEs}}&quot;      imagePullPolicy: Always      env:        - name: CLUSTER_NAME          value: &quot;sb-{{ .InstanceID }}-es-cluster&quot;        - name:  NODE_MASTER          value: &quot;true&quot;        - name: ES_JAVA_OPTS          value: &quot;-Xms512m -Xmx512m&quot;        - name: DISCOVERY_ZEN_PING_UNICAST_HOSTS          value: &quot;sb-{{ .InstanceID }}-es-cluster-discovery&quot;        - name: DISCOVERY_ZEN_MINIMUM_MASTER_NODES          value: &quot;{{ .MasterMinNumber }}&quot;      # - name: &quot;bootstrap.memory_lock&quot;      #   value: &quot;true&quot;      ports:        - containerPort: 9200          protocol: TCP          name: discovery        - containerPort: 9300          protocol: TCP          name: transport      volumeMounts:        - mountPath: /usr/share/elasticsearch/data          name: data        - mountPath: /usr/share/elasticsearch/logs          name: data        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml          name: elasticsearch-config          subPath: elasticsearch.yml      resources:        limits:          memory: &quot;{{ .ContainerMemory }}Gi&quot;          cpu: &quot;{{ .ContainerCPU }}&quot;  nodeSelector:    kubernetes.io/hostname: &quot;{{ .TempHost }}&quot;  volumes:    - name: data      hostPath:        path: &quot;{{ .TempDataPath}}&quot;    - name: elasticsearch-config      configMap:        name: &quot;es-config&quot;</code></pre><p>volumeMounts:将容器内要替换的配置文件路径/usr/share/elasticsearch/config/elasticsearch.yml设置为挂载点。将configmap设置成挂载卷的防止进行使用。</p><h3 id="容器内部查看"><a href="#容器内部查看" class="headerlink" title="容器内部查看"></a>容器内部查看</h3><pre><code>[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# pwd/usr/share/elasticsearch/config[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# lselasticsearch.keystore  jvm.options        role_mapping.yml  userselasticsearch.yml       log4j2.properties  roles.yml         users_roles[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# cat elasticsearch.ymlcluster.name: ${CLUSTER_NAME}network.host: &quot;0.0.0.0&quot;bootstrap.memory_lock: falsenode.master: ${NODE_MASTER}discovery.zen.ping.unicast.hosts: ${DISCOVERY_ZEN_PING_UNICAST_HOSTS}discovery.zen.minimum_master_nodes: ${DISCOVERY_ZEN_MINIMUM_MASTER_NODES}[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]#</code></pre><p>通过运行起来的服务我们进容器中查看目标挂载文件，已经从configmap设置的配置文件挂载进来了。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-          <category> Kubernetes 笔记 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Kubernetes </tag>
             
         </tags>
       
