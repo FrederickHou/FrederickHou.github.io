@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://www.frederickhou.com/2020-04-10-Golang-client-go-analysis/</loc>
+    <loc>https://www.frederickhou.com/2020-04-28-leetcode_01/</loc>
     
-    <lastmod>2020-04-27T13:28:01.972Z</lastmod>
+    <lastmod>2020-04-28T07:22:41.123Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://www.frederickhou.com/2020-04-27-how-to-success/</loc>
     
-    <lastmod>2020-04-27T13:23:11.725Z</lastmod>
+    <lastmod>2020-04-27T13:37:47.530Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-04-10-Golang-client-go-analysis/</loc>
+    
+    <lastmod>2020-04-27T13:28:01.972Z</lastmod>
     
   </url>
   
