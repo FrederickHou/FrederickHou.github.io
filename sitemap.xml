@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.frederickhou.com/2020-04-28-redis-cluster/</loc>
+    
+    <lastmod>2020-04-29T02:46:36.709Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-04-23-mongodb-cluster/</loc>
+    
+    <lastmod>2020-04-29T02:22:25.981Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.frederickhou.com/2020-04-28-leetcode_01/</loc>
     
     <lastmod>2020-04-28T07:22:41.123Z</lastmod>
@@ -19,13 +33,6 @@
     <loc>https://www.frederickhou.com/2020-04-10-Golang-client-go-analysis/</loc>
     
     <lastmod>2020-04-27T13:28:01.972Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-04-23-mongodb%E5%AE%B9%E5%99%A8%E5%8C%96%E6%96%B9%E6%A1%88/</loc>
-    
-    <lastmod>2020-04-23T04:10:43.687Z</lastmod>
     
   </url>
   
