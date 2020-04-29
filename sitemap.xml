@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.frederickhou.com/2020-04-29-redis-cluster/</loc>
+    
+    <lastmod>2020-04-29T03:40:30.915Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.frederickhou.com/2019-10-12-%E4%B8%80%E5%8F%A5%E9%A1%B6%E4%B8%80%E4%B8%87%E5%8F%A5/</loc>
     
     <lastmod>2020-04-29T03:22:04.515Z</lastmod>
@@ -19,13 +26,6 @@
     <loc>https://www.frederickhou.com/2020-04-23-mongodb-cluster/</loc>
     
     <lastmod>2020-04-29T03:10:30.450Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-04-29-redis-cluster/</loc>
-    
-    <lastmod>2020-04-29T03:10:16.726Z</lastmod>
     
   </url>
   

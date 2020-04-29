@@ -8,7 +8,7 @@
       <link href="/2020-04-29-redis-cluster/"/>
       <url>/2020-04-29-redis-cluster/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Kubernetes部署Redis高可用集群"><a href="#Kubernetes部署Redis高可用集群" class="headerlink" title="Kubernetes部署Redis高可用集群"></a>Kubernetes部署Redis高可用集群</h1><h2 id="Mongo介绍"><a href="#Mongo介绍" class="headerlink" title="Mongo介绍"></a>Mongo介绍</h2><p>Redis基础介绍请参考本博文<a href="https://www.frederickhou.com/2019-04-28-Redis(%E4%B8%80)%E4%B9%8B%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/">Redis(一)之入门详解</a></p><h2 id="Redis高可用集群方案介绍"><a href="#Redis高可用集群方案介绍" class="headerlink" title="Redis高可用集群方案介绍"></a>Redis高可用集群方案介绍</h2><p>笔者采用如下高可用方案：</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-9630aadbd84b8bb0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="redis-cluster.png"></p><h3 id="创建Cofigmap"><a href="#创建Cofigmap" class="headerlink" title="创建Cofigmap"></a>创建Cofigmap</h3><pre><code>apiVersion: v1kind: ConfigMapmetadata:  name: redis-confdata:  redis.conf: |    appendonly yes    cluster-enabled yes    cluster-config-file /var/lib/redis/nodes.conf    cluster-node-timeout 5000    dir /var/lib/redis    port 6379</code></pre><h3 id="创建Headless-Service"><a href="#创建Headless-Service" class="headerlink" title="创建Headless Service"></a>创建Headless Service</h3><pre><code>apiVersion: v1kind: Servicemetadata:  name: redis-service  labels:    app: redis-appspec:  ports:    - name: redis-port      port: 6379  clusterIP: None  selector:    app: redis-app    appCluster: redis-cluster</code></pre><h3 id="创建对外访问Service"><a href="#创建对外访问Service" class="headerlink" title="创建对外访问Service"></a>创建对外访问Service</h3><pre><code>apiVersion: v1kind: Servicemetadata:  name: redis-access-service  labels:    app: redis-appspec:  ports:    - name: redis-port      protocol: &quot;TCP&quot;      port: 6379      targetPort: 6379  selector:    app: redis-app    appCluster: redis-cluster</code></pre><h3 id="创建集群节点"><a href="#创建集群节点" class="headerlink" title="创建集群节点"></a>创建集群节点</h3><pre><code>apiVersion: apps/v1beta1kind: StatefulSetmetadata:  name: redis-appspec:  serviceName: &quot;redis-service&quot;  replicas: 6  template:    metadata:      labels:        app: redis-app        appCluster: redis-cluster    spec:        terminationGracePeriodSeconds: 10        affinity:          podAntiAffinity:            preferredDuringSchedulingIgnoredDuringExecution:            - weight: 100              podAffinityTerm:                labelSelector:                  matchExpressions:                  - key: app                    operator: In                    values:                    - redis                topologyKey: kubernetes.io/hostname      containers:        - name: redis          image: &quot;10.19.85.58:5000/service-brokers/redis:5.0.5&quot;          command:            - &quot;redis-server&quot;          args:            - &quot;/etc/redis/redis.conf&quot;            - &quot;--protected-mode&quot;            - &quot;no&quot;          resources:            requests:              cpu: &quot;100m&quot;              memory: &quot;100Mi&quot;          ports:            - name: redis              containerPort: 6379              protocol: &quot;TCP&quot;            - name: cluster              containerPort: 16379              protocol: &quot;TCP&quot;          volumeMounts:            - name: &quot;redis-conf&quot;              mountPath: &quot;/etc/redis&quot;            - name: redis-volume              mountPath: &quot;/var/lib/redis&quot;      volumes:        - name: &quot;redis-conf&quot;          configMap:            name: &quot;redis-conf&quot;            items:              - key: &quot;redis.conf&quot;                path: &quot;redis.conf&quot;        - name: redis-volume            hostPath:              path: /ocdf_local_pv_vg0/redis</code></pre><p><strong>podAntiAffinity</strong>：Pod反亲和性，为了集群高可用每个redis服务尽可能的分散到不同记得节点上。具体Pod亲和性与反亲和性请参考<a href="https://www.frederickhou.com/2020-03-27-Kubernetes(%E5%85%AB)%E4%BA%B2%E5%92%8C%E6%80%A7%E4%B8%8E%E8%BF%94%E4%BA%B2%E5%92%8C%E6%80%A7/">Kubernetes(八)亲和性与返亲和性</a>文章介绍。</p><p>节点存储方式采用hostpath模式。</p><h3 id="创建redis-trib访问Service"><a href="#创建redis-trib访问Service" class="headerlink" title="创建redis-trib访问Service"></a>创建redis-trib访问Service</h3><pre><code>apiVersion: v1kind: Servicemetadata:  name: redis-manager-service  labels:    app: redis-managerspec:  ports:    - name: redis-port      port: 6379  clusterIP: None  selector:    app: redis-manager    appCluster: redis-cluster</code></pre><h3 id="创建redis-trib-工具服务"><a href="#创建redis-trib-工具服务" class="headerlink" title="创建redis-trib 工具服务"></a>创建redis-trib 工具服务</h3><pre><code>apiVersion: apps/v1beta1kind: StatefulSetmetadata:  name: redis-managerspec:  serviceName: &quot;redis-manager-service&quot;  replicas: 1  template:    metadata:      labels:        app: redis-manager        appCluster: redis-cluster    spec:      restartPolicy: Always      terminationGracePeriodSeconds: 10      containers:        - name: redis-trib          image: &quot;10.19.85.58:5000/service-brokers/redis-trib:1.0&quot;          command:            - &quot;tail&quot;          args:            - &quot;-f&quot;            - &quot;/dev/null&quot;          ports:            - name: redis              containerPort: 6379              protocol: &quot;TCP&quot;            - name: cluster              containerPort: 16379              protocol: &quot;TCP&quot;</code></pre><p>运用redis-trib集群管理工具，由于原镜像中redis-trib命令不支持域名解析，需要用到”dig +short 域名”将域名转换成IP。重新构建Docker镜像，Dockerfile如下所示：</p><pre><code>From 314315960/redis-trib:latestRUN apk add bind-toolsENTRYPOINT [&quot;/usr/bin/redis-trib&quot;]</code></pre><h3 id="集群创建"><a href="#集群创建" class="headerlink" title="集群创建"></a>集群创建</h3><p>进去redis-manager-0 Pod中</p><pre><code>kubectl exec -ti redis-manager-0 sh -n localpv-redis</code></pre><p>执行redis-trib命令创建redis集群</p><p>replicas：表示master设置从节点的个数</p><pre><code>redis-trib  create --replicas 1 \&gt; `dig +short redis-app-0.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-1.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-2.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-3.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-4.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-5.redis-service.localpv-redis.svc.cluster.local`:6379&gt;&gt;&gt; Creating cluster&gt;&gt;&gt; Performing hash slots allocation on 6 nodes...Using 3 masters:171.248.2.107:6379171.248.3.228:6379171.248.2.108:6379Adding replica 171.248.3.230:6379 to 171.248.2.107:6379Adding replica 171.248.3.231:6379 to 171.248.3.228:6379Adding replica 171.248.3.229:6379 to 171.248.2.108:6379M: 2ae472bd1708535edcd8aaaf3bf67efb14880174 171.248.2.107:6379slots:0-5460 (5461 slots) masterM: 0a0d61759e5c89314b271152380cefcdda1dc9ac 171.248.3.228:6379slots:5461-10922 (5462 slots) masterM: 9ec3557a72bbc89c3dfb899e84436399eeaac66c 171.248.2.108:6379slots:10923-16383 (5461 slots) masterS: cc406ebc14ec2d7b240d2d02402cd808dde1479f 171.248.3.229:6379replicates 9ec3557a72bbc89c3dfb899e84436399eeaac66cS: 8a66da33a8a410dff879170c58573964dbeec3b7 171.248.3.230:6379replicates 2ae472bd1708535edcd8aaaf3bf67efb14880174S: 7583010551a9b6cd441ef8828832ce4423b8c5e1 171.248.3.231:6379replicates 0a0d61759e5c89314b271152380cefcdda1dc9ac&gt;&gt;&gt; Nodes configuration updated&gt;&gt;&gt; Assign a different config epoch to each node&gt;&gt;&gt; Sending CLUSTER MEET messages to join the clusterWaiting for the cluster to join....&gt;&gt;&gt; Performing Cluster Check (using node 171.248.2.107:6379)M: 2ae472bd1708535edcd8aaaf3bf67efb14880174 171.248.2.107:6379slots:0-5460 (5461 slots) master1 additional replica(s)S: cc406ebc14ec2d7b240d2d02402cd808dde1479f 171.248.3.229:6379slots: (0 slots) slavereplicates 9ec3557a72bbc89c3dfb899e84436399eeaac66cM: 0a0d61759e5c89314b271152380cefcdda1dc9ac 171.248.3.228:6379slots:5461-10922 (5462 slots) master1 additional replica(s)S: 8a66da33a8a410dff879170c58573964dbeec3b7 171.248.3.230:6379slots: (0 slots) slavereplicates 2ae472bd1708535edcd8aaaf3bf67efb14880174M: 9ec3557a72bbc89c3dfb899e84436399eeaac66c 171.248.2.108:6379slots:10923-16383 (5461 slots) master1 additional replica(s)S: 7583010551a9b6cd441ef8828832ce4423b8c5e1 171.248.3.231:6379slots: (0 slots) slavereplicates 0a0d61759e5c89314b271152380cefcdda1dc9ac[OK] All nodes agree about slots configuration.&gt;&gt;&gt; Check for open slots...&gt;&gt;&gt; Check slots coverage...[OK] All 16384 slots covered.</code></pre><h3 id="查看集群信息"><a href="#查看集群信息" class="headerlink" title="查看集群信息"></a>查看集群信息</h3><pre><code># redis-trib  info `dig +short redis-app-0.redis-service.localpv-redis.svc.cluster.local`:6379171.248.2.107:6379 (2ae472bd...) -&gt; 0 keys | 5461 slots | 1 slaves.171.248.3.228:6379 (0a0d6175...) -&gt; 0 keys | 5462 slots | 1 slaves.171.248.2.108:6379 (9ec3557a...) -&gt; 0 keys | 5461 slots | 1 slaves.[OK] 0 keys in 3 masters.0.00 keys per slot on average.</code></pre><h3 id="集群信息检查"><a href="#集群信息检查" class="headerlink" title="集群信息检查"></a>集群信息检查</h3><pre><code># redis-trib  check `dig +short redis-app-3.redis-service.localpv-redis.svc.cluster.local`:6379&gt;&gt;&gt; Performing Cluster Check (using node 171.248.3.229:6379)S: cc406ebc14ec2d7b240d2d02402cd808dde1479f 171.248.3.229:6379slots: (0 slots) slavereplicates 9ec3557a72bbc89c3dfb899e84436399eeaac66cS: 8a66da33a8a410dff879170c58573964dbeec3b7 171.248.3.230:6379slots: (0 slots) slavereplicates 2ae472bd1708535edcd8aaaf3bf67efb14880174M: 2ae472bd1708535edcd8aaaf3bf67efb14880174 171.248.2.107:6379slots:0-5460 (5461 slots) master1 additional replica(s)S: 7583010551a9b6cd441ef8828832ce4423b8c5e1 171.248.3.231:6379slots: (0 slots) slavereplicates 0a0d61759e5c89314b271152380cefcdda1dc9acM: 0a0d61759e5c89314b271152380cefcdda1dc9ac 171.248.3.228:6379slots:5461-10922 (5462 slots) master1 additional replica(s)M: 9ec3557a72bbc89c3dfb899e84436399eeaac66c 171.248.2.108:6379slots:10923-16383 (5461 slots) master1 additional replica(s)[OK] All nodes agree about slots configuration.&gt;&gt;&gt; Check for open slots...&gt;&gt;&gt; Check slots coverage...[OK] All 16384 slots covered.</code></pre><h3 id="连接节点验证"><a href="#连接节点验证" class="headerlink" title="连接节点验证"></a>连接节点验证</h3><pre><code>kubectl exec -it redis-app-2 /bin/bash -n localpv-redisroot@redis-app-2:/data# /usr/local/bin/redis-cli -c127.0.0.1:6379&gt; cluster nodes2ae472bd1708535edcd8aaaf3bf67efb14880174 171.248.2.107:6379@16379 master - 0 1588071155633 1 connected 0-54609ec3557a72bbc89c3dfb899e84436399eeaac66c 171.248.2.108:6379@16379 myself,master - 0 1588071151000 3 connected 10923-163838a66da33a8a410dff879170c58573964dbeec3b7 171.248.3.230:6379@16379 slave 2ae472bd1708535edcd8aaaf3bf67efb14880174 0 1588071156135 5 connectedcc406ebc14ec2d7b240d2d02402cd808dde1479f 171.248.3.229:6379@16379 slave 9ec3557a72bbc89c3dfb899e84436399eeaac66c 0 1588071156636 4 connected0a0d61759e5c89314b271152380cefcdda1dc9ac 171.248.3.228:6379@16379 master - 0 1588071157639 2 connected 5461-109227583010551a9b6cd441ef8828832ce4423b8c5e1 171.248.3.231:6379@16379 slave 0a0d61759e5c89314b271152380cefcdda1dc9ac 0 1588071157138 6 connected</code></pre>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Kubernetes部署Redis高可用集群"><a href="#Kubernetes部署Redis高可用集群" class="headerlink" title="Kubernetes部署Redis高可用集群"></a>Kubernetes部署Redis高可用集群</h1><h2 id="Mongo介绍"><a href="#Mongo介绍" class="headerlink" title="Mongo介绍"></a>Mongo介绍</h2><p>Redis基础介绍请参考本博文<a href="https://www.frederickhou.com/2019-04-28-Redis(%E4%B8%80)%E4%B9%8B%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/">Redis(一)之入门详解</a></p><h2 id="Redis高可用集群方案介绍"><a href="#Redis高可用集群方案介绍" class="headerlink" title="Redis高可用集群方案介绍"></a>Redis高可用集群方案介绍</h2><p>笔者采用如下高可用方案：</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-9630aadbd84b8bb0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="redis-cluster.png"></p><h3 id="创建Cofigmap"><a href="#创建Cofigmap" class="headerlink" title="创建Cofigmap"></a>创建Cofigmap</h3><pre><code>apiVersion: v1kind: ConfigMapmetadata:  name: redis-confdata:  redis.conf: |    appendonly yes    cluster-enabled yes    cluster-config-file /var/lib/redis/nodes.conf    cluster-node-timeout 5000    dir /var/lib/redis    port 6379</code></pre><h3 id="创建Headless-Service"><a href="#创建Headless-Service" class="headerlink" title="创建Headless Service"></a>创建Headless Service</h3><pre><code>apiVersion: v1kind: Servicemetadata:  name: redis-service  labels:    app: redis-appspec:  ports:    - name: redis-port      port: 6379  clusterIP: None  selector:    app: redis-app    appCluster: redis-cluster</code></pre><h3 id="创建对外访问Service"><a href="#创建对外访问Service" class="headerlink" title="创建对外访问Service"></a>创建对外访问Service</h3><pre><code>apiVersion: v1kind: Servicemetadata:  name: redis-access-service  labels:    app: redis-appspec:  ports:    - name: redis-port      protocol: &quot;TCP&quot;      port: 6379      targetPort: 6379  selector:    app: redis-app    appCluster: redis-cluster</code></pre><h3 id="创建集群节点"><a href="#创建集群节点" class="headerlink" title="创建集群节点"></a>创建集群节点</h3><pre><code>apiVersion: apps/v1beta1kind: StatefulSetmetadata:  name: redis-appspec:  serviceName: &quot;redis-service&quot;  replicas: 6  template:    metadata:      labels:        app: redis-app        appCluster: redis-cluster    spec:        terminationGracePeriodSeconds: 10        affinity:          podAntiAffinity:            preferredDuringSchedulingIgnoredDuringExecution:            - weight: 100              podAffinityTerm:                labelSelector:                  matchExpressions:                  - key: app                    operator: In                    values:                    - redis                topologyKey: kubernetes.io/hostname      containers:        - name: redis          image: &quot;10.19.85.58:5000/service-brokers/redis:5.0.5&quot;          command:            - &quot;redis-server&quot;          args:            - &quot;/etc/redis/redis.conf&quot;            - &quot;--protected-mode&quot;            - &quot;no&quot;          resources:            requests:              cpu: &quot;100m&quot;              memory: &quot;100Mi&quot;          ports:            - name: redis              containerPort: 6379              protocol: &quot;TCP&quot;            - name: cluster              containerPort: 16379              protocol: &quot;TCP&quot;          volumeMounts:            - name: &quot;redis-conf&quot;              mountPath: &quot;/etc/redis&quot;            - name: redis-volume              mountPath: &quot;/var/lib/redis&quot;      volumes:        - name: &quot;redis-conf&quot;          configMap:            name: &quot;redis-conf&quot;            items:              - key: &quot;redis.conf&quot;                path: &quot;redis.conf&quot;        - name: redis-volume            hostPath:              path: /ocdf_local_pv_vg0/redis</code></pre><p><strong>podAntiAffinity</strong>：Pod反亲和性，为了集群高可用每个redis服务尽可能的分散到不同记得节点上。具体Pod亲和性与反亲和性请参考<a href="https://www.frederickhou.com/2020-03-27-Kubernetes(%E5%85%AB)%E4%BA%B2%E5%92%8C%E6%80%A7%E4%B8%8E%E8%BF%94%E4%BA%B2%E5%92%8C%E6%80%A7/">Kubernetes(八)亲和性与返亲和性</a>文章介绍。</p><p>节点存储方式采用hostpath模式。</p><h3 id="创建redis-trib访问Service"><a href="#创建redis-trib访问Service" class="headerlink" title="创建redis-trib访问Service"></a>创建redis-trib访问Service</h3><pre><code>apiVersion: v1kind: Servicemetadata:  name: redis-manager-service  labels:    app: redis-managerspec:  ports:    - name: redis-port      port: 6379  clusterIP: None  selector:    app: redis-manager    appCluster: redis-cluster</code></pre><h3 id="创建redis-trib-工具服务"><a href="#创建redis-trib-工具服务" class="headerlink" title="创建redis-trib 工具服务"></a>创建redis-trib 工具服务</h3><pre><code>apiVersion: apps/v1beta1kind: StatefulSetmetadata:  name: redis-managerspec:  serviceName: &quot;redis-manager-service&quot;  replicas: 1  template:    metadata:      labels:        app: redis-manager        appCluster: redis-cluster    spec:      restartPolicy: Always      terminationGracePeriodSeconds: 10      containers:        - name: redis-trib          image: &quot;10.19.85.58:5000/service-brokers/redis-trib:1.0&quot;          command:            - &quot;tail&quot;          args:            - &quot;-f&quot;            - &quot;/dev/null&quot;          ports:            - name: redis              containerPort: 6379              protocol: &quot;TCP&quot;            - name: cluster              containerPort: 16379              protocol: &quot;TCP&quot;</code></pre><p>运用redis-trib集群管理工具，由于原镜像中redis-trib命令不支持域名解析，需要用到”dig +short 域名”将域名转换成IP。重新构建Docker镜像，Dockerfile如下所示：</p><pre><code>From 314315960/redis-trib:latestRUN apk add bind-toolsENTRYPOINT [&quot;/usr/bin/redis-trib&quot;]</code></pre><h3 id="集群创建"><a href="#集群创建" class="headerlink" title="集群创建"></a>集群创建</h3><p><strong>1. 进去redis-manager-0 Pod中运行创建命令</strong></p><pre><code>kubectl exec -ti redis-manager-0 sh -n localpv-redis</code></pre><p>执行redis-trib命令创建redis集群</p><p>replicas：表示master设置从节点的个数</p><pre><code>redis-trib  create --replicas 1 \&gt; `dig +short redis-app-0.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-1.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-2.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-3.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-4.redis-service.localpv-redis.svc.cluster.local`:6379 \&gt; `dig +short redis-app-5.redis-service.localpv-redis.svc.cluster.local`:6379&gt;&gt;&gt; Creating cluster&gt;&gt;&gt; Performing hash slots allocation on 6 nodes...Using 3 masters:171.248.2.107:6379171.248.3.228:6379171.248.2.108:6379Adding replica 171.248.3.230:6379 to 171.248.2.107:6379Adding replica 171.248.3.231:6379 to 171.248.3.228:6379Adding replica 171.248.3.229:6379 to 171.248.2.108:6379M: 2ae472bd1708535edcd8aaaf3bf67efb14880174 171.248.2.107:6379slots:0-5460 (5461 slots) masterM: 0a0d61759e5c89314b271152380cefcdda1dc9ac 171.248.3.228:6379slots:5461-10922 (5462 slots) masterM: 9ec3557a72bbc89c3dfb899e84436399eeaac66c 171.248.2.108:6379slots:10923-16383 (5461 slots) masterS: cc406ebc14ec2d7b240d2d02402cd808dde1479f 171.248.3.229:6379replicates 9ec3557a72bbc89c3dfb899e84436399eeaac66cS: 8a66da33a8a410dff879170c58573964dbeec3b7 171.248.3.230:6379replicates 2ae472bd1708535edcd8aaaf3bf67efb14880174S: 7583010551a9b6cd441ef8828832ce4423b8c5e1 171.248.3.231:6379replicates 0a0d61759e5c89314b271152380cefcdda1dc9ac&gt;&gt;&gt; Nodes configuration updated&gt;&gt;&gt; Assign a different config epoch to each node&gt;&gt;&gt; Sending CLUSTER MEET messages to join the clusterWaiting for the cluster to join....&gt;&gt;&gt; Performing Cluster Check (using node 171.248.2.107:6379)M: 2ae472bd1708535edcd8aaaf3bf67efb14880174 171.248.2.107:6379slots:0-5460 (5461 slots) master1 additional replica(s)S: cc406ebc14ec2d7b240d2d02402cd808dde1479f 171.248.3.229:6379slots: (0 slots) slavereplicates 9ec3557a72bbc89c3dfb899e84436399eeaac66cM: 0a0d61759e5c89314b271152380cefcdda1dc9ac 171.248.3.228:6379slots:5461-10922 (5462 slots) master1 additional replica(s)S: 8a66da33a8a410dff879170c58573964dbeec3b7 171.248.3.230:6379slots: (0 slots) slavereplicates 2ae472bd1708535edcd8aaaf3bf67efb14880174M: 9ec3557a72bbc89c3dfb899e84436399eeaac66c 171.248.2.108:6379slots:10923-16383 (5461 slots) master1 additional replica(s)S: 7583010551a9b6cd441ef8828832ce4423b8c5e1 171.248.3.231:6379slots: (0 slots) slavereplicates 0a0d61759e5c89314b271152380cefcdda1dc9ac[OK] All nodes agree about slots configuration.&gt;&gt;&gt; Check for open slots...&gt;&gt;&gt; Check slots coverage...[OK] All 16384 slots covered.</code></pre><p><strong>2. 或者直接在集群中运用如下命令：</strong></p><pre><code>kubectl exec -it redis-manager-0 -c redis-trib -n localpv-redis -- redis-trib  create --replicas 1 \`dig +short redis-app-0.redis-service.localpv-redis.svc.cluster.local`:6379 \`dig +short redis-app-1.redis-service.localpv-redis.svc.cluster.local`:6379 \`dig +short redis-app-2.redis-service.localpv-redis.svc.cluster.local`:6379 \`dig +short redis-app-3.redis-service.localpv-redis.svc.cluster.local`:6379 \`dig +short redis-app-4.redis-service.localpv-redis.svc.cluster.local`:6379 \`dig +short redis-app-5.redis-service.localpv-redis.svc.cluster.local`:6379</code></pre><h3 id="查看集群信息"><a href="#查看集群信息" class="headerlink" title="查看集群信息"></a>查看集群信息</h3><pre><code># redis-trib  info `dig +short redis-app-0.redis-service.localpv-redis.svc.cluster.local`:6379171.248.2.107:6379 (2ae472bd...) -&gt; 0 keys | 5461 slots | 1 slaves.171.248.3.228:6379 (0a0d6175...) -&gt; 0 keys | 5462 slots | 1 slaves.171.248.2.108:6379 (9ec3557a...) -&gt; 0 keys | 5461 slots | 1 slaves.[OK] 0 keys in 3 masters.0.00 keys per slot on average.</code></pre><h3 id="集群信息检查"><a href="#集群信息检查" class="headerlink" title="集群信息检查"></a>集群信息检查</h3><pre><code># redis-trib  check `dig +short redis-app-3.redis-service.localpv-redis.svc.cluster.local`:6379&gt;&gt;&gt; Performing Cluster Check (using node 171.248.3.229:6379)S: cc406ebc14ec2d7b240d2d02402cd808dde1479f 171.248.3.229:6379slots: (0 slots) slavereplicates 9ec3557a72bbc89c3dfb899e84436399eeaac66cS: 8a66da33a8a410dff879170c58573964dbeec3b7 171.248.3.230:6379slots: (0 slots) slavereplicates 2ae472bd1708535edcd8aaaf3bf67efb14880174M: 2ae472bd1708535edcd8aaaf3bf67efb14880174 171.248.2.107:6379slots:0-5460 (5461 slots) master1 additional replica(s)S: 7583010551a9b6cd441ef8828832ce4423b8c5e1 171.248.3.231:6379slots: (0 slots) slavereplicates 0a0d61759e5c89314b271152380cefcdda1dc9acM: 0a0d61759e5c89314b271152380cefcdda1dc9ac 171.248.3.228:6379slots:5461-10922 (5462 slots) master1 additional replica(s)M: 9ec3557a72bbc89c3dfb899e84436399eeaac66c 171.248.2.108:6379slots:10923-16383 (5461 slots) master1 additional replica(s)[OK] All nodes agree about slots configuration.&gt;&gt;&gt; Check for open slots...&gt;&gt;&gt; Check slots coverage...[OK] All 16384 slots covered.</code></pre><h3 id="连接节点验证"><a href="#连接节点验证" class="headerlink" title="连接节点验证"></a>连接节点验证</h3><pre><code>kubectl exec -it redis-app-2 /bin/bash -n localpv-redisroot@redis-app-2:/data# /usr/local/bin/redis-cli -c127.0.0.1:6379&gt; cluster nodes2ae472bd1708535edcd8aaaf3bf67efb14880174 171.248.2.107:6379@16379 master - 0 1588071155633 1 connected 0-54609ec3557a72bbc89c3dfb899e84436399eeaac66c 171.248.2.108:6379@16379 myself,master - 0 1588071151000 3 connected 10923-163838a66da33a8a410dff879170c58573964dbeec3b7 171.248.3.230:6379@16379 slave 2ae472bd1708535edcd8aaaf3bf67efb14880174 0 1588071156135 5 connectedcc406ebc14ec2d7b240d2d02402cd808dde1479f 171.248.3.229:6379@16379 slave 9ec3557a72bbc89c3dfb899e84436399eeaac66c 0 1588071156636 4 connected0a0d61759e5c89314b271152380cefcdda1dc9ac 171.248.3.228:6379@16379 master - 0 1588071157639 2 connected 5461-109227583010551a9b6cd441ef8828832ce4423b8c5e1 171.248.3.231:6379@16379 slave 0a0d61759e5c89314b271152380cefcdda1dc9ac 0 1588071157138 6 connected</code></pre>]]></content>
       
       
       <categories>
@@ -297,11 +297,11 @@
     
     
     <entry>
-      <title>死锁介绍</title>
-      <link href="/2020-04-09-linux_dead_mutex/"/>
-      <url>/2020-04-09-linux_dead_mutex/</url>
+      <title>共享内存的使用实现原理</title>
+      <link href="/2020-04-09-share-memory/"/>
+      <url>/2020-04-09-share-memory/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h1><p>当我们第一次加锁以后，再次进行加锁，这样会发生什么？<br>当我们第二次申请锁的时候，这个时候锁已经被占用了，该线程就会被挂起，但是刚好这个线程就是拥有锁的线程了，那么这个线程就永远挂起等待了，这个我们就叫 <strong>死锁</strong> 。</p><h2 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h2><ul><li><p><strong>1</strong> 一个线程两次申请锁。</p></li><li><p><strong>2</strong> 两个线程互相申请对方的锁，但是对方都不释放锁。</p></li></ul><h2 id="死锁产生的必要条件"><a href="#死锁产生的必要条件" class="headerlink" title="死锁产生的必要条件"></a>死锁产生的必要条件</h2><ul><li><p><strong>互斥：</strong> 一次只有一个进程可以使用一个资源。其他进程不能访问已分配给其他进程的资源。</p></li><li><p><strong>占有且等待</strong> ：当一个进程在等待分配得到其他资源时，其继续占有已分配得到的资源。</p></li><li><p><strong>非抢占：</strong> 不能强行抢占进程中已占有的资源。</p></li><li><p><strong>循环等待：</strong> 存在一个封闭的进程链，使得每个资源至少占有此链中下一个进程所需要的一个资源。</p></li></ul><h2 id="处理死锁的方法"><a href="#处理死锁的方法" class="headerlink" title="处理死锁的方法"></a>处理死锁的方法</h2><ul><li><p><strong>死锁预防：</strong> 通过确保死锁的一个必要条件不会满足，保证不会发生死锁。</p></li><li><p><strong>死锁检测：</strong> 允许死锁的发生，但是可以通过系统设置的检测结构及时的检测出死锁的发生，采取一些措施，将死锁清除掉。</p></li><li><p><strong>死锁避免：</strong> 在资源分配过程中，使用某种方法避免系统进入不安全的状态，从而避免发生死锁。</p></li><li><p><strong>死锁解除：</strong> 与死锁检测相配套的一种措施。当检测到系统中已发生死锁，需将进程从死锁状态中解脱出来。</p></li></ul><p><strong>常用方法：</strong> 撤销或挂起一些进程，以便回收一些资源，再将这些资源分配给已处于阻塞状态的进程。</p><h2 id="死锁避免算法："><a href="#死锁避免算法：" class="headerlink" title="死锁避免算法："></a>死锁避免算法：</h2><h3 id="银行家算法："><a href="#银行家算法：" class="headerlink" title="银行家算法："></a>银行家算法：</h3><ul><li><p><strong>1.</strong> 如果request&lt;=need，转向步骤2；否则认为出错，因为请求资源大于需要资源。</p></li><li><p><strong>2.</strong> 如果request&lt;=available，转向步骤3,；否则尚无足够资源，进程p阻塞。</p></li><li><p><strong>3.</strong> 系统尝试为把资源分配给进程P，并修改available、allocation和need的数值。</p></li><li><p><strong>4.</strong> 系统执行安全性算法，检查此次分配后系统是否处于 <strong>安全状态</strong> ，若安全，才正式将资源分配给进程P，否则将本次试探性分配作废，让进程P等待。</p></li></ul><p><strong>安全状态：</strong> 系统能按照某种进程顺序，为每个进程分配资源，直至满足每个进程对资源的最大需求，使每个进程都可顺利完成。</p>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="享内存的使用实现原理"><a href="#享内存的使用实现原理" class="headerlink" title="享内存的使用实现原理"></a>享内存的使用实现原理</h1><p>共享内存可以说是最有用的进程间通信方式，也是最快的IPC形式。两个不同进程A、B共享内存的意思是，同一块物理内存被映射到进程A、B各自的进程地址空间。进程A可以即时看到进程B对共享内存中数据的更新，反之亦然。由于多个进程共享同一块内存区域，必然需要某种同步机制，互斥锁和信号量都可以。使用共享内存时需要注意多个进程对共享内存的同步访问。</p><h3 id="共享内存段最大限制"><a href="#共享内存段最大限制" class="headerlink" title="共享内存段最大限制"></a>共享内存段最大限制</h3><p>SHMMNI为128，表示系统中最多可以有128个共享内存对象。</p><h2 id="ELF-是什么-？"><a href="#ELF-是什么-？" class="headerlink" title="ELF 是什么 ？"></a>ELF 是什么 ？</h2><p>其大小与程序中全局变量的是否初始化有什么关系（注意未初始化的数据放在 bss 段）</p><p><strong>Linux ELF</strong><br>ELF = Executable and Linkable Format ，可执行连接格式</p>]]></content>
       
       
       <categories>
@@ -326,11 +326,11 @@
     
     
     <entry>
-      <title>共享内存的使用实现原理</title>
-      <link href="/2020-04-09-share-memory/"/>
-      <url>/2020-04-09-share-memory/</url>
+      <title>死锁介绍</title>
+      <link href="/2020-04-09-linux_dead_mutex/"/>
+      <url>/2020-04-09-linux_dead_mutex/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="享内存的使用实现原理"><a href="#享内存的使用实现原理" class="headerlink" title="享内存的使用实现原理"></a>享内存的使用实现原理</h1><p>共享内存可以说是最有用的进程间通信方式，也是最快的IPC形式。两个不同进程A、B共享内存的意思是，同一块物理内存被映射到进程A、B各自的进程地址空间。进程A可以即时看到进程B对共享内存中数据的更新，反之亦然。由于多个进程共享同一块内存区域，必然需要某种同步机制，互斥锁和信号量都可以。使用共享内存时需要注意多个进程对共享内存的同步访问。</p><h3 id="共享内存段最大限制"><a href="#共享内存段最大限制" class="headerlink" title="共享内存段最大限制"></a>共享内存段最大限制</h3><p>SHMMNI为128，表示系统中最多可以有128个共享内存对象。</p><h2 id="ELF-是什么-？"><a href="#ELF-是什么-？" class="headerlink" title="ELF 是什么 ？"></a>ELF 是什么 ？</h2><p>其大小与程序中全局变量的是否初始化有什么关系（注意未初始化的数据放在 bss 段）</p><p><strong>Linux ELF</strong><br>ELF = Executable and Linkable Format ，可执行连接格式</p>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h1><p>当我们第一次加锁以后，再次进行加锁，这样会发生什么？<br>当我们第二次申请锁的时候，这个时候锁已经被占用了，该线程就会被挂起，但是刚好这个线程就是拥有锁的线程了，那么这个线程就永远挂起等待了，这个我们就叫 <strong>死锁</strong> 。</p><h2 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h2><ul><li><p><strong>1</strong> 一个线程两次申请锁。</p></li><li><p><strong>2</strong> 两个线程互相申请对方的锁，但是对方都不释放锁。</p></li></ul><h2 id="死锁产生的必要条件"><a href="#死锁产生的必要条件" class="headerlink" title="死锁产生的必要条件"></a>死锁产生的必要条件</h2><ul><li><p><strong>互斥：</strong> 一次只有一个进程可以使用一个资源。其他进程不能访问已分配给其他进程的资源。</p></li><li><p><strong>占有且等待</strong> ：当一个进程在等待分配得到其他资源时，其继续占有已分配得到的资源。</p></li><li><p><strong>非抢占：</strong> 不能强行抢占进程中已占有的资源。</p></li><li><p><strong>循环等待：</strong> 存在一个封闭的进程链，使得每个资源至少占有此链中下一个进程所需要的一个资源。</p></li></ul><h2 id="处理死锁的方法"><a href="#处理死锁的方法" class="headerlink" title="处理死锁的方法"></a>处理死锁的方法</h2><ul><li><p><strong>死锁预防：</strong> 通过确保死锁的一个必要条件不会满足，保证不会发生死锁。</p></li><li><p><strong>死锁检测：</strong> 允许死锁的发生，但是可以通过系统设置的检测结构及时的检测出死锁的发生，采取一些措施，将死锁清除掉。</p></li><li><p><strong>死锁避免：</strong> 在资源分配过程中，使用某种方法避免系统进入不安全的状态，从而避免发生死锁。</p></li><li><p><strong>死锁解除：</strong> 与死锁检测相配套的一种措施。当检测到系统中已发生死锁，需将进程从死锁状态中解脱出来。</p></li></ul><p><strong>常用方法：</strong> 撤销或挂起一些进程，以便回收一些资源，再将这些资源分配给已处于阻塞状态的进程。</p><h2 id="死锁避免算法："><a href="#死锁避免算法：" class="headerlink" title="死锁避免算法："></a>死锁避免算法：</h2><h3 id="银行家算法："><a href="#银行家算法：" class="headerlink" title="银行家算法："></a>银行家算法：</h3><ul><li><p><strong>1.</strong> 如果request&lt;=need，转向步骤2；否则认为出错，因为请求资源大于需要资源。</p></li><li><p><strong>2.</strong> 如果request&lt;=available，转向步骤3,；否则尚无足够资源，进程p阻塞。</p></li><li><p><strong>3.</strong> 系统尝试为把资源分配给进程P，并修改available、allocation和need的数值。</p></li><li><p><strong>4.</strong> 系统执行安全性算法，检查此次分配后系统是否处于 <strong>安全状态</strong> ，若安全，才正式将资源分配给进程P，否则将本次试探性分配作废，让进程P等待。</p></li></ul><p><strong>安全状态：</strong> 系统能按照某种进程顺序，为每个进程分配资源，直至满足每个进程对资源的最大需求，使每个进程都可顺利完成。</p>]]></content>
       
       
       <categories>
@@ -544,6 +544,33 @@
     
     
     <entry>
+      <title>Kubernetes(十二)之ConfigMap资源对象</title>
+      <link href="/2020-04-02-Kubernetes(%E5%8D%81%E4%BA%8C)%E4%B9%8BConfigMap%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/"/>
+      <url>/2020-04-02-Kubernetes(%E5%8D%81%E4%BA%8C)%E4%B9%8BConfigMap%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="ConfigMap资源对象"><a href="#ConfigMap资源对象" class="headerlink" title="ConfigMap资源对象"></a>ConfigMap资源对象</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>ConfigMap对象实现了将配置文件从容器镜像中解耦，从而增强了容器应用的可移植性。简而言之，一个ConfigMap就是一系列配置数据的集合(如单个属性，或粗粒度信息如整个配置文件或JSON对象)，这些数据可“注入”到Pod对象中，并为容器应用所使用，注入方式有挂载为存储卷和传递为环境变量两种。</p><p>ConfigMap 对象将配置数据以键值对的形式存储，这些数据可以在Pod对象中使用或者为系统组件提供配置。</p><h2 id="ConfigMap使用方式"><a href="#ConfigMap使用方式" class="headerlink" title="ConfigMap使用方式"></a>ConfigMap使用方式</h2><ul><li>填充环境变量</li><li>设置容器内的命令行参数</li><li>填充卷的配置文件</li></ul><h2 id="ConfigMap创建方式"><a href="#ConfigMap创建方式" class="headerlink" title="ConfigMap创建方式"></a>ConfigMap创建方式</h2><ul><li><p>直接在命令行中指定configmap参数创建，即–from-literal</p></li><li><p>指定文件创建，即将一个配置文件创建为一个ConfigMap–from-file=&lt;文件&gt;</p></li><li><p>指定目录创建，即将一个目录下的所有配置文件创建为一个ConfigMap，–from-file=&lt;目录&gt;</p></li><li><p>先写好标准的configmap的yaml文件，然后kubectl create -f 创建</p></li></ul><h2 id="Yaml创建方式示例"><a href="#Yaml创建方式示例" class="headerlink" title="Yaml创建方式示例"></a>Yaml创建方式示例</h2><h3 id="场景介绍"><a href="#场景介绍" class="headerlink" title="场景介绍"></a>场景介绍</h3><p>在Kubernetes中部署Elasticsearch集群创建时，需要配置集群名称以及集群待加入节点信息，和设置集群master最少节点要求等配置，使用confmap来作为填充卷方式让Pod进行挂载容器内的文件路径/usr/share/elasticsearch/config/elasticsearch.yml，来提供elasticsearch.yml配置文件内容。</p><h3 id="ConfigMap-Yaml"><a href="#ConfigMap-Yaml" class="headerlink" title="ConfigMap Yaml"></a>ConfigMap Yaml</h3><pre><code>apiVersion: v1kind: ConfigMapmetadata:  name: &quot;es-config&quot;data:  elasticsearch.yml: |    cluster.name: ${CLUSTER_NAME}    network.host: &quot;0.0.0.0&quot;    bootstrap.memory_lock: false    node.master: ${NODE_MASTER}    discovery.zen.ping.unicast.hosts: ${DISCOVERY_ZEN_PING_UNICAST_HOSTS}    discovery.zen.minimum_master_nodes: ${DISCOVERY_ZEN_MINIMUM_MASTER_NODES}</code></pre><h3 id="Pod-局部定义YAML"><a href="#Pod-局部定义YAML" class="headerlink" title="Pod 局部定义YAML"></a>Pod 局部定义YAML</h3><pre><code>spec:  initContainers:    - name: fix-permissions      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;chown -R 1000:1000 /usr/share/elasticsearch/data&quot;]      securityContext:        privileged: true      volumeMounts:        - name: data          mountPath: /usr/share/elasticsearch/data    - name: increase-vm-max-map      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sysctl&quot;, &quot;-w&quot;, &quot;vm.max_map_count=262144&quot;]      securityContext:        privileged: true    - name: increase-fd-ulimit      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;ulimit -n 65536&quot;]      securityContext:        privileged: true  containers:    - name: elasticsearch      image: &quot;{{ .ImageEs}}&quot;      imagePullPolicy: Always      env:        - name: CLUSTER_NAME          value: &quot;sb-{{ .InstanceID }}-es-cluster&quot;        - name:  NODE_MASTER          value: &quot;true&quot;        - name: ES_JAVA_OPTS          value: &quot;-Xms512m -Xmx512m&quot;        - name: DISCOVERY_ZEN_PING_UNICAST_HOSTS          value: &quot;sb-{{ .InstanceID }}-es-cluster-discovery&quot;        - name: DISCOVERY_ZEN_MINIMUM_MASTER_NODES          value: &quot;{{ .MasterMinNumber }}&quot;      # - name: &quot;bootstrap.memory_lock&quot;      #   value: &quot;true&quot;      ports:        - containerPort: 9200          protocol: TCP          name: discovery        - containerPort: 9300          protocol: TCP          name: transport      volumeMounts:        - mountPath: /usr/share/elasticsearch/data          name: data        - mountPath: /usr/share/elasticsearch/logs          name: data        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml          name: elasticsearch-config          subPath: elasticsearch.yml      resources:        limits:          memory: &quot;{{ .ContainerMemory }}Gi&quot;          cpu: &quot;{{ .ContainerCPU }}&quot;  nodeSelector:    kubernetes.io/hostname: &quot;{{ .TempHost }}&quot;  volumes:    - name: data      hostPath:        path: &quot;{{ .TempDataPath}}&quot;    - name: elasticsearch-config      configMap:        name: &quot;es-config&quot;</code></pre><p>volumeMounts:将容器内要替换的配置文件路径/usr/share/elasticsearch/config/elasticsearch.yml设置为挂载点。将configmap设置成挂载卷的防止进行使用。</p><h3 id="容器内部查看"><a href="#容器内部查看" class="headerlink" title="容器内部查看"></a>容器内部查看</h3><pre><code>[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# pwd/usr/share/elasticsearch/config[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# lselasticsearch.keystore  jvm.options        role_mapping.yml  userselasticsearch.yml       log4j2.properties  roles.yml         users_roles[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# cat elasticsearch.ymlcluster.name: ${CLUSTER_NAME}network.host: &quot;0.0.0.0&quot;bootstrap.memory_lock: falsenode.master: ${NODE_MASTER}discovery.zen.ping.unicast.hosts: ${DISCOVERY_ZEN_PING_UNICAST_HOSTS}discovery.zen.minimum_master_nodes: ${DISCOVERY_ZEN_MINIMUM_MASTER_NODES}[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]#</code></pre><p>通过运行起来的服务我们进容器中查看目标挂载文件，已经从configmap设置的配置文件挂载进来了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+          <category> Kubernetes 笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Kubernetes </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>僵尸进程与孤儿进程</title>
       <link href="/2020-04-02-zombie-process/"/>
       <url>/2020-04-02-zombie-process/</url>
@@ -565,33 +592,6 @@
             <tag> 效率 </tag>
             
             <tag> 操作系统 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Kubernetes(十二)之ConfigMap资源对象</title>
-      <link href="/2020-04-02-Kubernetes(%E5%8D%81%E4%BA%8C)%E4%B9%8BConfigMap%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/"/>
-      <url>/2020-04-02-Kubernetes(%E5%8D%81%E4%BA%8C)%E4%B9%8BConfigMap%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="ConfigMap资源对象"><a href="#ConfigMap资源对象" class="headerlink" title="ConfigMap资源对象"></a>ConfigMap资源对象</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>ConfigMap对象实现了将配置文件从容器镜像中解耦，从而增强了容器应用的可移植性。简而言之，一个ConfigMap就是一系列配置数据的集合(如单个属性，或粗粒度信息如整个配置文件或JSON对象)，这些数据可“注入”到Pod对象中，并为容器应用所使用，注入方式有挂载为存储卷和传递为环境变量两种。</p><p>ConfigMap 对象将配置数据以键值对的形式存储，这些数据可以在Pod对象中使用或者为系统组件提供配置。</p><h2 id="ConfigMap使用方式"><a href="#ConfigMap使用方式" class="headerlink" title="ConfigMap使用方式"></a>ConfigMap使用方式</h2><ul><li>填充环境变量</li><li>设置容器内的命令行参数</li><li>填充卷的配置文件</li></ul><h2 id="ConfigMap创建方式"><a href="#ConfigMap创建方式" class="headerlink" title="ConfigMap创建方式"></a>ConfigMap创建方式</h2><ul><li><p>直接在命令行中指定configmap参数创建，即–from-literal</p></li><li><p>指定文件创建，即将一个配置文件创建为一个ConfigMap–from-file=&lt;文件&gt;</p></li><li><p>指定目录创建，即将一个目录下的所有配置文件创建为一个ConfigMap，–from-file=&lt;目录&gt;</p></li><li><p>先写好标准的configmap的yaml文件，然后kubectl create -f 创建</p></li></ul><h2 id="Yaml创建方式示例"><a href="#Yaml创建方式示例" class="headerlink" title="Yaml创建方式示例"></a>Yaml创建方式示例</h2><h3 id="场景介绍"><a href="#场景介绍" class="headerlink" title="场景介绍"></a>场景介绍</h3><p>在Kubernetes中部署Elasticsearch集群创建时，需要配置集群名称以及集群待加入节点信息，和设置集群master最少节点要求等配置，使用confmap来作为填充卷方式让Pod进行挂载容器内的文件路径/usr/share/elasticsearch/config/elasticsearch.yml，来提供elasticsearch.yml配置文件内容。</p><h3 id="ConfigMap-Yaml"><a href="#ConfigMap-Yaml" class="headerlink" title="ConfigMap Yaml"></a>ConfigMap Yaml</h3><pre><code>apiVersion: v1kind: ConfigMapmetadata:  name: &quot;es-config&quot;data:  elasticsearch.yml: |    cluster.name: ${CLUSTER_NAME}    network.host: &quot;0.0.0.0&quot;    bootstrap.memory_lock: false    node.master: ${NODE_MASTER}    discovery.zen.ping.unicast.hosts: ${DISCOVERY_ZEN_PING_UNICAST_HOSTS}    discovery.zen.minimum_master_nodes: ${DISCOVERY_ZEN_MINIMUM_MASTER_NODES}</code></pre><h3 id="Pod-局部定义YAML"><a href="#Pod-局部定义YAML" class="headerlink" title="Pod 局部定义YAML"></a>Pod 局部定义YAML</h3><pre><code>spec:  initContainers:    - name: fix-permissions      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;chown -R 1000:1000 /usr/share/elasticsearch/data&quot;]      securityContext:        privileged: true      volumeMounts:        - name: data          mountPath: /usr/share/elasticsearch/data    - name: increase-vm-max-map      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sysctl&quot;, &quot;-w&quot;, &quot;vm.max_map_count=262144&quot;]      securityContext:        privileged: true    - name: increase-fd-ulimit      image: &quot;{{ .ImageBusyBox }}&quot;      command: [&quot;sh&quot;, &quot;-c&quot;, &quot;ulimit -n 65536&quot;]      securityContext:        privileged: true  containers:    - name: elasticsearch      image: &quot;{{ .ImageEs}}&quot;      imagePullPolicy: Always      env:        - name: CLUSTER_NAME          value: &quot;sb-{{ .InstanceID }}-es-cluster&quot;        - name:  NODE_MASTER          value: &quot;true&quot;        - name: ES_JAVA_OPTS          value: &quot;-Xms512m -Xmx512m&quot;        - name: DISCOVERY_ZEN_PING_UNICAST_HOSTS          value: &quot;sb-{{ .InstanceID }}-es-cluster-discovery&quot;        - name: DISCOVERY_ZEN_MINIMUM_MASTER_NODES          value: &quot;{{ .MasterMinNumber }}&quot;      # - name: &quot;bootstrap.memory_lock&quot;      #   value: &quot;true&quot;      ports:        - containerPort: 9200          protocol: TCP          name: discovery        - containerPort: 9300          protocol: TCP          name: transport      volumeMounts:        - mountPath: /usr/share/elasticsearch/data          name: data        - mountPath: /usr/share/elasticsearch/logs          name: data        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml          name: elasticsearch-config          subPath: elasticsearch.yml      resources:        limits:          memory: &quot;{{ .ContainerMemory }}Gi&quot;          cpu: &quot;{{ .ContainerCPU }}&quot;  nodeSelector:    kubernetes.io/hostname: &quot;{{ .TempHost }}&quot;  volumes:    - name: data      hostPath:        path: &quot;{{ .TempDataPath}}&quot;    - name: elasticsearch-config      configMap:        name: &quot;es-config&quot;</code></pre><p>volumeMounts:将容器内要替换的配置文件路径/usr/share/elasticsearch/config/elasticsearch.yml设置为挂载点。将configmap设置成挂载卷的防止进行使用。</p><h3 id="容器内部查看"><a href="#容器内部查看" class="headerlink" title="容器内部查看"></a>容器内部查看</h3><pre><code>[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# pwd/usr/share/elasticsearch/config[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# lselasticsearch.keystore  jvm.options        role_mapping.yml  userselasticsearch.yml       log4j2.properties  roles.yml         users_roles[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]# cat elasticsearch.ymlcluster.name: ${CLUSTER_NAME}network.host: &quot;0.0.0.0&quot;bootstrap.memory_lock: falsenode.master: ${NODE_MASTER}discovery.zen.ping.unicast.hosts: ${DISCOVERY_ZEN_PING_UNICAST_HOSTS}discovery.zen.minimum_master_nodes: ${DISCOVERY_ZEN_MINIMUM_MASTER_NODES}[root@sb-bsi-es-12161721-33-es-instanceid-0-0 config]#</code></pre><p>通过运行起来的服务我们进容器中查看目标挂载文件，已经从configmap设置的配置文件挂载进来了。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-          <category> Kubernetes 笔记 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Kubernetes </tag>
             
         </tags>
       
@@ -992,9 +992,9 @@
       
         <tags>
             
-            <tag> 大数据 </tag>
-            
             <tag> 分布式 </tag>
+            
+            <tag> 大数据 </tag>
             
             <tag> Docker </tag>
             
@@ -1025,9 +1025,9 @@
       
         <tags>
             
-            <tag> 大数据 </tag>
-            
             <tag> 分布式 </tag>
+            
+            <tag> 大数据 </tag>
             
             <tag> Docker </tag>
             
@@ -1056,9 +1056,9 @@
       
         <tags>
             
-            <tag> 大数据 </tag>
-            
             <tag> 分布式 </tag>
+            
+            <tag> 大数据 </tag>
             
         </tags>
       
@@ -1083,9 +1083,9 @@
       
         <tags>
             
-            <tag> 大数据 </tag>
-            
             <tag> 分布式 </tag>
+            
+            <tag> 大数据 </tag>
             
             <tag> Docker </tag>
             
@@ -1112,9 +1112,9 @@
       
         <tags>
             
-            <tag> 大数据 </tag>
-            
             <tag> 分布式 </tag>
+            
+            <tag> 大数据 </tag>
             
             <tag> Docker </tag>
             
@@ -1141,9 +1141,9 @@
       
         <tags>
             
-            <tag> 大数据 </tag>
-            
             <tag> 分布式 </tag>
+            
+            <tag> 大数据 </tag>
             
             <tag> Docker </tag>
             
@@ -1170,9 +1170,9 @@
       
         <tags>
             
-            <tag> 大数据 </tag>
-            
             <tag> 分布式 </tag>
+            
+            <tag> 大数据 </tag>
             
             <tag> Docker </tag>
             
@@ -1208,33 +1208,6 @@
     
     
     <entry>
-      <title>一条SQL语句在MySQL中如何执行的呢？</title>
-      <link href="/2019-05-10-SQL%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F/"/>
-      <url>/2019-05-10-SQL%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="MySQL架构分析以及各模块功能介绍"><a href="#MySQL架构分析以及各模块功能介绍" class="headerlink" title="MySQL架构分析以及各模块功能介绍"></a>MySQL架构分析以及各模块功能介绍</h2><p>如图是MySQL的一个简要架构图：</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/mysql_framework.png?raw=true"  alt></p><p><strong>SERVER:</strong> 如上图所示，SERVER层主要包括连接器、查询缓存、分析器、优化器、执行器等。例如存储过程、触发器、函数等功能都在这一层实现。日志模块Binlog模块也在SERVER层中实现。</p><p><strong>Storage engine:</strong> 主要负责数据的存储和读取，采用可替代的Plugin式架构，支持InnoDB、My-ISAM、Memory等多个存储引擎。</p><p><strong>Connector:</strong> 主要负责用户登录数据库，进行用户身份的认证，包括账户密码、权限等校验操作，如果校验通过，连接器会在权限表中查询该用户的所有执行权限，后续只要此连接不断开，即使管理员修改了该用户的权限，也不受影响。</p><p><strong>Query cache:</strong> 当用户在建立连接后，执行查询语句的时候，回先查询缓存，当MySQL在开始校验SQL是否已经执行过，会以key-value的形式缓存在内存中，key是查询语句，value是结果集。如果缓存key被找到，就会直接返回给客户端，如果没有找到就会执行后续的操作，当完成一次操作后也会把结果以key-value形式缓存起来(真正执行缓存查询时会先校验该用户的执行权限)。</p><p>相信读者看到这就会有了一个问号，对于数据实时更新和存储的场景，这种缓存机制显然是不可取的，在MySQL8.0版本以后该功能被直接删除掉了。</p><p><strong>Analyzer:</strong> 分析器是用来分析SQL语句，主要具体分析有以下几步：<br>第一步 词法分析：我们都知道SQL语句有很多.分为四大类DDL、DML、DQL、DCL。每条语句都是由多个字符串组成，要进行词法分析首先要提取关键字，比如‘select’,然后依次提出查询的表，提出字段名，提出查询条件等等。当此法的分析关机条件提取完成之后，会进入下一步。<br>第二步 语法分析：语法分析是根据MYSQL语法标准判断输入SQL语法是否正确。当语法分析合法之后，就进入下一步执行，但是如何执行会是最优的方式呢？此时就需要优化器。</p><p><strong>Optimizer:</strong> 优化器作用是找出最优的执行方案，例如在多索引条件下如何选择索引，多表查询的时候关联顺序的选择等等。</p><p><strong>Actuator:</strong> 在优化器选择了最终的执行方案后会交给执行器开始执行，在执行SQL方案之前会校验用户的执行权限，如果该用户没有改表的操作权限或者相应执行权限，就会直接返回错误信息。如果用户权限校验通过，执行器就会调用存储引擎的接口，并且相应返回接口执行的结果。</p><h2 id="未完待续-……"><a href="#未完待续-……" class="headerlink" title="未完待续 ……"></a>未完待续 ……</h2><p><strong>博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。</strong></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 数据库 </tag>
-            
-            <tag> MySQL </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>C++ 虚函数表、虚函数讲解</title>
       <link href="/2019-05-06-C++%E8%99%9A%E8%A1%A8%E3%80%81%E8%99%9A%E5%87%BD%E6%95%B0%E3%80%81%E8%99%9A%E6%8C%87%E9%92%88%E8%AE%B2%E8%A7%A3/"/>
       <url>/2019-05-06-C++%E8%99%9A%E8%A1%A8%E3%80%81%E8%99%9A%E5%87%BD%E6%95%B0%E3%80%81%E8%99%9A%E6%8C%87%E9%92%88%E8%AE%B2%E8%A7%A3/</url>
@@ -1254,6 +1227,33 @@
         <tags>
             
             <tag> C++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>一条SQL语句在MySQL中如何执行的呢？</title>
+      <link href="/2019-05-10-SQL%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F/"/>
+      <url>/2019-05-10-SQL%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="MySQL架构分析以及各模块功能介绍"><a href="#MySQL架构分析以及各模块功能介绍" class="headerlink" title="MySQL架构分析以及各模块功能介绍"></a>MySQL架构分析以及各模块功能介绍</h2><p>如图是MySQL的一个简要架构图：</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/mysql_framework.png?raw=true"  alt></p><p><strong>SERVER:</strong> 如上图所示，SERVER层主要包括连接器、查询缓存、分析器、优化器、执行器等。例如存储过程、触发器、函数等功能都在这一层实现。日志模块Binlog模块也在SERVER层中实现。</p><p><strong>Storage engine:</strong> 主要负责数据的存储和读取，采用可替代的Plugin式架构，支持InnoDB、My-ISAM、Memory等多个存储引擎。</p><p><strong>Connector:</strong> 主要负责用户登录数据库，进行用户身份的认证，包括账户密码、权限等校验操作，如果校验通过，连接器会在权限表中查询该用户的所有执行权限，后续只要此连接不断开，即使管理员修改了该用户的权限，也不受影响。</p><p><strong>Query cache:</strong> 当用户在建立连接后，执行查询语句的时候，回先查询缓存，当MySQL在开始校验SQL是否已经执行过，会以key-value的形式缓存在内存中，key是查询语句，value是结果集。如果缓存key被找到，就会直接返回给客户端，如果没有找到就会执行后续的操作，当完成一次操作后也会把结果以key-value形式缓存起来(真正执行缓存查询时会先校验该用户的执行权限)。</p><p>相信读者看到这就会有了一个问号，对于数据实时更新和存储的场景，这种缓存机制显然是不可取的，在MySQL8.0版本以后该功能被直接删除掉了。</p><p><strong>Analyzer:</strong> 分析器是用来分析SQL语句，主要具体分析有以下几步：<br>第一步 词法分析：我们都知道SQL语句有很多.分为四大类DDL、DML、DQL、DCL。每条语句都是由多个字符串组成，要进行词法分析首先要提取关键字，比如‘select’,然后依次提出查询的表，提出字段名，提出查询条件等等。当此法的分析关机条件提取完成之后，会进入下一步。<br>第二步 语法分析：语法分析是根据MYSQL语法标准判断输入SQL语法是否正确。当语法分析合法之后，就进入下一步执行，但是如何执行会是最优的方式呢？此时就需要优化器。</p><p><strong>Optimizer:</strong> 优化器作用是找出最优的执行方案，例如在多索引条件下如何选择索引，多表查询的时候关联顺序的选择等等。</p><p><strong>Actuator:</strong> 在优化器选择了最终的执行方案后会交给执行器开始执行，在执行SQL方案之前会校验用户的执行权限，如果该用户没有改表的操作权限或者相应执行权限，就会直接返回错误信息。如果用户权限校验通过，执行器就会调用存储引擎的接口，并且相应返回接口执行的结果。</p><h2 id="未完待续-……"><a href="#未完待续-……" class="headerlink" title="未完待续 ……"></a>未完待续 ……</h2><p><strong>博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 数据库 </tag>
+            
+            <tag> MySQL </tag>
             
         </tags>
       
