@@ -38,12 +38,12 @@ https://www.frederickhou.com/2020-03-13-Kubernetes(%E5%9B%9B)%E4%B9%8B%E8%B5%84%
 https://www.frederickhou.com/2019-11-14-Kubernetes(%E4%B8%83)%E4%B9%8B%E5%AE%B9%E5%99%A8%E8%BF%90%E8%A1%8C%E6%97%B6(CRI)%E4%BB%8B%E7%BB%8D/
 https://www.frederickhou.com/2019-10-12-%E4%B8%80%E5%8F%A5%E9%A1%B6%E4%B8%80%E4%B8%87%E5%8F%A5/
 https://www.frederickhou.com/2019-10-09-OpenShift3.11%E4%B9%8Bnvidia-gpu/
-https://www.frederickhou.com/2019-08-19-Openshift3.11%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/
 https://www.frederickhou.com/2019-08-23-Gluster%20FS%20(%E4%B8%80)%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/
+https://www.frederickhou.com/2019-08-19-Openshift3.11%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85/
 https://www.frederickhou.com/2019-08-01-SSO/
 https://www.frederickhou.com/2019-07-30-LDAP(%E4%BA%8C)/
-https://www.frederickhou.com/2019-07-29-LDAP(%E4%B8%80)/
 https://www.frederickhou.com/2019-07-26-Docker/
+https://www.frederickhou.com/2019-07-29-LDAP(%E4%B8%80)/
 https://www.frederickhou.com/2019-05-31-%E8%AE%A9%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8%E5%A2%9E%E9%95%BF/
 https://www.frederickhou.com/2019-05-06-C++%E8%99%9A%E8%A1%A8%E3%80%81%E8%99%9A%E5%87%BD%E6%95%B0%E3%80%81%E8%99%9A%E6%8C%87%E9%92%88%E8%AE%B2%E8%A7%A3/
 https://www.frederickhou.com/2019-05-10-SQL%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F/
