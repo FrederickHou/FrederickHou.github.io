@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LeetCode 滑动窗口 | 剑豪的博客 | FrederickHou Blog</title><meta name="description" content="LeetCode 滑动窗口"><meta name="keywords" content="LeetCode 中等"><meta name="author" content="FrederickHou"><meta name="copyright" content="FrederickHou"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="https://hm.baidu.com"><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"><link rel="preconnect" href="//busuanzi.ibruce.info"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="LeetCode 滑动窗口"><meta name="twitter:description" content="LeetCode 滑动窗口"><meta name="twitter:image" content="https://www.frederickhou.com/img/leetcode.jpg"><meta property="og:type" content="article"><meta property="og:title" content="LeetCode 滑动窗口"><meta property="og:url" content="https://www.frederickhou.com/2020-05-11-leetcode_06/"><meta property="og:site_name" content="剑豪的博客 | FrederickHou Blog"><meta property="og:description" content="LeetCode 滑动窗口"><meta property="og:image" content="https://www.frederickhou.com/img/leetcode.jpg"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '2'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="https://www.frederickhou.com/2020-05-11-leetcode_06/"><link rel="next" title="动态规划" href="https://www.frederickhou.com/2020-05-09-leetcode_05/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c9a7c17cc51ad5aae5db3c12ae1f725d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: {"text":"富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善","fontSize":"15px"},
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  baiduPush: true,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/my.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">63</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">26</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">12</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content toc-div-class" style="display:none"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#题目"><span class="toc-number">1.</span> <span class="toc-text">题目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思路"><span class="toc-number">2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码示例"><span class="toc-number">3.</span> <span class="toc-text">代码示例</span></a></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(/img/leetcode.jpg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">剑豪的博客 | FrederickHou Blog</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">LeetCode 滑动窗口</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-05-11 00:00:00"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2020-05-11</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-05-12 11:29:02"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-05-12</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/LeetCode%E7%AC%94%E8%AE%B0/">LeetCode笔记</a><i class="fa fa-angle-right post-meta__separator" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/LeetCode%E7%AC%94%E8%AE%B0/LeetCode-%E4%B8%AD%E7%AD%89/">LeetCode 中等</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon fa fa-file-word-o" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">6</span><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-clock-o" aria-hidden="true"></i><span>阅读时长: 1 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-comment-o" aria-hidden="true"></i><span>评论数:</span><a href="/2020-05-11-leetcode_06/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div id="article-container"><div id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <div class="hbe-input-container">
+  <input type="password" id="hbePass" placeholder>
+    <label for="hbePass">Hey, password is required here.</label>
+    <div class="bottom-line"></div>
+  </div>
+  <script id="hbeData" type="hbeData" data-hmacdigest="b88b01a8cdcc9c0ea20845b0cb633d2f4e781b4e76b6b941b442474c0daf0e4c">bfd2c01187d19ef8a4c5eed87edf3b3df59089d759743d4b7cb2ba84e4ee15b94abe92d74ce512f4c538ded3c2f85e6d7bf486df2288e87a5d3ca4776abc71412cfcc50292685205d65a269c8089df6f899b277d3bd5148e3b810131f2d357844d6201ce064f51d5781fc3c8c5da2d35f45b512cc78c9519478db43cd741f89fad75700c3b5f220269dece0cc83f2c38c919a2f9be07d1a18efa806a22e4307bef87c2ab32a64e073483d3bc30f8607ba90ec8084477a8113f293a2224f765eb8ac33a29a7ffbda1c0e789216ed0b3bf672b63a339c42fe0c4f1168526bfdf3047732df4970ec820fde086484ecbbd8264df4599ad004560de8758d133faea7b5ceedd8b86decdffdcf6aa295bdb0541cd1acc6ba03a95677504b57c9254f44b3804efb1ffd95b5058a9a2a0adf2e9c9d39ed6fd687d595d9c565b08c4b6b829138fcc1bf8249bd2bf89ec1c4469583cc906dd45090e888c49efc5a9c7dc2337803abc6bae6eae2fd9cff07c462745679ebd82c8a1a3cd997d6aeafe02c9704485425297c6d83b95bd3e05e72de144465255b2365c4a732944897e9867d5c6e4d47570b889704e1ec49c9c2d85304c416066fd0027dd318b55a118624e6079dd1385415944679d55913ee7ed7d3d4a8ba238ec5628ce16ec43e025eee76382e8590fd7cb6a31cc8a2498eb8e72c173917aabb5dd55c978aa0ae15bcd1d3211113235790bef79e6ce4114895735a4deba6d9810a0829c9daa3c61f35256279c962424ae7e5e122aaccc3676ca90ada825a8c31eb541b4fc98c79590470f08e4d7047c6777a3c887f8db5f9577ff2a28f3568df97c7fd74ef9b3659e833aa2031f310f4b2b4e692f8c6a82f5d93373117ce010bfc0565cc517d3771cf9562ac07bcf845c680ae5bd2727906aced91a619621b8d1ee12f8abb2e23bd69facaf6348026aea0266d0742dee33bc6a29192e6e1095a6df9f6d926fb8692340febf2d998a67165a054d2012500a62dc3f8fa7ecd8dfb7a9fe0278ab4512c002e29be5e2320d2253f0721c6b08abfc6b1cecbd88e375c5b8d932adeed5b61c672a8d32c18d1fc796b9df98ed588d0c457623097b20d15fe95bb82eebefef0ccc4fb0bdbcf00bde7e3af8459f9f408bcb560d991bddb966a67c06e918f97442e44e31573a0a73580fc71c89eed53c91e19b55a6e1ade66fddd44770038c737acdc4905b82f6a96c013a1c89475cf615b7284b50a57b58a6095e706d9f9d9058f569d0e11722b9ec2aff96e5b3b78b98c4f77db6d754e798d983e1e35bbd6703373f1bf1278057f789179fc2329cb5526221139e8db2970bd727ca46fa03643673581c8744f74e149c69bc787a5d01738479adf0e2ebf504c183cfd5cf65b1b638070e13785dda0d924a0b16c4f5740ad950bd79385352f5d4bc0e09ff24e5ee3b523bf80b7ea4e3dbdbada9fadedf11e64c847cda88e0348677f410d62bc02a9d427b6a108b22960f35cfce433270070bf283dffbd91c673d0882411d9322ef25e97726a958dfc21736ce4fa48c9e7f78840b71851bd123c33db05ff16ff13b89c56476394cebeddf1e30cc4dd3e304ce018aa2b1f37a22cd72f8861d83fc4e31cbca68c83e088ee4a9603c7fa0fce649e1daff29aff2990da5fd9fb5548ca436f334f08a87ca6b5dfa68ed0d3977d87294bdbda2bb22ae2050c3e242bc215a05cb9ad6f527354ae075fec78bdf8e1d4b2004037cdbaa97d18b8b54d518cf23eee29d5deaacfd7797221b60b4ddddc4fdc91962ef41d18c18b1bb2cbe0a545931279d58e1ee0e15943a22851636f517f3c71286d047d2e89a33b2157002f4b962f14eea42101ef67b616a8c71736f35166007195d132726bbc285b325ce3578a16216db524dd6c22f4dbea567250abbf46c6ee3e1c551edc456f5877096d9b68e0682c1688e1c21ee710e4c57fc8d39c11428d6143f652cc47fd5ccafc369760f1bf6ef92636add15077b54b4d0c2883995a5d49c54a87a9694480155fe1b92f9c8a09fa66b2a465b4b826eb7d8041cbb848ec2f041a7c2fc1a84a89de6a0c40590b3902f66657f8a8cb7b4fbb81b5fc48c607fe0091a25f06863f6a7f0df89e4118b5929be24989c6733f128a78eec863be005cb183c10e64c64822cb93c23605a003e63d584b41cc367a260b6c2b65b7c52d8e2c1dcc2017c47ccaa5ddeeebb27b3521792aa9aad2bd4ce80cdfc71401f018183f69c1afcccf9b50100b510419a5c1a9112a670197647e23d4efc992c46fca41d4f19b84b76b945d8a5623e93c2bf7befc9c3d4fdb212220865c5bc68b573e22b382fe0e59f2cf20453beb87702c50508bfc86fa2d65c3358b76541459d5ab22213fbd19a20d7390c4cf386722e2b090b3fea55357cf80f56d820512b77041b26b051af0e4fe50364c41cceccf37525cd6bdbdaab5402162b8a28c7d849a8da35170af837a3bd10beb097c82f266e178b02b2a50a9448157c225bd514212756020e36771e86857c7e11717b094307bff5084c8dca0bc89f8dcb86e1a83ee70aec5201b20475d66ca3aa8152501794cb5b46e5923c935ee535b69463d257fdaaa6cc33819fa5bcd3361d4db1131710d149af82a1c3523eddc86e2a2c69c89652b490f4752bee967154a93d7440ee56f880e7d2d2da7bece5f07e1beb65027d71d11c88c9d59a9a24e84af5c30359940ddc9fb11592dcf98322ccbe71fd7730ca57b66fbc701cd7be98651ca51edf17b1fcaf47b1592d125f623cc39fc16ec5dbd4f86865d21ebf7372412dd92342241b61b75dc54a1cd12f61cc7e8999d5aebd1eeba9c0d3dd9bd8a0fb4a9cbaa1adf238d4d721a1356ffc35d8dc9edfde3220b34ccceb1cd8ef935c41ac7ee00217f0d933905296526f9232ede47f28778104c161bcfea770968965bb785150ebc5053ccb655812b10820010a819bf26686180cd6edbb92c9a70e2c42ba427c6b481102fd9c58df1360e87da88e0c23ac54e412e992bce58e4ba8049cbc73eef4fbdccd95ee8e0aeb941290b0ec81523f80572b2d991e79d844b64f90034200bec35d99</script>
+</div>
+<script src="/lib/blog-encrypt.js"></script><link href="/css/blog-encrypt.css" rel="stylesheet" type="text/css"></div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" rel="external nofollow noopener noreferrer" target="_blank">FrederickHou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.frederickhou.com/2020-05-11-leetcode_06/">https://www.frederickhou.com/2020-05-11-leetcode_06/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.frederickhou.com" target="_blank">剑豪的博客 | FrederickHou Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/LeetCode-%E4%B8%AD%E7%AD%89/">LeetCode 中等</a></div><div class="post_share"><div class="social-share" data-image="/img/leetcode.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg" alt="微信"><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg" alt="支付宝"><div class="post-qr-code__desc">支付宝</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="next-post pull-full"><a href="/2020-05-09-leetcode_05/"><img class="next_cover lazyload" data-src="/img/leetcode.jpg" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">动态规划</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020-05-08-leetcode_04/" title="LeetCode 链表两数相加"><img class="relatedPosts_cover lazyload" data-src="/img/leetcode.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-05-08</div><div class="relatedPosts_title">LeetCode 链表两数相加</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '9773f8d7d3b21b9b4318',
+  clientSecret: '6ded13787b3949f9722495059669573ba071d216',
+  repo: 'FrederickHou.github.io',
+  owner: 'frederickhou',
+  admin: ['frederickhou'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" style="background-image: url(/img/leetcode.jpg)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2020 By FrederickHou</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="external nofollow noopener noreferrer"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="external nofollow noopener noreferrer"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.frederickhou.com/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="external nofollow noopener noreferrer" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script id="ribbon_piao" mobile="false" src="/js/third-party/piao.js"></script><script src="/js/third-party/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async></script><script src="/js/third-party/ClickShowText.js"></script><script src="/js/search/local-search.js"></script></body></html>
