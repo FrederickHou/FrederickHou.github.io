@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.frederickhou.com/picture/picture-chengdu/index.html</loc>
+    
+    <lastmod>2020-05-12T05:34:01.758Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/picture/index.html</loc>
+    
+    <lastmod>2020-05-12T05:31:58.485Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.frederickhou.com/2020-05-11-leetcode_06/</loc>
     
     <lastmod>2020-05-12T03:29:02.801Z</lastmod>
@@ -152,13 +166,6 @@
     <loc>https://www.frederickhou.com/2020-04-03-Golang_memory_manager/</loc>
     
     <lastmod>2020-04-21T01:43:58.841Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/picture/index.html</loc>
-    
-    <lastmod>2020-04-18T15:12:52.863Z</lastmod>
     
   </url>
   
@@ -492,7 +499,7 @@
   </url>
   
   <url>
-    <loc>https://www.frederickhou.com/picture-wallpaper/index.html</loc>
+    <loc>https://www.frederickhou.com/picture/picture-wallpaper/index.html</loc>
     
     <lastmod>2020-04-17T02:57:26.131Z</lastmod>
     
