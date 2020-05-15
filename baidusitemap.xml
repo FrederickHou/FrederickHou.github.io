@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.frederickhou.com/2020-05-11-leetcode_06/</loc>
+    <lastmod>2020-05-15</lastmod>
+  </url>  <url>
+    <loc>https://www.frederickhou.com/2020-05-09-leetcode_05/</loc>
+    <lastmod>2020-05-15</lastmod>
+  </url>  <url>
+    <loc>https://www.frederickhou.com/2020-05-08-leetcode_04/</loc>
+    <lastmod>2020-05-15</lastmod>
+  </url>  <url>
+    <loc>https://www.frederickhou.com/2020.05-08-leetcode_03/</loc>
+    <lastmod>2020-05-15</lastmod>
+  </url>  <url>
+    <loc>https://www.frederickhou.com/2020-05-08-leetcode_02/</loc>
+    <lastmod>2020-05-15</lastmod>
+  </url>  <url>
+    <loc>https://www.frederickhou.com/2020-04-28-leetcode_01/</loc>
+    <lastmod>2020-05-15</lastmod>
+  </url>  <url>
     <loc>https://www.frederickhou.com/2020-05-12-leetcode_07/</loc>
     <lastmod>2020-05-15</lastmod>
   </url>  <url>
@@ -13,26 +31,8 @@
     <loc>https://www.frederickhou.com/2020-04-02-Golang_goroutine/</loc>
     <lastmod>2020-05-14</lastmod>
   </url>  <url>
-    <loc>https://www.frederickhou.com/2020-04-28-leetcode_01/</loc>
-    <lastmod>2020-05-13</lastmod>
-  </url>  <url>
-    <loc>https://www.frederickhou.com/2020-05-08-leetcode_02/</loc>
-    <lastmod>2020-05-13</lastmod>
-  </url>  <url>
-    <loc>https://www.frederickhou.com/2020-05-08-leetcode_04/</loc>
-    <lastmod>2020-05-13</lastmod>
-  </url>  <url>
-    <loc>https://www.frederickhou.com/2020-05-09-leetcode_05/</loc>
-    <lastmod>2020-05-13</lastmod>
-  </url>  <url>
-    <loc>https://www.frederickhou.com/2020-05-11-leetcode_06/</loc>
-    <lastmod>2020-05-13</lastmod>
-  </url>  <url>
     <loc>https://www.frederickhou.com/2019-05-31-%E8%AE%A9%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8%E5%A2%9E%E9%95%BF/</loc>
     <lastmod>2020-05-13</lastmod>
-  </url>  <url>
-    <loc>https://www.frederickhou.com/2020.05-08-leetcode_03/</loc>
-    <lastmod>2020-05-12</lastmod>
   </url>  <url>
     <loc>https://www.frederickhou.com/2020-04-29-redis-cluster/</loc>
     <lastmod>2020-04-30</lastmod>
