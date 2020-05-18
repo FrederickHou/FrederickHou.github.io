@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.frederickhou.com/2020-05-18-leetcode_08/</loc>
+    <lastmod>2020-05-18</lastmod>
+  </url>  <url>
+    <loc>https://www.frederickhou.com/2020-05-12-leetcode_07/</loc>
+    <lastmod>2020-05-18</lastmod>
+  </url>  <url>
     <loc>https://www.frederickhou.com/2020-05-11-leetcode_06/</loc>
     <lastmod>2020-05-15</lastmod>
   </url>  <url>
@@ -17,9 +23,6 @@
     <lastmod>2020-05-15</lastmod>
   </url>  <url>
     <loc>https://www.frederickhou.com/2020-04-28-leetcode_01/</loc>
-    <lastmod>2020-05-15</lastmod>
-  </url>  <url>
-    <loc>https://www.frederickhou.com/2020-05-12-leetcode_07/</loc>
     <lastmod>2020-05-15</lastmod>
   </url>  <url>
     <loc>https://www.frederickhou.com/2020-03-18-ElasticSearch%EF%BC%88%E4%B8%80%EF%BC%89%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/</loc>
