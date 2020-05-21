@@ -4,35 +4,6 @@
   
     
     <entry>
-      <title>分治法 快序排序</title>
-      <link href="/2020-05-20-quickSort/"/>
-      <url>/2020-05-20-quickSort/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="快速排序思想"><a href="#快速排序思想" class="headerlink" title="快速排序思想"></a>快速排序思想</h2><p>快速排序是C.R.A.Hoare于1962年提出的一种划分交换排序。它采用了一种分治的策略，通常称其为<strong>分治法</strong>(Divide-and-ConquerMethod)。</p><ul><li><p><strong>分治法的基本思想:</strong> </p><p> 将原问题分解为若干个规模更小但结构与原问题相似的子问题。递归地解这些子问题，然后将这些子问题的解组合为原问题的解。</p></li><li><p><strong>快速排序的基本思想:</strong> </p><p>  设当前待排序的无序区为R[left..right]，<strong>利用分治法</strong>可将快速排序的基本思想描述为:</p><ul><li><p><strong>1.分解：</strong> </p><p>  在R[left..right]中任选一个记录作为基准(baseNum)，以此基准将当前无序区划分为左、右两个较小的子区间R[left..baseNum-1)和R[baseNum+1..right]，并使左边子区间中所有记录的关键字均小于等于基准记录(不妨记为baseNum)的关键字baseNum.key，右边的子区间中所有记录的关键字均大于等于baseNum.key，而基准记录baseNum则位于正确的位置(baseNum)上，它无须参加后续的排序。</p></li><li><p><strong>2.求解：</strong> </p><p>  通过递归调用快速排序对左、右子区间R[left..baseNum-1]和R[baseNum+1..right]快速排序</p></li></ul></li></ul><h2 id="快速排序算法效率"><a href="#快速排序算法效率" class="headerlink" title="快速排序算法效率"></a>快速排序算法效率</h2><p>快速排序的最坏情况基于每次划分对主元的选择。基本的快速排序选取第一个元素作为主元。这样在数组已经有序的情况下，每次划分将得到最坏的结果。一种比较常见的优化方法是随机化算法，即随机选取一个元素作为主元。这种情况下虽然<strong>最坏情况仍然是O(n^2)</strong> ，但最坏情况不再依赖于输入数据，而是由于随机函数取值不佳。实际上，随机化快速排序得到理论最坏情况的可能性仅为1/(2^n)。所以随机化快速排序可以对于绝大多数输入数据<strong>平均时间复杂达到O(nlogn)</strong> 的期望时间复杂度</p><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>如下图是对无序数组{6,1,2,7,9,3,4,5,10,8}进行快速排序的算法示意图：</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://www.frederickhou.com/img/quickSort.png"  alt></p><h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 分治</span><br><span class="line">func partition(nums []int,left int,right int)int&#123;</span><br><span class="line">    i :&#x3D; left</span><br><span class="line">    j :&#x3D; right</span><br><span class="line">    &#x2F;&#x2F;第一个元素赋给基准值</span><br><span class="line">    baseNum :&#x3D; nums[left]</span><br><span class="line">    for i&lt;j&#123;</span><br><span class="line">        &#x2F;&#x2F;从右向左检测</span><br><span class="line">        for i &lt; j &amp;&amp; nums[j] &gt;&#x3D; baseNum&#123;</span><br><span class="line">            j -&#x3D; 1</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;从左向右检测</span><br><span class="line">        for i&lt; j &amp;&amp; nums[i] &lt;&#x3D; baseNum&#123;</span><br><span class="line">            i +&#x3D; 1</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;左右互换</span><br><span class="line">        if i &lt; j&#123;</span><br><span class="line">            nums[i],nums[j] &#x3D; nums[j],nums[i]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    nums[left] &#x3D;nums[i]</span><br><span class="line">    nums[i] &#x3D; baseNum</span><br><span class="line">    return i</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 快速排序</span><br><span class="line">func quickSort(nums []int,left int,right int)&#123;</span><br><span class="line">    if left &gt; right&#123;</span><br><span class="line">        return</span><br><span class="line">    &#125;</span><br><span class="line">    i :&#x3D; partition(nums,left,right)</span><br><span class="line">    quickSort(nums,left,i-1)</span><br><span class="line">    quickSort(nums,i+1,right)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-          <category> LeetCode 算法笔记 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 快速排序 </tag>
-            
-            <tag> 分治法 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>朋友圈</title>
       <link href="/2020-05-21-Circle-of-friends/"/>
       <url>/2020-05-21-Circle-of-friends/</url>
@@ -58,6 +29,35 @@
             <tag> 广度优先遍历 </tag>
             
             <tag> 并查集 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分治法 快序排序</title>
+      <link href="/2020-05-20-quickSort/"/>
+      <url>/2020-05-20-quickSort/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="快速排序思想"><a href="#快速排序思想" class="headerlink" title="快速排序思想"></a>快速排序思想</h2><p>快速排序是C.R.A.Hoare于1962年提出的一种划分交换排序。它采用了一种分治的策略，通常称其为<strong>分治法</strong>(Divide-and-ConquerMethod)。</p><ul><li><p><strong>分治法的基本思想:</strong> </p><p> 将原问题分解为若干个规模更小但结构与原问题相似的子问题。递归地解这些子问题，然后将这些子问题的解组合为原问题的解。</p></li><li><p><strong>快速排序的基本思想:</strong> </p><p>  设当前待排序的无序区为R[left..right]，<strong>利用分治法</strong>可将快速排序的基本思想描述为:</p><ul><li><p><strong>1.分解：</strong> </p><p>  在R[left..right]中任选一个记录作为基准(baseNum)，以此基准将当前无序区划分为左、右两个较小的子区间R[left..baseNum-1)和R[baseNum+1..right]，并使左边子区间中所有记录的关键字均小于等于基准记录(不妨记为baseNum)的关键字baseNum.key，右边的子区间中所有记录的关键字均大于等于baseNum.key，而基准记录baseNum则位于正确的位置(baseNum)上，它无须参加后续的排序。</p></li><li><p><strong>2.求解：</strong> </p><p>  通过递归调用快速排序对左、右子区间R[left..baseNum-1]和R[baseNum+1..right]快速排序</p></li></ul></li></ul><h2 id="快速排序算法效率"><a href="#快速排序算法效率" class="headerlink" title="快速排序算法效率"></a>快速排序算法效率</h2><p>快速排序的最坏情况基于每次划分对主元的选择。基本的快速排序选取第一个元素作为主元。这样在数组已经有序的情况下，每次划分将得到最坏的结果。一种比较常见的优化方法是随机化算法，即随机选取一个元素作为主元。这种情况下虽然<strong>最坏情况仍然是O(n^2)</strong> ，但最坏情况不再依赖于输入数据，而是由于随机函数取值不佳。实际上，随机化快速排序得到理论最坏情况的可能性仅为1/(2^n)。所以随机化快速排序可以对于绝大多数输入数据<strong>平均时间复杂达到O(nlogn)</strong> 的期望时间复杂度</p><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>如下图是对无序数组{6,1,2,7,9,3,4,5,10,8}进行快速排序的算法示意图：</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://www.frederickhou.com/img/quickSort.png"  alt></p><h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 分治</span><br><span class="line">func partition(nums []int,left int,right int)int&#123;</span><br><span class="line">    i :&#x3D; left</span><br><span class="line">    j :&#x3D; right</span><br><span class="line">    &#x2F;&#x2F;第一个元素赋给基准值</span><br><span class="line">    baseNum :&#x3D; nums[left]</span><br><span class="line">    for i&lt;j&#123;</span><br><span class="line">        &#x2F;&#x2F;从右向左检测</span><br><span class="line">        for i &lt; j &amp;&amp; nums[j] &gt;&#x3D; baseNum&#123;</span><br><span class="line">            j -&#x3D; 1</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;从左向右检测</span><br><span class="line">        for i&lt; j &amp;&amp; nums[i] &lt;&#x3D; baseNum&#123;</span><br><span class="line">            i +&#x3D; 1</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;左右互换</span><br><span class="line">        if i &lt; j&#123;</span><br><span class="line">            nums[i],nums[j] &#x3D; nums[j],nums[i]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    nums[left] &#x3D;nums[i]</span><br><span class="line">    nums[i] &#x3D; baseNum</span><br><span class="line">    return i</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 快速排序</span><br><span class="line">func quickSort(nums []int,left int,right int)&#123;</span><br><span class="line">    if left &gt; right&#123;</span><br><span class="line">        return</span><br><span class="line">    &#125;</span><br><span class="line">    i :&#x3D; partition(nums,left,right)</span><br><span class="line">    quickSort(nums,left,i-1)</span><br><span class="line">    quickSort(nums,i+1,right)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+          <category> LeetCode 算法笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 快速排序 </tag>
+            
+            <tag> 分治法 </tag>
             
         </tags>
       
@@ -476,11 +476,11 @@
     
     
     <entry>
-      <title>Golang select介绍</title>
-      <link href="/2020-04-14-Golang-select/"/>
-      <url>/2020-04-14-Golang-select/</url>
+      <title>Golang range 的坑</title>
+      <link href="/2020-04-14-Golang-range/"/>
+      <url>/2020-04-14-Golang-range/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Golang-select"><a href="#Golang-select" class="headerlink" title="Golang select"></a>Golang select</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Go 语言中的 <strong>select</strong> 关键字也能够让 Goroutine 同时等待多个 Channel 的可读或者可写，在多个文件或者 Channel 发生状态改变之前，select 会一直阻塞当前线程或者 Goroutine。</p><p>select 是一种与 switch 相似的控制结构，与 switch 不同的是，select 中虽然也有多个 case，但是这些 case 中的表达式<strong>必须都是 Channel 的收发操作</strong>。</p><h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><pre><code>package mainimport (    &quot;fmt&quot;    &quot;time&quot;)func test(consumer1, consumer2,consumer3 chan int,startTime time.Time) {    fmt.Println(&quot;Blocking on read...&quot;)    select {        case &lt;- consumer1:            fmt.Printf(&quot;Unblocked %v later.\n&quot;, time.Since(startTime))        case &lt;- consumer2:            fmt.Printf(&quot;ch2 case...&quot;)        case &lt;- consumer3:            fmt.Printf(&quot;ch3 case...&quot;)        default:            fmt.Printf(&quot;default go...&quot;)    }}func main() {    startTime := time.Now()    consumer1 := make(chan int)    consumer2 := make(chan int)    consumer3 := make(chan int)    go func() {        time.Sleep(4*time.Second)        close(consumer1)    }()    go func() {        time.Sleep(3*time.Second)        consumer2 &lt;- 3    }()    go func() {        time.Sleep(3*time.Second)        consumer3 &lt;- 5    }()    test(consumer1, consumer2,consumer3,startTime)}</code></pre><p>输出：</p><pre><code>Blocking on read...default go...</code></pre><p>运行上述代码，由于当前时间还未到3s。所以，目前程序会走default的case。</p><p>修改代码，将default注释:输出：</p><pre><code>Blocking on read...ch3 case...</code></pre><p>这时，select语句会阻塞，直到监测到一个可以执行的IO操作为止。这里，先会执行完睡眠3s的gorountine,此时两个channel(consumer2,consumer3)都满足条件，这时系统会随机选择一个case继续操作。</p><h2 id="现象总结"><a href="#现象总结" class="headerlink" title="现象总结"></a>现象总结</h2><p>通过上面示例，我们发现在 Go 语言中使用 select 控制结构时，会遇到两个有趣的现象：</p><ul><li><ol><li>select 能在 Channel 上进行非阻塞的收发操作(<strong>有default操作时</strong> 直接出发default)；</li></ol></li><li><ol start="2"><li>select 能在 Channel 上进行阻塞的收发操作(<strong>无default操作时</strong> 阻塞等待channel消息)；</li></ol></li><li><ol start="3"><li>select 在遇到多个 Channel 同时响应时会随机挑选 case 执行；</li></ol></li></ul><h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><pre><code>package mainimport &quot;fmt&quot;var ch1 chan intvar ch2 chan intvar chs = []chan int{ch1, ch2}var numbers = []int{1, 2, 3, 4, 5}func getNumber(i int) int {    fmt.Printf(&quot;numbers[%d]\n&quot;, i)    return numbers[i]}func getChan(i int) chan int {    fmt.Printf(&quot;chs[%d]\n&quot;, i)    return chs[i]}func main () {    select {    case getChan(0) &lt;- getNumber(2):        fmt.Println(&quot;1th case is selected.&quot;)    case getChan(1) &lt;- getNumber(3):        fmt.Println(&quot;2th case is selected.&quot;)    default:        fmt.Println(&quot;default!.&quot;)        }}</code></pre><p>输出：</p><pre><code>chs[0]numbers[2]chs[1]numbers[3]default!.</code></pre><p>运行上述例子，发现输出select 挨着输出。并且输出了default对应的case。</p><h2 id="现象总结-1"><a href="#现象总结-1" class="headerlink" title="现象总结"></a>现象总结</h2><p>所有channel表达式都会被求值、所有被发送的表达式都会被求值。求值顺序：自上而下、从左到右。</p>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Golang-range-的坑"><a href="#Golang-range-的坑" class="headerlink" title="Golang range 的坑"></a>Golang range 的坑</h1><p>使用 Go 语言经常会犯的错误比如当我们在遍历一个数组时，如果获取 range 返回变量的地址并保存到另一个数组或者哈希时，就会遇到令人困惑的现象：</p><h2 id="错误示例"><a href="#错误示例" class="headerlink" title="错误示例"></a>错误示例</h2><pre><code>package mainimport (    &quot;fmt&quot;)func main() {    arr := []int{1, 2, 3}    newArr := []*int{}    for _, v := range arr {        newArr = append(newArr, &amp;v)    }    for _, v := range newArr {        fmt.Println(*v)    }}</code></pre><p><strong>输出</strong></p><pre><code>333</code></pre><p><strong>原因</strong></p><p>对于所有的 range 循环，Go 语言都会在编译期将原切片或者数组赋值给一个新的变量 ha，在赋值的过程中就发生了拷贝，所以我们遍历的切片已经不是原始的切片变量了。</p><p>而遇到这种同时遍历索引和元素的 range 循环时，Go 语言会额外创建一个新的 v2 变量存储切片中的元素，循环中使用的这个变量 v2 会在每一次迭代被重新赋值而覆盖，在赋值时也发生了拷贝。</p><h2 id="正确示例"><a href="#正确示例" class="headerlink" title="正确示例"></a>正确示例</h2><pre><code>package mainimport (    &quot;fmt&quot;)func main() {    arr := []int{1, 2, 3}    newArr := []*int{}    for i, _ := range arr {        newArr = append(newArr, &amp;arr[i])    }    for _, v := range newArr {        fmt.Println(*v)    }}</code></pre><p><strong>输出</strong></p><pre><code>123</code></pre>]]></content>
       
       
       <categories>
@@ -503,11 +503,11 @@
     
     
     <entry>
-      <title>Golang range 的坑</title>
-      <link href="/2020-04-14-Golang-range/"/>
-      <url>/2020-04-14-Golang-range/</url>
+      <title>Golang select介绍</title>
+      <link href="/2020-04-14-Golang-select/"/>
+      <url>/2020-04-14-Golang-select/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Golang-range-的坑"><a href="#Golang-range-的坑" class="headerlink" title="Golang range 的坑"></a>Golang range 的坑</h1><p>使用 Go 语言经常会犯的错误比如当我们在遍历一个数组时，如果获取 range 返回变量的地址并保存到另一个数组或者哈希时，就会遇到令人困惑的现象：</p><h2 id="错误示例"><a href="#错误示例" class="headerlink" title="错误示例"></a>错误示例</h2><pre><code>package mainimport (    &quot;fmt&quot;)func main() {    arr := []int{1, 2, 3}    newArr := []*int{}    for _, v := range arr {        newArr = append(newArr, &amp;v)    }    for _, v := range newArr {        fmt.Println(*v)    }}</code></pre><p><strong>输出</strong></p><pre><code>333</code></pre><p><strong>原因</strong></p><p>对于所有的 range 循环，Go 语言都会在编译期将原切片或者数组赋值给一个新的变量 ha，在赋值的过程中就发生了拷贝，所以我们遍历的切片已经不是原始的切片变量了。</p><p>而遇到这种同时遍历索引和元素的 range 循环时，Go 语言会额外创建一个新的 v2 变量存储切片中的元素，循环中使用的这个变量 v2 会在每一次迭代被重新赋值而覆盖，在赋值时也发生了拷贝。</p><h2 id="正确示例"><a href="#正确示例" class="headerlink" title="正确示例"></a>正确示例</h2><pre><code>package mainimport (    &quot;fmt&quot;)func main() {    arr := []int{1, 2, 3}    newArr := []*int{}    for i, _ := range arr {        newArr = append(newArr, &amp;arr[i])    }    for _, v := range newArr {        fmt.Println(*v)    }}</code></pre><p><strong>输出</strong></p><pre><code>123</code></pre>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Golang-select"><a href="#Golang-select" class="headerlink" title="Golang select"></a>Golang select</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Go 语言中的 <strong>select</strong> 关键字也能够让 Goroutine 同时等待多个 Channel 的可读或者可写，在多个文件或者 Channel 发生状态改变之前，select 会一直阻塞当前线程或者 Goroutine。</p><p>select 是一种与 switch 相似的控制结构，与 switch 不同的是，select 中虽然也有多个 case，但是这些 case 中的表达式<strong>必须都是 Channel 的收发操作</strong>。</p><h2 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h2><pre><code>package mainimport (    &quot;fmt&quot;    &quot;time&quot;)func test(consumer1, consumer2,consumer3 chan int,startTime time.Time) {    fmt.Println(&quot;Blocking on read...&quot;)    select {        case &lt;- consumer1:            fmt.Printf(&quot;Unblocked %v later.\n&quot;, time.Since(startTime))        case &lt;- consumer2:            fmt.Printf(&quot;ch2 case...&quot;)        case &lt;- consumer3:            fmt.Printf(&quot;ch3 case...&quot;)        default:            fmt.Printf(&quot;default go...&quot;)    }}func main() {    startTime := time.Now()    consumer1 := make(chan int)    consumer2 := make(chan int)    consumer3 := make(chan int)    go func() {        time.Sleep(4*time.Second)        close(consumer1)    }()    go func() {        time.Sleep(3*time.Second)        consumer2 &lt;- 3    }()    go func() {        time.Sleep(3*time.Second)        consumer3 &lt;- 5    }()    test(consumer1, consumer2,consumer3,startTime)}</code></pre><p>输出：</p><pre><code>Blocking on read...default go...</code></pre><p>运行上述代码，由于当前时间还未到3s。所以，目前程序会走default的case。</p><p>修改代码，将default注释:输出：</p><pre><code>Blocking on read...ch3 case...</code></pre><p>这时，select语句会阻塞，直到监测到一个可以执行的IO操作为止。这里，先会执行完睡眠3s的gorountine,此时两个channel(consumer2,consumer3)都满足条件，这时系统会随机选择一个case继续操作。</p><h2 id="现象总结"><a href="#现象总结" class="headerlink" title="现象总结"></a>现象总结</h2><p>通过上面示例，我们发现在 Go 语言中使用 select 控制结构时，会遇到两个有趣的现象：</p><ul><li><ol><li>select 能在 Channel 上进行非阻塞的收发操作(<strong>有default操作时</strong> 直接出发default)；</li></ol></li><li><ol start="2"><li>select 能在 Channel 上进行阻塞的收发操作(<strong>无default操作时</strong> 阻塞等待channel消息)；</li></ol></li><li><ol start="3"><li>select 在遇到多个 Channel 同时响应时会随机挑选 case 执行；</li></ol></li></ul><h2 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h2><pre><code>package mainimport &quot;fmt&quot;var ch1 chan intvar ch2 chan intvar chs = []chan int{ch1, ch2}var numbers = []int{1, 2, 3, 4, 5}func getNumber(i int) int {    fmt.Printf(&quot;numbers[%d]\n&quot;, i)    return numbers[i]}func getChan(i int) chan int {    fmt.Printf(&quot;chs[%d]\n&quot;, i)    return chs[i]}func main () {    select {    case getChan(0) &lt;- getNumber(2):        fmt.Println(&quot;1th case is selected.&quot;)    case getChan(1) &lt;- getNumber(3):        fmt.Println(&quot;2th case is selected.&quot;)    default:        fmt.Println(&quot;default!.&quot;)        }}</code></pre><p>输出：</p><pre><code>chs[0]numbers[2]chs[1]numbers[3]default!.</code></pre><p>运行上述例子，发现输出select 挨着输出。并且输出了default对应的case。</p><h2 id="现象总结-1"><a href="#现象总结-1" class="headerlink" title="现象总结"></a>现象总结</h2><p>所有channel表达式都会被求值、所有被发送的表达式都会被求值。求值顺序：自上而下、从左到右。</p>]]></content>
       
       
       <categories>
@@ -584,6 +584,35 @@
     
     
     <entry>
+      <title>死锁介绍</title>
+      <link href="/2020-04-09-linux_dead_mutex/"/>
+      <url>/2020-04-09-linux_dead_mutex/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h1><p>当我们第一次加锁以后，再次进行加锁，这样会发生什么？<br>当我们第二次申请锁的时候，这个时候锁已经被占用了，该线程就会被挂起，但是刚好这个线程就是拥有锁的线程了，那么这个线程就永远挂起等待了，这个我们就叫 <strong>死锁</strong> 。</p><h2 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h2><ul><li><p><strong>1</strong> 一个线程两次申请锁。</p></li><li><p><strong>2</strong> 两个线程互相申请对方的锁，但是对方都不释放锁。</p></li></ul><h2 id="死锁产生的必要条件"><a href="#死锁产生的必要条件" class="headerlink" title="死锁产生的必要条件"></a>死锁产生的必要条件</h2><ul><li><p><strong>互斥：</strong> 一次只有一个进程可以使用一个资源。其他进程不能访问已分配给其他进程的资源。</p></li><li><p><strong>占有且等待</strong> ：当一个进程在等待分配得到其他资源时，其继续占有已分配得到的资源。</p></li><li><p><strong>非抢占：</strong> 不能强行抢占进程中已占有的资源。</p></li><li><p><strong>循环等待：</strong> 存在一个封闭的进程链，使得每个资源至少占有此链中下一个进程所需要的一个资源。</p></li></ul><h2 id="处理死锁的方法"><a href="#处理死锁的方法" class="headerlink" title="处理死锁的方法"></a>处理死锁的方法</h2><ul><li><p><strong>死锁预防：</strong> 通过确保死锁的一个必要条件不会满足，保证不会发生死锁。</p></li><li><p><strong>死锁检测：</strong> 允许死锁的发生，但是可以通过系统设置的检测结构及时的检测出死锁的发生，采取一些措施，将死锁清除掉。</p></li><li><p><strong>死锁避免：</strong> 在资源分配过程中，使用某种方法避免系统进入不安全的状态，从而避免发生死锁。</p></li><li><p><strong>死锁解除：</strong> 与死锁检测相配套的一种措施。当检测到系统中已发生死锁，需将进程从死锁状态中解脱出来。</p></li></ul><p><strong>常用方法：</strong> 撤销或挂起一些进程，以便回收一些资源，再将这些资源分配给已处于阻塞状态的进程。</p><h2 id="死锁避免算法："><a href="#死锁避免算法：" class="headerlink" title="死锁避免算法："></a>死锁避免算法：</h2><h3 id="银行家算法："><a href="#银行家算法：" class="headerlink" title="银行家算法："></a>银行家算法：</h3><ul><li><p><strong>1.</strong> 如果request&lt;=need，转向步骤2；否则认为出错，因为请求资源大于需要资源。</p></li><li><p><strong>2.</strong> 如果request&lt;=available，转向步骤3,；否则尚无足够资源，进程p阻塞。</p></li><li><p><strong>3.</strong> 系统尝试为把资源分配给进程P，并修改available、allocation和need的数值。</p></li><li><p><strong>4.</strong> 系统执行安全性算法，检查此次分配后系统是否处于 <strong>安全状态</strong> ，若安全，才正式将资源分配给进程P，否则将本次试探性分配作废，让进程P等待。</p></li></ul><p><strong>安全状态：</strong> 系统能按照某种进程顺序，为每个进程分配资源，直至满足每个进程对资源的最大需求，使每个进程都可顺利完成。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+          <category> 操作系统 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 效率 </tag>
+            
+            <tag> 操作系统 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Golang interface</title>
       <link href="/2020-04-09-Golang-interface/"/>
       <url>/2020-04-09-Golang-interface/</url>
@@ -616,35 +645,6 @@
       <url>/2020-04-09-share-memory/</url>
       
         <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="享内存的使用实现原理"><a href="#享内存的使用实现原理" class="headerlink" title="享内存的使用实现原理"></a>享内存的使用实现原理</h1><p>共享内存可以说是最有用的进程间通信方式，也是最快的IPC形式。两个不同进程A、B共享内存的意思是，同一块物理内存被映射到进程A、B各自的进程地址空间。进程A可以即时看到进程B对共享内存中数据的更新，反之亦然。由于多个进程共享同一块内存区域，必然需要某种同步机制，互斥锁和信号量都可以。使用共享内存时需要注意多个进程对共享内存的同步访问。</p><h3 id="共享内存段最大限制"><a href="#共享内存段最大限制" class="headerlink" title="共享内存段最大限制"></a>共享内存段最大限制</h3><p>SHMMNI为128，表示系统中最多可以有128个共享内存对象。</p><h2 id="ELF-是什么-？"><a href="#ELF-是什么-？" class="headerlink" title="ELF 是什么 ？"></a>ELF 是什么 ？</h2><p>其大小与程序中全局变量的是否初始化有什么关系（注意未初始化的数据放在 bss 段）</p><p><strong>Linux ELF</strong><br>ELF = Executable and Linkable Format ，可执行连接格式</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-          <category> 操作系统 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 效率 </tag>
-            
-            <tag> 操作系统 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>死锁介绍</title>
-      <link href="/2020-04-09-linux_dead_mutex/"/>
-      <url>/2020-04-09-linux_dead_mutex/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="什么是死锁？"><a href="#什么是死锁？" class="headerlink" title="什么是死锁？"></a>什么是死锁？</h1><p>当我们第一次加锁以后，再次进行加锁，这样会发生什么？<br>当我们第二次申请锁的时候，这个时候锁已经被占用了，该线程就会被挂起，但是刚好这个线程就是拥有锁的线程了，那么这个线程就永远挂起等待了，这个我们就叫 <strong>死锁</strong> 。</p><h2 id="死锁产生的原因"><a href="#死锁产生的原因" class="headerlink" title="死锁产生的原因"></a>死锁产生的原因</h2><ul><li><p><strong>1</strong> 一个线程两次申请锁。</p></li><li><p><strong>2</strong> 两个线程互相申请对方的锁，但是对方都不释放锁。</p></li></ul><h2 id="死锁产生的必要条件"><a href="#死锁产生的必要条件" class="headerlink" title="死锁产生的必要条件"></a>死锁产生的必要条件</h2><ul><li><p><strong>互斥：</strong> 一次只有一个进程可以使用一个资源。其他进程不能访问已分配给其他进程的资源。</p></li><li><p><strong>占有且等待</strong> ：当一个进程在等待分配得到其他资源时，其继续占有已分配得到的资源。</p></li><li><p><strong>非抢占：</strong> 不能强行抢占进程中已占有的资源。</p></li><li><p><strong>循环等待：</strong> 存在一个封闭的进程链，使得每个资源至少占有此链中下一个进程所需要的一个资源。</p></li></ul><h2 id="处理死锁的方法"><a href="#处理死锁的方法" class="headerlink" title="处理死锁的方法"></a>处理死锁的方法</h2><ul><li><p><strong>死锁预防：</strong> 通过确保死锁的一个必要条件不会满足，保证不会发生死锁。</p></li><li><p><strong>死锁检测：</strong> 允许死锁的发生，但是可以通过系统设置的检测结构及时的检测出死锁的发生，采取一些措施，将死锁清除掉。</p></li><li><p><strong>死锁避免：</strong> 在资源分配过程中，使用某种方法避免系统进入不安全的状态，从而避免发生死锁。</p></li><li><p><strong>死锁解除：</strong> 与死锁检测相配套的一种措施。当检测到系统中已发生死锁，需将进程从死锁状态中解脱出来。</p></li></ul><p><strong>常用方法：</strong> 撤销或挂起一些进程，以便回收一些资源，再将这些资源分配给已处于阻塞状态的进程。</p><h2 id="死锁避免算法："><a href="#死锁避免算法：" class="headerlink" title="死锁避免算法："></a>死锁避免算法：</h2><h3 id="银行家算法："><a href="#银行家算法：" class="headerlink" title="银行家算法："></a>银行家算法：</h3><ul><li><p><strong>1.</strong> 如果request&lt;=need，转向步骤2；否则认为出错，因为请求资源大于需要资源。</p></li><li><p><strong>2.</strong> 如果request&lt;=available，转向步骤3,；否则尚无足够资源，进程p阻塞。</p></li><li><p><strong>3.</strong> 系统尝试为把资源分配给进程P，并修改available、allocation和need的数值。</p></li><li><p><strong>4.</strong> 系统执行安全性算法，检查此次分配后系统是否处于 <strong>安全状态</strong> ，若安全，才正式将资源分配给进程P，否则将本次试探性分配作废，让进程P等待。</p></li></ul><p><strong>安全状态：</strong> 系统能按照某种进程顺序，为每个进程分配资源，直至满足每个进程对资源的最大需求，使每个进程都可顺利完成。</p>]]></content>
       
       
       <categories>
@@ -723,11 +723,11 @@
     
     
     <entry>
-      <title>Golang 异常处理</title>
-      <link href="/2020-04-03-Golang_exception/"/>
-      <url>/2020-04-03-Golang_exception/</url>
+      <title>Golang 闭包</title>
+      <link href="/2020-04-03-Golang_closure/"/>
+      <url>/2020-04-03-Golang_closure/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Golang-异常处理"><a href="#Golang-异常处理" class="headerlink" title="Golang 异常处理"></a>Golang 异常处理</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Go语言追求简洁优雅，所以，Go语言不支持传统的 try…catch…finally 这种异常，因为Go语言的设计者们认为，将异常与控制结构混在一起会很容易使得代码变得混乱。因为开发者很容易滥用异常，甚至一个小小的错误都抛出一个异常。在Go语言中，使用多值返回来返回错误。不要用异常代替错误，更不要用来控制流程。在极个别的情况下，也就是说，遇到真正的异常的情况下（比如除数为0了）。才使用Go中引入的Exception处理：defer, panic, recover。</p><h2 id="defer函数"><a href="#defer函数" class="headerlink" title="defer函数"></a>defer函数</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>defer语句是Go中一个非常有用的特性，可以将一个方法延迟到包裹该方法的方法返回时执行，在实际应用中，defer语句可以充当其他语言中try…catch…的角色，也可以用来处理关闭文件句柄等收尾操作。</p><p> <strong>有以下特点：</strong></p><ul><li><p><strong>1.</strong> defer在声明时不会执行，而是推迟执行，在return执行前，<strong>倒序执行defer[先进后出]</strong>，一般用于释放资源，清理数据，记录日志，异常处理等。</p></li><li><p><strong>2.</strong> defer有一个特性：<strong>即使函数抛出异常，defer仍会被执行</strong>，这样不会出现程序错误导致资源不被释放，或者因为第三方包的异常导致程序崩溃。</p></li></ul><h3 id="defer函数示例"><a href="#defer函数示例" class="headerlink" title="defer函数示例"></a>defer函数示例</h3><pre><code>package mainimport &quot;fmt&quot;func stackingDefers() {    defer func() {        fmt.Println(&quot;1&quot;)    }()    defer func() {        fmt.Println(&quot;2&quot;)    }()    defer func() {        fmt.Println(&quot;3&quot;)    }()}func main() {    stackingDefers()}</code></pre><p><strong>输出结果：</strong></p><pre><code>321</code></pre><p><strong>注释：</strong> 根据输出结果发现：当一个方法中有多个defer时， defer会将要延迟执行的方法“压栈”，当defer被触发时，将所有“压栈”的方法“出栈”并执行。所以defer的执行顺序是LIFO的。</p><h3 id="defer-在匿名函数中的坑"><a href="#defer-在匿名函数中的坑" class="headerlink" title="defer 在匿名函数中的坑"></a>defer 在匿名函数中的坑</h3><pre><code>package mainimport &quot;fmt&quot;func returnValues() int {    var result int    defer func() {        result++        fmt.Println(&quot;defer&quot;)    }()    return result}func namedReturnValues() (result int) {    defer func() {        result++        fmt.Println(&quot;defer&quot;)    }()    return result}func main() {    fmt.Println(returnValues())    fmt.Println(namedReturnValues())}</code></pre><p><strong>输出结果：</strong></p><pre><code>defer0defer1</code></pre><p><strong>注释:</strong> 上面的方法看到输出0，下面的方法输出1。上面的方法使用了匿名返回值，下面的使用了命名返回值，除此之外其他的逻辑均相同，为什么输出的结果会有区别呢？</p><p>要搞清这个问题首先需要了解defer的执行逻辑，文档中说defer语句在方法返回“时”触发，也就是说return和defer是“同时”执行的。以匿名返回值方法举例，过程如下。</p><p>将result赋值给返回值（可以理解成Go自动创建了一个返回值retValue，相当于执行retValue = result）<br>然后检查是否有defer，如果有则执行<br>返回刚才创建的返回值（retValue）<br>在这种情况下，defer中的修改是对result执行的，而不是retValue，所以defer返回的依然是retValue。在命名返回值方法中，由于返回值在方法定义时已经被定义，所以没有创建retValue的过程，result就是retValue，defer对于result的修改也会被直接返回。</p><h3 id="判断执行没有err之后，再defer释放资源"><a href="#判断执行没有err之后，再defer释放资源" class="headerlink" title="判断执行没有err之后，再defer释放资源"></a>判断执行没有err之后，再defer释放资源</h3><pre><code>resp, err := http.Get(url)// 先判断操作是否成功if err != nil {    return err}// 如果操作成功，再进行Close操作defer resp.Body.Close()</code></pre><p><strong>注释：</strong> 一些获取资源的操作可能会返回err参数，我们可以选择忽略返回的err参数，但是如果要使用defer进行延迟释放的的话，需要在使用defer之前先判断是否存在err，如果资源没有获取成功，即没有必要也不应该再对资源执行释放操作。如果不判断获取资源是否成功就执行释放操作的话，还有可能导致释放方法执行错误。</p><h3 id="调用os-Exit时defer不会被执行"><a href="#调用os-Exit时defer不会被执行" class="headerlink" title="调用os.Exit时defer不会被执行"></a>调用os.Exit时defer不会被执行</h3><pre><code>package mainimport (    &quot;fmt&quot;    &quot;os&quot;)func deferExit() {    defer func() {        fmt.Println(&quot;defer&quot;)    }()    fmt.Println(&quot;exit&quot;)    os.Exit(0)}func main() {    deferExit()}</code></pre><p><strong>结果输出：</strong></p><pre><code>exit</code></pre><p><strong>注释:</strong> 当发生panic时，所在goroutine的所有defer会被执行，但是当调用os.Exit()方法退出程序时，defer并不会被执行。</p><h2 id="panic-和recover-函数"><a href="#panic-和recover-函数" class="headerlink" title="panic()和recover()函数"></a>panic()和recover()函数</h2><p>Golang 语言内置函数panic()和recover()来处理程序中的错误。</p><pre><code>func recover() interface{}func panic(interface{})</code></pre><h3 id="panic-函数"><a href="#panic-函数" class="headerlink" title="panic()函数"></a>panic()函数</h3><p>当函数执行触发了panic()函数时，如果没有使用到defer关键字，函数执行流程会被立即终止；如果使用了defer关键字，则会逐层执行defer语句，直到所有的函数被终止。</p><p>错误信息，包括panic函数传入的参数，将会被报告出来。</p><pre><code>package mainfunc raiseErr(err interface{}){    panic(err)}func main() {    raiseErr(&quot;Unknow err&quot;)}</code></pre><p><strong>输出结果：</strong></p><pre><code>panic: Unknow errgoroutine 1 [running]:main.raiseErr(...)        E:/coding/go/test/test.go:5main.main()        E:/coding/go/test/test.go:9 +0x40</code></pre><p><strong>注释:</strong> 以上程序直接终止抛出异常。、相当于C++/Python里面的异常抛出，如果外围函数没有接住异常，便使得程序终止退出。</p><h3 id="recover-函数"><a href="#recover-函数" class="headerlink" title="recover()函数"></a>recover()函数</h3><p>recover()函数用于终止错误处理流程。一般使用在defer关键字后以有效截取错误处理流程。如果没有在发生异常的goroutine中明确调用恢复过程（使用recover关键字） ，会导致该goroutine所属的进程打印异常信息后直接退出。</p><pre><code>package mainimport (    &quot;fmt&quot;)func raiseErr(err interface{}){    panic(err)}func main() {    defer func() {        if r := recover(); r != nil {            fmt.Printf(&quot;Exception error caught: %v\n&quot;, r)        }    }()    raiseErr(&quot;Unknow err&quot;)}</code></pre><p><strong>结果输出：</strong></p><pre><code>Exception error caught: Unknow err</code></pre><p><strong>注释:</strong> raiseErr(“Unknow err”))中触发了错误处理流程，该匿名defer函数都将在函数退出时得到执行。 recover()函数执行将使得该错误处理过程终止。此时错误处理流程被触发时，程序传给panic函数的参数不为nil，则该函数还会打印详细的错误信息。</p>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="闭包函数"><a href="#闭包函数" class="headerlink" title="闭包函数"></a>闭包函数</h1><h2 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h2><p>匿名函数：不带函数名的函数，可以像变量一样被传递</p><pre><code>func(a,b int,z float32) bool{  //没有函数名return a*b&lt;int(z)}f:=func(x,y int) int{return x+y}</code></pre><h2 id="闭包函数介绍"><a href="#闭包函数介绍" class="headerlink" title="闭包函数介绍"></a>闭包函数介绍</h2><p>闭包是可以包含自由变量（未绑定到特定的对象）的代码块，这些变量不在代码块内或全局上下文中定义，而在定义代码块的环境中定义。要执行的代码块为自由变量提供绑定的计算环境（作用域）。闭包的价值在于可以作为一个变量对象来进行传递和返回。即可以把函数本身看作是一个变量，Go的匿名函数是一个闭包，Go闭包常用在go和defer关键字中。</p><h2 id="闭包函数的坑"><a href="#闭包函数的坑" class="headerlink" title="闭包函数的坑"></a>闭包函数的坑</h2><p>在for range中goroutine的方式使用闭包，如果没有给匿名函数传入一个变量，或新建一个变量存储迭代的变量，那么goroutine执行的结果会是最后一个迭代变量的结果，而不是每个迭代变量的结果。这是因为如果没有通过一个变量来拷贝迭代变量，那么闭包因为绑定了变量，当每个groutine运行时，迭代变量可能被更改。</p><p><strong>示例如下：</strong></p><ul><li><p>问题case:</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;sync&quot;)func main() {    var go_sync sync.WaitGroup    values := []int{1,2,3}    for _, val := range values {        go func() {            fmt.Println(val)            defer go_sync.Done()        }()        go_sync.Add(1)    }    go_sync.Wait()}</code></pre><p>  <strong>结果输出：</strong></p><pre><code>333</code></pre></li><li><p>规范case:</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;sync&quot;)func main() {    var go_sync sync.WaitGroup    values := []int{1,2,3}    for _, val := range values {        go func(val interface{}) {            fmt.Println(val)            defer go_sync.Done()        }(val)        go_sync.Add(1)    }    go_sync.Wait()}</code></pre><p>  <strong>结果输出：</strong></p><pre><code>312</code></pre></li></ul><h2 id="闭包函数应用示例"><a href="#闭包函数应用示例" class="headerlink" title="闭包函数应用示例"></a>闭包函数应用示例</h2><pre><code>package mainimport &quot;fmt&quot;func adder() func(int) int {    sum := 0    return func(x int) int {        sum += x        return sum    }}func main() {    pos, neg := adder(), adder()    for i := 0; i &lt; 10; i++ {        fmt.Println(pos(i),neg(-2*i),        )    }}</code></pre><p><strong>结果输出：</strong></p><pre><code>0 01 -23 -66 -1210 -2015 -3021 -4228 -5636 -7245 -90</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>闭包并不是一门编程语言不可缺少的功能，但闭包的表现形式一般是以匿名函数的方式出现，就象上面说到的，能够动态灵活的创建以及传递，体现出函数式编程的特点。所以在一些场合，我们就多了一种编码方式的选择，适当的使用闭包可以使得我们的代码简洁高效。</p><h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><p>由于闭包会使得函数中的变量都被保存在内存中，内存消耗很大，所以不能滥用闭包</p>]]></content>
       
       
       <categories>
@@ -750,11 +750,11 @@
     
     
     <entry>
-      <title>Golang 闭包</title>
-      <link href="/2020-04-03-Golang_closure/"/>
-      <url>/2020-04-03-Golang_closure/</url>
+      <title>Golang 异常处理</title>
+      <link href="/2020-04-03-Golang_exception/"/>
+      <url>/2020-04-03-Golang_exception/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="闭包函数"><a href="#闭包函数" class="headerlink" title="闭包函数"></a>闭包函数</h1><h2 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h2><p>匿名函数：不带函数名的函数，可以像变量一样被传递</p><pre><code>func(a,b int,z float32) bool{  //没有函数名return a*b&lt;int(z)}f:=func(x,y int) int{return x+y}</code></pre><h2 id="闭包函数介绍"><a href="#闭包函数介绍" class="headerlink" title="闭包函数介绍"></a>闭包函数介绍</h2><p>闭包是可以包含自由变量（未绑定到特定的对象）的代码块，这些变量不在代码块内或全局上下文中定义，而在定义代码块的环境中定义。要执行的代码块为自由变量提供绑定的计算环境（作用域）。闭包的价值在于可以作为一个变量对象来进行传递和返回。即可以把函数本身看作是一个变量，Go的匿名函数是一个闭包，Go闭包常用在go和defer关键字中。</p><h2 id="闭包函数的坑"><a href="#闭包函数的坑" class="headerlink" title="闭包函数的坑"></a>闭包函数的坑</h2><p>在for range中goroutine的方式使用闭包，如果没有给匿名函数传入一个变量，或新建一个变量存储迭代的变量，那么goroutine执行的结果会是最后一个迭代变量的结果，而不是每个迭代变量的结果。这是因为如果没有通过一个变量来拷贝迭代变量，那么闭包因为绑定了变量，当每个groutine运行时，迭代变量可能被更改。</p><p><strong>示例如下：</strong></p><ul><li><p>问题case:</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;sync&quot;)func main() {    var go_sync sync.WaitGroup    values := []int{1,2,3}    for _, val := range values {        go func() {            fmt.Println(val)            defer go_sync.Done()        }()        go_sync.Add(1)    }    go_sync.Wait()}</code></pre><p>  <strong>结果输出：</strong></p><pre><code>333</code></pre></li><li><p>规范case:</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;sync&quot;)func main() {    var go_sync sync.WaitGroup    values := []int{1,2,3}    for _, val := range values {        go func(val interface{}) {            fmt.Println(val)            defer go_sync.Done()        }(val)        go_sync.Add(1)    }    go_sync.Wait()}</code></pre><p>  <strong>结果输出：</strong></p><pre><code>312</code></pre></li></ul><h2 id="闭包函数应用示例"><a href="#闭包函数应用示例" class="headerlink" title="闭包函数应用示例"></a>闭包函数应用示例</h2><pre><code>package mainimport &quot;fmt&quot;func adder() func(int) int {    sum := 0    return func(x int) int {        sum += x        return sum    }}func main() {    pos, neg := adder(), adder()    for i := 0; i &lt; 10; i++ {        fmt.Println(pos(i),neg(-2*i),        )    }}</code></pre><p><strong>结果输出：</strong></p><pre><code>0 01 -23 -66 -1210 -2015 -3021 -4228 -5636 -7245 -90</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>闭包并不是一门编程语言不可缺少的功能，但闭包的表现形式一般是以匿名函数的方式出现，就象上面说到的，能够动态灵活的创建以及传递，体现出函数式编程的特点。所以在一些场合，我们就多了一种编码方式的选择，适当的使用闭包可以使得我们的代码简洁高效。</p><h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><p>由于闭包会使得函数中的变量都被保存在内存中，内存消耗很大，所以不能滥用闭包</p>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Golang-异常处理"><a href="#Golang-异常处理" class="headerlink" title="Golang 异常处理"></a>Golang 异常处理</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Go语言追求简洁优雅，所以，Go语言不支持传统的 try…catch…finally 这种异常，因为Go语言的设计者们认为，将异常与控制结构混在一起会很容易使得代码变得混乱。因为开发者很容易滥用异常，甚至一个小小的错误都抛出一个异常。在Go语言中，使用多值返回来返回错误。不要用异常代替错误，更不要用来控制流程。在极个别的情况下，也就是说，遇到真正的异常的情况下（比如除数为0了）。才使用Go中引入的Exception处理：defer, panic, recover。</p><h2 id="defer函数"><a href="#defer函数" class="headerlink" title="defer函数"></a>defer函数</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>defer语句是Go中一个非常有用的特性，可以将一个方法延迟到包裹该方法的方法返回时执行，在实际应用中，defer语句可以充当其他语言中try…catch…的角色，也可以用来处理关闭文件句柄等收尾操作。</p><p> <strong>有以下特点：</strong></p><ul><li><p><strong>1.</strong> defer在声明时不会执行，而是推迟执行，在return执行前，<strong>倒序执行defer[先进后出]</strong>，一般用于释放资源，清理数据，记录日志，异常处理等。</p></li><li><p><strong>2.</strong> defer有一个特性：<strong>即使函数抛出异常，defer仍会被执行</strong>，这样不会出现程序错误导致资源不被释放，或者因为第三方包的异常导致程序崩溃。</p></li></ul><h3 id="defer函数示例"><a href="#defer函数示例" class="headerlink" title="defer函数示例"></a>defer函数示例</h3><pre><code>package mainimport &quot;fmt&quot;func stackingDefers() {    defer func() {        fmt.Println(&quot;1&quot;)    }()    defer func() {        fmt.Println(&quot;2&quot;)    }()    defer func() {        fmt.Println(&quot;3&quot;)    }()}func main() {    stackingDefers()}</code></pre><p><strong>输出结果：</strong></p><pre><code>321</code></pre><p><strong>注释：</strong> 根据输出结果发现：当一个方法中有多个defer时， defer会将要延迟执行的方法“压栈”，当defer被触发时，将所有“压栈”的方法“出栈”并执行。所以defer的执行顺序是LIFO的。</p><h3 id="defer-在匿名函数中的坑"><a href="#defer-在匿名函数中的坑" class="headerlink" title="defer 在匿名函数中的坑"></a>defer 在匿名函数中的坑</h3><pre><code>package mainimport &quot;fmt&quot;func returnValues() int {    var result int    defer func() {        result++        fmt.Println(&quot;defer&quot;)    }()    return result}func namedReturnValues() (result int) {    defer func() {        result++        fmt.Println(&quot;defer&quot;)    }()    return result}func main() {    fmt.Println(returnValues())    fmt.Println(namedReturnValues())}</code></pre><p><strong>输出结果：</strong></p><pre><code>defer0defer1</code></pre><p><strong>注释:</strong> 上面的方法看到输出0，下面的方法输出1。上面的方法使用了匿名返回值，下面的使用了命名返回值，除此之外其他的逻辑均相同，为什么输出的结果会有区别呢？</p><p>要搞清这个问题首先需要了解defer的执行逻辑，文档中说defer语句在方法返回“时”触发，也就是说return和defer是“同时”执行的。以匿名返回值方法举例，过程如下。</p><p>将result赋值给返回值（可以理解成Go自动创建了一个返回值retValue，相当于执行retValue = result）<br>然后检查是否有defer，如果有则执行<br>返回刚才创建的返回值（retValue）<br>在这种情况下，defer中的修改是对result执行的，而不是retValue，所以defer返回的依然是retValue。在命名返回值方法中，由于返回值在方法定义时已经被定义，所以没有创建retValue的过程，result就是retValue，defer对于result的修改也会被直接返回。</p><h3 id="判断执行没有err之后，再defer释放资源"><a href="#判断执行没有err之后，再defer释放资源" class="headerlink" title="判断执行没有err之后，再defer释放资源"></a>判断执行没有err之后，再defer释放资源</h3><pre><code>resp, err := http.Get(url)// 先判断操作是否成功if err != nil {    return err}// 如果操作成功，再进行Close操作defer resp.Body.Close()</code></pre><p><strong>注释：</strong> 一些获取资源的操作可能会返回err参数，我们可以选择忽略返回的err参数，但是如果要使用defer进行延迟释放的的话，需要在使用defer之前先判断是否存在err，如果资源没有获取成功，即没有必要也不应该再对资源执行释放操作。如果不判断获取资源是否成功就执行释放操作的话，还有可能导致释放方法执行错误。</p><h3 id="调用os-Exit时defer不会被执行"><a href="#调用os-Exit时defer不会被执行" class="headerlink" title="调用os.Exit时defer不会被执行"></a>调用os.Exit时defer不会被执行</h3><pre><code>package mainimport (    &quot;fmt&quot;    &quot;os&quot;)func deferExit() {    defer func() {        fmt.Println(&quot;defer&quot;)    }()    fmt.Println(&quot;exit&quot;)    os.Exit(0)}func main() {    deferExit()}</code></pre><p><strong>结果输出：</strong></p><pre><code>exit</code></pre><p><strong>注释:</strong> 当发生panic时，所在goroutine的所有defer会被执行，但是当调用os.Exit()方法退出程序时，defer并不会被执行。</p><h2 id="panic-和recover-函数"><a href="#panic-和recover-函数" class="headerlink" title="panic()和recover()函数"></a>panic()和recover()函数</h2><p>Golang 语言内置函数panic()和recover()来处理程序中的错误。</p><pre><code>func recover() interface{}func panic(interface{})</code></pre><h3 id="panic-函数"><a href="#panic-函数" class="headerlink" title="panic()函数"></a>panic()函数</h3><p>当函数执行触发了panic()函数时，如果没有使用到defer关键字，函数执行流程会被立即终止；如果使用了defer关键字，则会逐层执行defer语句，直到所有的函数被终止。</p><p>错误信息，包括panic函数传入的参数，将会被报告出来。</p><pre><code>package mainfunc raiseErr(err interface{}){    panic(err)}func main() {    raiseErr(&quot;Unknow err&quot;)}</code></pre><p><strong>输出结果：</strong></p><pre><code>panic: Unknow errgoroutine 1 [running]:main.raiseErr(...)        E:/coding/go/test/test.go:5main.main()        E:/coding/go/test/test.go:9 +0x40</code></pre><p><strong>注释:</strong> 以上程序直接终止抛出异常。、相当于C++/Python里面的异常抛出，如果外围函数没有接住异常，便使得程序终止退出。</p><h3 id="recover-函数"><a href="#recover-函数" class="headerlink" title="recover()函数"></a>recover()函数</h3><p>recover()函数用于终止错误处理流程。一般使用在defer关键字后以有效截取错误处理流程。如果没有在发生异常的goroutine中明确调用恢复过程（使用recover关键字） ，会导致该goroutine所属的进程打印异常信息后直接退出。</p><pre><code>package mainimport (    &quot;fmt&quot;)func raiseErr(err interface{}){    panic(err)}func main() {    defer func() {        if r := recover(); r != nil {            fmt.Printf(&quot;Exception error caught: %v\n&quot;, r)        }    }()    raiseErr(&quot;Unknow err&quot;)}</code></pre><p><strong>结果输出：</strong></p><pre><code>Exception error caught: Unknow err</code></pre><p><strong>注释:</strong> raiseErr(“Unknow err”))中触发了错误处理流程，该匿名defer函数都将在函数退出时得到执行。 recover()函数执行将使得该错误处理过程终止。此时错误处理流程被触发时，程序传给panic函数的参数不为nil，则该函数还会打印详细的错误信息。</p>]]></content>
       
       
       <categories>
@@ -804,35 +804,6 @@
     
     
     <entry>
-      <title>Golang goroutine</title>
-      <link href="/2020-04-02-Golang_goroutine/"/>
-      <url>/2020-04-02-Golang_goroutine/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="goroutine简介"><a href="#goroutine简介" class="headerlink" title="goroutine简介"></a>goroutine简介</h2><p>goroutine是go语言中最为NB的设计，也是其魅力所在，goroutine的本质是协程，是实现并行计算的核心。goroutine使用方式非常的简单，只需使用go关键字即可启动一个协程，并且它是处于异步方式运行，你不需要等它运行完成以后在执行以后的代码。GO默认是使用一个CPU核的，除非设置runtime.GOMAXPROCS。</p><pre><code>go func()//通过go关键字启动一个协程来运行函数   </code></pre><h2 id="概念普及"><a href="#概念普及" class="headerlink" title="概念普及"></a>概念普及</h2><ul><li><p><strong>并发</strong>：</p><p>  <strong>一个cpu上</strong>能同时执行多项任务，在很短时间内，cpu来回切换任务执行(在某段很短时间内执行程序a，然后又迅速得切换到程序b去执行)，有时间上的重叠（宏观上是同时的，微观仍是顺序执行）,这样看起来多个任务像是同时执行，这就是并发。</p></li><li><p><strong>并行</strong></p><p>  当系统有<strong>多个CPU</strong>(多核)时,每个CPU同一时刻都运行任务，互不抢占自己所在的CPU资源，同时进行，称为并行。</p></li><li><p><strong>进程</strong></p><p>  cpu在切换程序的时候，如果不保存上一个程序的状态（也就是我们常说的context–上下文），直接切换下一个程序，就会丢失上一个程序的一系列状态，于是引入了进程这个概念，用以划分好程序运行时所需要的资源。因此进程就是一个程序运行时候的所需要的基本资源单位（也可以说是程序运行的一个实体）。(系统进行资源分配和调度的基本单位)</p></li><li><p><strong>线程</strong></p><p>  cpu切换多个进程的时候，会花费不少的时间，因为切换进程需要切换到内核态，而每次调度需要内核态都需要读取用户态的数据，进程一旦多起来，cpu调度会消耗一大堆资源，因此引入了线程的概念，线程本身几乎不占有资源，他们共享进程里的资源，内核调度起来不会那么像进程切换那么耗费资源。</p></li><li><p><strong>协程</strong></p><p>  协程拥有自己的寄存器上下文和栈。协程调度切换时，将寄存器上下文和栈保存到其他地方，在切回来的时候，恢复先前保存的寄存器上下文和栈。因此，协程能保留上一次调用时的状态（即所有局部状态的一个特定组合），每次过程重入时，就相当于进入上一次调用的状态，换种说法：进入上一次离开时所处逻辑流的位置。线程和进程的操作是由程序触发系统接口，最后的执行者是系统；协程的操作执行者则是用户自身程序，goroutine也是协程。协程位于线程级别</p></li></ul><h2 id="调度模型简介"><a href="#调度模型简介" class="headerlink" title="调度模型简介"></a>调度模型简介</h2><p>groutine能拥有强大的并发实现是通过GPM调度模型实现。Go的调度器内部有四个重要的结构：M，P，G，Sched</p><ul><li><strong>M</strong> :代表内核级线程，一个M就是一个线程，goroutine就是跑在M之上的；M是一个很大的结构，里面维护小对象内存cache（mcache）、当前执行的goroutine、随机数发生器等等非常多的信息。</li><li><strong>G</strong> :代表一个goroutine，它有自己的栈，instruction pointer和其他信息（正在等待的channel等等），用于调度。</li><li><strong>P</strong> :全称是Processor，处理器，它的主要用途就是用来执行goroutine的，所以它也维护了一个goroutine队列，里面存储了所有需要它来执行的goroutine。</li><li><strong>Sched</strong> ：代表调度器，它维护有存储M和G的队列以及调度器的一些状态信息等。</li></ul><h2 id="调度实现场景"><a href="#调度实现场景" class="headerlink" title="调度实现场景"></a>调度实现场景</h2><p><strong>一般调度如下图所示：</strong></p><p><img src="/img/loading.gif" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-cb5bc6d48c41a052.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="goroutine.png"> </p><p>从上图中看，有2个物理线程M1和M2，每一个M都拥有一个处理器P，每一个也都有一个正在运行的goroutine。<br>P的数量可以通过GOMAXPROCS()来设置，它其实也就代表了真正的并发度，即有多少个goroutine可以同时运行。<br>图中灰色的那些goroutine并没有运行，而是出于ready的就绪态，正在等待被调度。P维护着这个队列（称之为runqueue），<br>Go语言里，启动一个goroutine很容易：go function 就行，所以每有一个go语句被执行，runqueue队列就在其末尾加入一个<br>goroutine，在下一个调度点，就从runqueue中取出（如何决定取哪个goroutine？）一个goroutine执行。</p><p><strong>当一个OS线程M1陷入阻塞时：</strong></p><p>P转而在运行M2，图中的M2可能是正被创建，或者从线程缓存中取出。当M1返回时，它必须尝试取得一个P来运行goroutine，一般情况下，它会从其他的OS线程那里拿一个P过来，</p><p>如果没有拿到的话，它就把goroutine放在一个global runqueue里，然后自己睡眠（放入线程缓存里）。所有的P也会周期性的检查global runqueue并运行其中的goroutine，否则global runqueue上的goroutine永远无法执行。</p><p><strong>调度分配不均：如下图所示</strong></p><p><img src="/img/loading.gif" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-5ee5fd44bfd36c3e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="goroutine1.png"></p><p>P所分配的任务G很快就执行完了（分配不均），这就导致了这个处理器P很忙，但是其他的P还有任务，此时如果global runqueue没有任务G了，那么P不得不从其他的P里拿一些G来执行。一般来说，如果P从其他的P那里要拿任务的话，<strong>一般就拿run queue的一半</strong> ，这就确保了每个OS线程都能充分的使用。</p><h2 id="使用goroutine"><a href="#使用goroutine" class="headerlink" title="使用goroutine"></a>使用goroutine</h2><h3 id="goroutine异常捕获"><a href="#goroutine异常捕获" class="headerlink" title="goroutine异常捕获"></a>goroutine异常捕获</h3><pre><code>package mainimport (    &quot;fmt&quot;    &quot;time&quot;)func addele(a []int ,i int)  {    defer func() {    //匿名函数捕获错误        err := recover()        if err != nil {            fmt.Println(err)        }    }()a[i]=ifmt.Println(a)}func main() {    Arry := make([]int,4)    for i :=0 ; i&lt;10 ;i++{        go addele(Arry,i)    }    time.Sleep(time.Second * 2)}</code></pre><h3 id="同步的goroutine"><a href="#同步的goroutine" class="headerlink" title="同步的goroutine"></a>同步的goroutine</h3><p>由于goroutine是异步执行的，那很有可能出现主程序退出时还有goroutine没有执行完，此时goroutine也会跟着退出。此时如果想等到所有goroutine任务执行完毕才退出，go提供了sync包和channel来解决同步问题，当然如果你能预测每个goroutine执行的时间，你还可以通过time.Sleep方式等待所有的groutine执行完成以后在退出程序(如上面的列子)。</p><p><strong>示例一：使用sync包同步goroutine</strong></p><p>sync大致实现方式:<br>WaitGroup 等待一组goroutinue执行完毕. 主程序调用 Add 添加等待的goroutinue数量. 每个goroutinue在执行结束时调用 Done ，此时等待队列数量减1.，主程序通过Wait阻塞，直到等待队列为0.</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;sync&quot;)func cal(a int , b int ,n *sync.WaitGroup)  {    c := a+b    fmt.Printf(&quot;%d + %d = %d\n&quot;,a,b,c)    defer n.Done() //goroutinue完成后, WaitGroup的计数-1}func main() {    var go_sync sync.WaitGroup //声明一个WaitGroup变量    for i :=0 ; i&lt;10 ;i++{        go_sync.Add(1) // WaitGroup的计数加1        go cal(i,i+1,&amp;go_sync)      }    go_sync.Wait()  //等待所有goroutine执行完毕}</code></pre><p><strong>示例二：通过channel实现goroutine之间的同步。</strong></p><p>channel实现方式：<br>通过channel能在多个groutine之间通讯，当一个goroutine完成时候向channel发送退出信号,等所有goroutine退出时候，利用for循环channel,取channel中的信号，若取不到数据便会阻塞原理，等待所有goroutine执行完毕，使用该方法有个前提是你已经知道了你启动了多少个goroutine。</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;time&quot;)func cal(a int , b int ,Exitchan chan bool)  {    c := a+b    fmt.Printf(&quot;%d + %d = %d\n&quot;,a,b,c)    time.Sleep(time.Second*2)    Exitchan &lt;- true}func main() {    Exitchan := make(chan bool,10)  //声明并分配管道内存    for i :=0 ; i&lt;10 ;i++{        go cal(i,i+1,Exitchan)    }    for j :=0; j&lt;10; j++{           &lt;- Exitchan  //取信号数据，如果取不到则会阻塞    }    close(Exitchan) // 关闭管道}</code></pre><h3 id="goroutine之间的通讯"><a href="#goroutine之间的通讯" class="headerlink" title="goroutine之间的通讯"></a>goroutine之间的通讯</h3><p>goroutine本质上是协程，可以理解为不受内核调度，而受go调度器管理的线程。goroutine之间可以通过channel进行通信或者说是数据共享，当然你也可以使用全局变量来进行数据共享。<br>示例代码：采用生产者和消费者模式</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;sync&quot;)func Productor(mychan chan int,data int,wait *sync.WaitGroup)  {    mychan &lt;- data    fmt.Println(&quot;product data：&quot;,data)    defer wait.Done()}func Consumer(mychan chan int,wait *sync.WaitGroup)  {    a := &lt;- mychan    fmt.Println(&quot;consumer data：&quot;,a)    defer wait.Done()}func main() {    datachan := make(chan int, 100)   //通讯数据管道    var wg sync.WaitGroup    for i := 0; i &lt; 10; i++ {        go Productor(datachan, i,&amp;wg) //生产数据        wg.Add(1)    }    for j := 0; j &lt; 10; j++ {        go Consumer(datachan,&amp;wg)  //消费数据        wg.Add(1)    }    wg.Wait()}</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-          <category> Golang 笔记 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Golang </tag>
-            
-            <tag> goroutine </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Golang channel</title>
       <link href="/2020-04-02-Golang_channel/"/>
       <url>/2020-04-02-Golang_channel/</url>
@@ -862,27 +833,27 @@
     
     
     <entry>
-      <title>僵尸进程与孤儿进程</title>
-      <link href="/2020-04-02-zombie-process/"/>
-      <url>/2020-04-02-zombie-process/</url>
+      <title>Golang goroutine</title>
+      <link href="/2020-04-02-Golang_goroutine/"/>
+      <url>/2020-04-02-Golang_goroutine/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="僵尸进程与孤儿进程"><a href="#僵尸进程与孤儿进程" class="headerlink" title="僵尸进程与孤儿进程"></a>僵尸进程与孤儿进程</h1><h3 id="进程状态："><a href="#进程状态：" class="headerlink" title="进程状态："></a>进程状态：</h3><p>就绪，运行，阻塞，阻塞挂起，就绪挂起</p><h3 id="僵尸进程："><a href="#僵尸进程：" class="headerlink" title="僵尸进程："></a>僵尸进程：</h3><p>即子进程先于父进程退出后，子进程的<strong>PCB</strong>需要其父进程释放，但是父进程并没有释放子进程的PCB，这样的子进程就称为僵尸进程，僵尸进程实际上是一个已经死掉的进程.用ps可以看到子进程后有一个<defunct> ,defunct是已死的，僵尸的意思.一个进程在调用exit命令结束自己的生命的时候，其实它并没有真正的被销毁，而是留下一个称为僵尸进程（Zombie）的数据结构（系统调用exit，它的作用是使进程退出，但也仅仅限于将一个正常的进程变成一个僵尸进程，并不能将其完全销毁）在Linux进程的状态中，僵尸进程是非常特殊的一种，它已经放弃了几乎所有内存空间，没有任何可执行代码，也不能被调度，仅仅在进程列表中保留一个位置,记载该进程的退出状态等信息供其他进程收集，除此之外，僵尸进程不再占有任何内存空间。这个僵尸进程需要它的父进程来为它收尸，如果他的父进程没有处理这个僵尸进程的措施，那么它就一直保持僵尸状态，如果这时父进程结束了，那么<strong>init</strong>进程自动会接手这个子进程，为它收尸，它还是能被清除的。<strong>但是如果如果父进程是一个循环</strong>，不会结束，那么子进程就会一直保持僵尸状态.</defunct></p><p><strong>注：</strong> 如果有大量的僵尸进程驻在系统之中，必然消耗大量的系统资源。但是系统资源是有限的，因此当僵尸进程达到一定数目时，系统因缺乏资源而导致奔溃。</p><h3 id="孤儿进程："><a href="#孤儿进程：" class="headerlink" title="孤儿进程："></a>孤儿进程：</h3><p>一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被<strong>init</strong>进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。</p><p>子进程死亡需要父进程来处理，那么意味着正常的进程应该是子进程先于父进程死亡。当父进程先于子进程死亡时，子进程死亡时没父进程处理，这个死亡的子进程就是孤儿进程。<br><strong>注：</strong> 但孤儿进程与僵尸进程不同的是，由于父进程已经死亡，系统会帮助父进程回收处理孤儿进程。所以孤儿进程实际上是不占用资源的，因为它终究是被系统回收了。不会像僵尸进程那样占用ID,损害运行系统。</p><h3 id="僵尸进程处理方式"><a href="#僵尸进程处理方式" class="headerlink" title="僵尸进程处理方式"></a>僵尸进程处理方式</h3><ul><li><p>1.暴力解决：<br>将其父进程杀死，那么它的子进程，即僵尸进程会变成孤儿进程，由系统来回收。但是这种做法在大多数情况下都是不可取的，如父进程是一个服务器程序，如果为了回收其子进程的资源，而杀死服务器程序，那么将导致整个服务器崩溃，得不偿失。显然这种回收进程的方式是不可取的，但其也有一定的存在意义。</p></li><li><p>2.SIGCHLD信号处理：<br>当子进程终止时，内核就会向它的父进程发送一个SIGCHLD信号，父进程可以选择忽略该信号，也可以提供一个接收到信号以后的处理函数。对于这种信号的系统默认动作是忽略它。我们不希望有过多的僵尸进程产生，所以当父进程接收到SIGCHLD信号后就应该调用 wait 或 waitpid 函数对子进程进行善后处理，释放子进程占用的资源。</p></li></ul>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="goroutine简介"><a href="#goroutine简介" class="headerlink" title="goroutine简介"></a>goroutine简介</h2><p>goroutine是go语言中最为NB的设计，也是其魅力所在，goroutine的本质是协程，是实现并行计算的核心。goroutine使用方式非常的简单，只需使用go关键字即可启动一个协程，并且它是处于异步方式运行，你不需要等它运行完成以后在执行以后的代码。GO默认是使用一个CPU核的，除非设置runtime.GOMAXPROCS。</p><pre><code>go func()//通过go关键字启动一个协程来运行函数   </code></pre><h2 id="概念普及"><a href="#概念普及" class="headerlink" title="概念普及"></a>概念普及</h2><ul><li><p><strong>并发</strong>：</p><p>  <strong>一个cpu上</strong>能同时执行多项任务，在很短时间内，cpu来回切换任务执行(在某段很短时间内执行程序a，然后又迅速得切换到程序b去执行)，有时间上的重叠（宏观上是同时的，微观仍是顺序执行）,这样看起来多个任务像是同时执行，这就是并发。</p></li><li><p><strong>并行</strong></p><p>  当系统有<strong>多个CPU</strong>(多核)时,每个CPU同一时刻都运行任务，互不抢占自己所在的CPU资源，同时进行，称为并行。</p></li><li><p><strong>进程</strong></p><p>  cpu在切换程序的时候，如果不保存上一个程序的状态（也就是我们常说的context–上下文），直接切换下一个程序，就会丢失上一个程序的一系列状态，于是引入了进程这个概念，用以划分好程序运行时所需要的资源。因此进程就是一个程序运行时候的所需要的基本资源单位（也可以说是程序运行的一个实体）。(系统进行资源分配和调度的基本单位)</p></li><li><p><strong>线程</strong></p><p>  cpu切换多个进程的时候，会花费不少的时间，因为切换进程需要切换到内核态，而每次调度需要内核态都需要读取用户态的数据，进程一旦多起来，cpu调度会消耗一大堆资源，因此引入了线程的概念，线程本身几乎不占有资源，他们共享进程里的资源，内核调度起来不会那么像进程切换那么耗费资源。</p></li><li><p><strong>协程</strong></p><p>  协程拥有自己的寄存器上下文和栈。协程调度切换时，将寄存器上下文和栈保存到其他地方，在切回来的时候，恢复先前保存的寄存器上下文和栈。因此，协程能保留上一次调用时的状态（即所有局部状态的一个特定组合），每次过程重入时，就相当于进入上一次调用的状态，换种说法：进入上一次离开时所处逻辑流的位置。线程和进程的操作是由程序触发系统接口，最后的执行者是系统；协程的操作执行者则是用户自身程序，goroutine也是协程。协程位于线程级别</p></li></ul><h2 id="调度模型简介"><a href="#调度模型简介" class="headerlink" title="调度模型简介"></a>调度模型简介</h2><p>groutine能拥有强大的并发实现是通过GPM调度模型实现。Go的调度器内部有四个重要的结构：M，P，G，Sched</p><ul><li><strong>M</strong> :代表内核级线程，一个M就是一个线程，goroutine就是跑在M之上的；M是一个很大的结构，里面维护小对象内存cache（mcache）、当前执行的goroutine、随机数发生器等等非常多的信息。</li><li><strong>G</strong> :代表一个goroutine，它有自己的栈，instruction pointer和其他信息（正在等待的channel等等），用于调度。</li><li><strong>P</strong> :全称是Processor，处理器，它的主要用途就是用来执行goroutine的，所以它也维护了一个goroutine队列，里面存储了所有需要它来执行的goroutine。</li><li><strong>Sched</strong> ：代表调度器，它维护有存储M和G的队列以及调度器的一些状态信息等。</li></ul><h2 id="调度实现场景"><a href="#调度实现场景" class="headerlink" title="调度实现场景"></a>调度实现场景</h2><p><strong>一般调度如下图所示：</strong></p><p><img src="/img/loading.gif" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-cb5bc6d48c41a052.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="goroutine.png"> </p><p>从上图中看，有2个物理线程M1和M2，每一个M都拥有一个处理器P，每一个也都有一个正在运行的goroutine。<br>P的数量可以通过GOMAXPROCS()来设置，它其实也就代表了真正的并发度，即有多少个goroutine可以同时运行。<br>图中灰色的那些goroutine并没有运行，而是出于ready的就绪态，正在等待被调度。P维护着这个队列（称之为runqueue），<br>Go语言里，启动一个goroutine很容易：go function 就行，所以每有一个go语句被执行，runqueue队列就在其末尾加入一个<br>goroutine，在下一个调度点，就从runqueue中取出（如何决定取哪个goroutine？）一个goroutine执行。</p><p><strong>当一个OS线程M1陷入阻塞时：</strong></p><p>P转而在运行M2，图中的M2可能是正被创建，或者从线程缓存中取出。当M1返回时，它必须尝试取得一个P来运行goroutine，一般情况下，它会从其他的OS线程那里拿一个P过来，</p><p>如果没有拿到的话，它就把goroutine放在一个global runqueue里，然后自己睡眠（放入线程缓存里）。所有的P也会周期性的检查global runqueue并运行其中的goroutine，否则global runqueue上的goroutine永远无法执行。</p><p><strong>调度分配不均：如下图所示</strong></p><p><img src="/img/loading.gif" class="lazyload" data-src="https://upload-images.jianshu.io/upload_images/17904159-5ee5fd44bfd36c3e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"  alt="goroutine1.png"></p><p>P所分配的任务G很快就执行完了（分配不均），这就导致了这个处理器P很忙，但是其他的P还有任务，此时如果global runqueue没有任务G了，那么P不得不从其他的P里拿一些G来执行。一般来说，如果P从其他的P那里要拿任务的话，<strong>一般就拿run queue的一半</strong> ，这就确保了每个OS线程都能充分的使用。</p><h2 id="使用goroutine"><a href="#使用goroutine" class="headerlink" title="使用goroutine"></a>使用goroutine</h2><h3 id="goroutine异常捕获"><a href="#goroutine异常捕获" class="headerlink" title="goroutine异常捕获"></a>goroutine异常捕获</h3><pre><code>package mainimport (    &quot;fmt&quot;    &quot;time&quot;)func addele(a []int ,i int)  {    defer func() {    //匿名函数捕获错误        err := recover()        if err != nil {            fmt.Println(err)        }    }()a[i]=ifmt.Println(a)}func main() {    Arry := make([]int,4)    for i :=0 ; i&lt;10 ;i++{        go addele(Arry,i)    }    time.Sleep(time.Second * 2)}</code></pre><h3 id="同步的goroutine"><a href="#同步的goroutine" class="headerlink" title="同步的goroutine"></a>同步的goroutine</h3><p>由于goroutine是异步执行的，那很有可能出现主程序退出时还有goroutine没有执行完，此时goroutine也会跟着退出。此时如果想等到所有goroutine任务执行完毕才退出，go提供了sync包和channel来解决同步问题，当然如果你能预测每个goroutine执行的时间，你还可以通过time.Sleep方式等待所有的groutine执行完成以后在退出程序(如上面的列子)。</p><p><strong>示例一：使用sync包同步goroutine</strong></p><p>sync大致实现方式:<br>WaitGroup 等待一组goroutinue执行完毕. 主程序调用 Add 添加等待的goroutinue数量. 每个goroutinue在执行结束时调用 Done ，此时等待队列数量减1.，主程序通过Wait阻塞，直到等待队列为0.</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;sync&quot;)func cal(a int , b int ,n *sync.WaitGroup)  {    c := a+b    fmt.Printf(&quot;%d + %d = %d\n&quot;,a,b,c)    defer n.Done() //goroutinue完成后, WaitGroup的计数-1}func main() {    var go_sync sync.WaitGroup //声明一个WaitGroup变量    for i :=0 ; i&lt;10 ;i++{        go_sync.Add(1) // WaitGroup的计数加1        go cal(i,i+1,&amp;go_sync)      }    go_sync.Wait()  //等待所有goroutine执行完毕}</code></pre><p><strong>示例二：通过channel实现goroutine之间的同步。</strong></p><p>channel实现方式：<br>通过channel能在多个groutine之间通讯，当一个goroutine完成时候向channel发送退出信号,等所有goroutine退出时候，利用for循环channel,取channel中的信号，若取不到数据便会阻塞原理，等待所有goroutine执行完毕，使用该方法有个前提是你已经知道了你启动了多少个goroutine。</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;time&quot;)func cal(a int , b int ,Exitchan chan bool)  {    c := a+b    fmt.Printf(&quot;%d + %d = %d\n&quot;,a,b,c)    time.Sleep(time.Second*2)    Exitchan &lt;- true}func main() {    Exitchan := make(chan bool,10)  //声明并分配管道内存    for i :=0 ; i&lt;10 ;i++{        go cal(i,i+1,Exitchan)    }    for j :=0; j&lt;10; j++{           &lt;- Exitchan  //取信号数据，如果取不到则会阻塞    }    close(Exitchan) // 关闭管道}</code></pre><h3 id="goroutine之间的通讯"><a href="#goroutine之间的通讯" class="headerlink" title="goroutine之间的通讯"></a>goroutine之间的通讯</h3><p>goroutine本质上是协程，可以理解为不受内核调度，而受go调度器管理的线程。goroutine之间可以通过channel进行通信或者说是数据共享，当然你也可以使用全局变量来进行数据共享。<br>示例代码：采用生产者和消费者模式</p><pre><code>package mainimport (    &quot;fmt&quot;    &quot;sync&quot;)func Productor(mychan chan int,data int,wait *sync.WaitGroup)  {    mychan &lt;- data    fmt.Println(&quot;product data：&quot;,data)    defer wait.Done()}func Consumer(mychan chan int,wait *sync.WaitGroup)  {    a := &lt;- mychan    fmt.Println(&quot;consumer data：&quot;,a)    defer wait.Done()}func main() {    datachan := make(chan int, 100)   //通讯数据管道    var wg sync.WaitGroup    for i := 0; i &lt; 10; i++ {        go Productor(datachan, i,&amp;wg) //生产数据        wg.Add(1)    }    for j := 0; j &lt; 10; j++ {        go Consumer(datachan,&amp;wg)  //消费数据        wg.Add(1)    }    wg.Wait()}</code></pre>]]></content>
       
       
       <categories>
           
           <category> 技术笔记 </category>
           
-          <category> 操作系统 </category>
+          <category> Golang 笔记 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 效率 </tag>
+            <tag> Golang </tag>
             
-            <tag> 操作系统 </tag>
+            <tag> goroutine </tag>
             
         </tags>
       
@@ -910,6 +881,35 @@
         <tags>
             
             <tag> Kubernetes </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>僵尸进程与孤儿进程</title>
+      <link href="/2020-04-02-zombie-process/"/>
+      <url>/2020-04-02-zombie-process/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="僵尸进程与孤儿进程"><a href="#僵尸进程与孤儿进程" class="headerlink" title="僵尸进程与孤儿进程"></a>僵尸进程与孤儿进程</h1><h3 id="进程状态："><a href="#进程状态：" class="headerlink" title="进程状态："></a>进程状态：</h3><p>就绪，运行，阻塞，阻塞挂起，就绪挂起</p><h3 id="僵尸进程："><a href="#僵尸进程：" class="headerlink" title="僵尸进程："></a>僵尸进程：</h3><p>即子进程先于父进程退出后，子进程的<strong>PCB</strong>需要其父进程释放，但是父进程并没有释放子进程的PCB，这样的子进程就称为僵尸进程，僵尸进程实际上是一个已经死掉的进程.用ps可以看到子进程后有一个<defunct> ,defunct是已死的，僵尸的意思.一个进程在调用exit命令结束自己的生命的时候，其实它并没有真正的被销毁，而是留下一个称为僵尸进程（Zombie）的数据结构（系统调用exit，它的作用是使进程退出，但也仅仅限于将一个正常的进程变成一个僵尸进程，并不能将其完全销毁）在Linux进程的状态中，僵尸进程是非常特殊的一种，它已经放弃了几乎所有内存空间，没有任何可执行代码，也不能被调度，仅仅在进程列表中保留一个位置,记载该进程的退出状态等信息供其他进程收集，除此之外，僵尸进程不再占有任何内存空间。这个僵尸进程需要它的父进程来为它收尸，如果他的父进程没有处理这个僵尸进程的措施，那么它就一直保持僵尸状态，如果这时父进程结束了，那么<strong>init</strong>进程自动会接手这个子进程，为它收尸，它还是能被清除的。<strong>但是如果如果父进程是一个循环</strong>，不会结束，那么子进程就会一直保持僵尸状态.</defunct></p><p><strong>注：</strong> 如果有大量的僵尸进程驻在系统之中，必然消耗大量的系统资源。但是系统资源是有限的，因此当僵尸进程达到一定数目时，系统因缺乏资源而导致奔溃。</p><h3 id="孤儿进程："><a href="#孤儿进程：" class="headerlink" title="孤儿进程："></a>孤儿进程：</h3><p>一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被<strong>init</strong>进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。</p><p>子进程死亡需要父进程来处理，那么意味着正常的进程应该是子进程先于父进程死亡。当父进程先于子进程死亡时，子进程死亡时没父进程处理，这个死亡的子进程就是孤儿进程。<br><strong>注：</strong> 但孤儿进程与僵尸进程不同的是，由于父进程已经死亡，系统会帮助父进程回收处理孤儿进程。所以孤儿进程实际上是不占用资源的，因为它终究是被系统回收了。不会像僵尸进程那样占用ID,损害运行系统。</p><h3 id="僵尸进程处理方式"><a href="#僵尸进程处理方式" class="headerlink" title="僵尸进程处理方式"></a>僵尸进程处理方式</h3><ul><li><p>1.暴力解决：<br>将其父进程杀死，那么它的子进程，即僵尸进程会变成孤儿进程，由系统来回收。但是这种做法在大多数情况下都是不可取的，如父进程是一个服务器程序，如果为了回收其子进程的资源，而杀死服务器程序，那么将导致整个服务器崩溃，得不偿失。显然这种回收进程的方式是不可取的，但其也有一定的存在意义。</p></li><li><p>2.SIGCHLD信号处理：<br>当子进程终止时，内核就会向它的父进程发送一个SIGCHLD信号，父进程可以选择忽略该信号，也可以提供一个接收到信号以后的处理函数。对于这种信号的系统默认动作是忽略它。我们不希望有过多的僵尸进程产生，所以当父进程接收到SIGCHLD信号后就应该调用 wait 或 waitpid 函数对子进程进行善后处理，释放子进程占用的资源。</p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+          <category> 操作系统 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 效率 </tag>
+            
+            <tag> 操作系统 </tag>
             
         </tags>
       
@@ -1026,33 +1026,6 @@
     
     
     <entry>
-      <title>Heketi (二)调用封装</title>
-      <link href="/2020-03-18-Heket(%E4%BA%8C)%E8%B0%83%E7%94%A8%E5%B0%81%E8%A3%85/"/>
-      <url>/2020-03-18-Heket(%E4%BA%8C)%E8%B0%83%E7%94%A8%E5%B0%81%E8%A3%85/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Heketi-调用封装"><a href="#Heketi-调用封装" class="headerlink" title="Heketi 调用封装"></a>Heketi 调用封装</h1><h3 id="包依赖"><a href="#包依赖" class="headerlink" title="包依赖"></a>包依赖</h3><pre><code>import (    &quot;fmt&quot;    &quot;errors&quot;    client&quot;github.com/heketi/heketi/client/api/go-client&quot;    api&quot;github.com/heketi/heketi/pkg/glusterfs/api&quot;)</code></pre><h3 id="Heketi属性"><a href="#Heketi属性" class="headerlink" title="Heketi属性"></a>Heketi属性</h3><pre><code>type Heketi struct{    Url string    User string    Key string    ClientObj *client.Client}</code></pre><h3 id="客户端实例化接口"><a href="#客户端实例化接口" class="headerlink" title="客户端实例化接口"></a>客户端实例化接口</h3><pre><code>func(self *Heketi)NewClient(){    // Create a client object    clientObj := client.NewClient(self.Url, self.User, self.Key)    self.ClientObj = clientObj}</code></pre><h3 id="创建一个集群接口"><a href="#创建一个集群接口" class="headerlink" title="创建一个集群接口"></a>创建一个集群接口</h3><pre><code>func(self *Heketi)CreateCluster(block bool,file bool)(string,error){    // create a cluster    clusterCreateReq := &amp;api.ClusterCreateRequest{}    clusterCreateReq.ClusterFlags.Block = true    clusterCreateReq.ClusterFlags.File = true    clusterInfoRep,err := self.ClientObj.ClusterCreate(clusterCreateReq)    return clusterInfoRep.Id,err}</code></pre><h3 id="集群ID列表返回"><a href="#集群ID列表返回" class="headerlink" title="集群ID列表返回"></a>集群ID列表返回</h3><pre><code>func(self *Heketi)ClusterList()([]string,error){    // Get  cluster list    clusterListRes,err := self.ClientObj.ClusterList()    if err != nil{        return nil,err    }    if len((*clusterListRes).Clusters) == 0{        fmt.Println(&quot;don&apos;t have a cluster&quot;)        return []string{},errors.New(&quot;don&apos;t have a cluster&quot;)    }    clusterList := (*clusterListRes).Clusters    return clusterList,nil}</code></pre><h3 id="集群信息获取"><a href="#集群信息获取" class="headerlink" title="集群信息获取"></a>集群信息获取</h3><pre><code>func(self *Heketi)ClusterInfo(clusterId string)([]string,[]string,[]string,error){    clusterInfoRes,err := self.ClientObj.ClusterInfo(clusterId)    return clusterInfoRes.Nodes,clusterInfoRes.Volumes ,clusterInfoRes.BlockVolumes ,err}</code></pre><h3 id="集群中添加一个节点"><a href="#集群中添加一个节点" class="headerlink" title="集群中添加一个节点"></a>集群中添加一个节点</h3><pre><code>func(self *Heketi)AddNode(clusterId string,zone int,hostnameManage []string,hostnamesStorage []string,Tags map[string]string)(*api.NodeInfoResponse,error){    // Create node    nodeReq := &amp;api.NodeAddRequest{}    nodeReq.ClusterId = clusterId    nodeReq.Hostnames.Manage = []string{&quot;cent&quot; + fmt.Sprintf(&quot;%v&quot;, zone)}    nodeReq.Hostnames.Storage = []string{&quot;storage&quot; + fmt.Sprintf(&quot;%v&quot;, zone)}    nodeReq.Zone = zone + 1    nodeReq.Tags = Tags    // Add node    node, err := self.ClientObj.NodeAdd(nodeReq)    return node ,err}</code></pre><h3 id="给节点添加一个存储设备"><a href="#给节点添加一个存储设备" class="headerlink" title="给节点添加一个存储设备"></a>给节点添加一个存储设备</h3><pre><code>func(self *Heketi)AddDevice(nodeId string, deviceName string)(bool,error){        // add device        deviceReq := &amp;api.DeviceAddRequest{}        deviceReq.Name = deviceName        deviceReq.NodeId = nodeId        err := self.ClientObj.DeviceAdd(deviceReq)        if err != nil{            return false,err        }        return true,nil}</code></pre><h3 id="在设备中创建一个卷"><a href="#在设备中创建一个卷" class="headerlink" title="在设备中创建一个卷"></a>在设备中创建一个卷</h3><pre><code>func(self *Heketi)VolumeCreate(size int,name string,replica int,clustersIdList []string,block bool)(string,error){    volumeCreateReq := &amp;api.VolumeCreateRequest{}     volumeCreateReq.Size = size    volumeCreateReq.Clusters = clustersIdList    volumeCreateReq.Name = name    volumeCreateReq.Block  = block    volumeCreateReq.Durability.Replicate.Replica = replica    volumeInfoRes := &amp;api.VolumeInfoResponse{}    volumeInfoRes,err := self.ClientObj.VolumeCreate(volumeCreateReq)    return volumeInfoRes.VolumeInfo.Id,err}</code></pre><h3 id="卷删除"><a href="#卷删除" class="headerlink" title="卷删除"></a>卷删除</h3><pre><code>func(self *Heketi)VolumeDelete(id string)(error){    return self.ClientObj.VolumeDelete(id)}</code></pre><h3 id="卷信息获取"><a href="#卷信息获取" class="headerlink" title="卷信息获取"></a>卷信息获取</h3><pre><code>func(self *Heketi)VolumeInfo(id string){    info,_ := self.ClientObj.VolumeInfo(id)    fmt.Println(info)}</code></pre><h3 id="获取集群信息细节"><a href="#获取集群信息细节" class="headerlink" title="获取集群信息细节"></a>获取集群信息细节</h3><pre><code>func(self *Heketi)GetClusterInfoDetail(clusterId string)(map[string]interface{}){    /*        {            &quot;ClusterId&quot;:&quot;&quot;,            &quot;ClusterInfo&quot;:[                {                    &quot;NodeName&quot;:&quot;&quot;,                    &quot;NodeId&quot;:&quot;&quot;,                    &quot;NodeState&quot;:&quot;&quot;,                    &quot;DevideInfo&quot;:[                    {                        &quot;DeviceId&quot;:&quot;&quot;,                        &quot;DeviceName&quot;:&quot;&quot;,                        &quot;DeviceState&quot;:&quot;&quot;,                        &quot;DeviceTotal&quot;:0,                        &quot;DeviceUsed&quot;:0,                        &quot;DeviceFree&quot;:0,                    }                ]                }            ]        }    */    clusterInfo,_ := self.ClientObj.ClusterInfo(clusterId)    clusterInfoDetailMap := map[string]interface{}{}    var nodeList  []interface{}    clusterInfoDetailMap[&quot;ClusterId&quot;] = clusterId    //select  cluster&apos;s node    for _,node:= range clusterInfo.Nodes {        nodeInfoRes ,_:= self.ClientObj.NodeInfo(node)         var newdDviceInfoList  []interface{}        newNodeInfo := map[string]interface{}{}        newNodeInfo[&quot;NodeState&quot;] = (*nodeInfoRes).State        newNodeInfo[&quot;NodeId&quot;] = (*nodeInfoRes).NodeInfo.Id        newNodeInfo[&quot;NodeName&quot;] = (*nodeInfoRes).NodeInfo.NodeAddRequest.Hostnames.Manage        devicesInfoResList := (*nodeInfoRes).DevicesInfo           for _,deviceInfoRes := range devicesInfoResList{            deviceInfo := map[string]interface{}{}            deviceInfo[&quot;DeviceId&quot;] = deviceInfoRes.DeviceInfo.Id            deviceInfo[&quot;DeviceName&quot;] = deviceInfoRes.DeviceInfo.Device.Name            deviceInfo[&quot;DeviceUsed&quot;] = deviceInfoRes.DeviceInfo.Storage.Used            deviceInfo[&quot;DeviceFree&quot;] = deviceInfoRes.DeviceInfo.Storage.Free            deviceInfo[&quot;DeviceTotal&quot;] = deviceInfoRes.DeviceInfo.Storage.Total             deviceInfo[&quot;DeviceState&quot;] = deviceInfoRes.State            newdDviceInfoList = append(newdDviceInfoList,deviceInfo)            newNodeInfo[&quot;DevideInfo&quot;] = newdDviceInfoList                                                    }        nodeList = append(nodeList,newNodeInfo)    }    clusterInfoDetailMap[&quot;ClusterInfo&quot;] = nodeList    return clusterInfoDetailMap}</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Heketi </tag>
-            
-            <tag> Golang </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>ElasticSearch（二）安装部署</title>
       <link href="/2020-03-18-Elasticsearch%20(%E4%BA%8C)%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/"/>
       <url>/2020-03-18-Elasticsearch%20(%E4%BA%8C)%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2/</url>
@@ -1072,6 +1045,33 @@
             <tag> 大数据 </tag>
             
             <tag> ElasticSearch </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Heketi (二)调用封装</title>
+      <link href="/2020-03-18-Heket(%E4%BA%8C)%E8%B0%83%E7%94%A8%E5%B0%81%E8%A3%85/"/>
+      <url>/2020-03-18-Heket(%E4%BA%8C)%E8%B0%83%E7%94%A8%E5%B0%81%E8%A3%85/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="Heketi-调用封装"><a href="#Heketi-调用封装" class="headerlink" title="Heketi 调用封装"></a>Heketi 调用封装</h1><h3 id="包依赖"><a href="#包依赖" class="headerlink" title="包依赖"></a>包依赖</h3><pre><code>import (    &quot;fmt&quot;    &quot;errors&quot;    client&quot;github.com/heketi/heketi/client/api/go-client&quot;    api&quot;github.com/heketi/heketi/pkg/glusterfs/api&quot;)</code></pre><h3 id="Heketi属性"><a href="#Heketi属性" class="headerlink" title="Heketi属性"></a>Heketi属性</h3><pre><code>type Heketi struct{    Url string    User string    Key string    ClientObj *client.Client}</code></pre><h3 id="客户端实例化接口"><a href="#客户端实例化接口" class="headerlink" title="客户端实例化接口"></a>客户端实例化接口</h3><pre><code>func(self *Heketi)NewClient(){    // Create a client object    clientObj := client.NewClient(self.Url, self.User, self.Key)    self.ClientObj = clientObj}</code></pre><h3 id="创建一个集群接口"><a href="#创建一个集群接口" class="headerlink" title="创建一个集群接口"></a>创建一个集群接口</h3><pre><code>func(self *Heketi)CreateCluster(block bool,file bool)(string,error){    // create a cluster    clusterCreateReq := &amp;api.ClusterCreateRequest{}    clusterCreateReq.ClusterFlags.Block = true    clusterCreateReq.ClusterFlags.File = true    clusterInfoRep,err := self.ClientObj.ClusterCreate(clusterCreateReq)    return clusterInfoRep.Id,err}</code></pre><h3 id="集群ID列表返回"><a href="#集群ID列表返回" class="headerlink" title="集群ID列表返回"></a>集群ID列表返回</h3><pre><code>func(self *Heketi)ClusterList()([]string,error){    // Get  cluster list    clusterListRes,err := self.ClientObj.ClusterList()    if err != nil{        return nil,err    }    if len((*clusterListRes).Clusters) == 0{        fmt.Println(&quot;don&apos;t have a cluster&quot;)        return []string{},errors.New(&quot;don&apos;t have a cluster&quot;)    }    clusterList := (*clusterListRes).Clusters    return clusterList,nil}</code></pre><h3 id="集群信息获取"><a href="#集群信息获取" class="headerlink" title="集群信息获取"></a>集群信息获取</h3><pre><code>func(self *Heketi)ClusterInfo(clusterId string)([]string,[]string,[]string,error){    clusterInfoRes,err := self.ClientObj.ClusterInfo(clusterId)    return clusterInfoRes.Nodes,clusterInfoRes.Volumes ,clusterInfoRes.BlockVolumes ,err}</code></pre><h3 id="集群中添加一个节点"><a href="#集群中添加一个节点" class="headerlink" title="集群中添加一个节点"></a>集群中添加一个节点</h3><pre><code>func(self *Heketi)AddNode(clusterId string,zone int,hostnameManage []string,hostnamesStorage []string,Tags map[string]string)(*api.NodeInfoResponse,error){    // Create node    nodeReq := &amp;api.NodeAddRequest{}    nodeReq.ClusterId = clusterId    nodeReq.Hostnames.Manage = []string{&quot;cent&quot; + fmt.Sprintf(&quot;%v&quot;, zone)}    nodeReq.Hostnames.Storage = []string{&quot;storage&quot; + fmt.Sprintf(&quot;%v&quot;, zone)}    nodeReq.Zone = zone + 1    nodeReq.Tags = Tags    // Add node    node, err := self.ClientObj.NodeAdd(nodeReq)    return node ,err}</code></pre><h3 id="给节点添加一个存储设备"><a href="#给节点添加一个存储设备" class="headerlink" title="给节点添加一个存储设备"></a>给节点添加一个存储设备</h3><pre><code>func(self *Heketi)AddDevice(nodeId string, deviceName string)(bool,error){        // add device        deviceReq := &amp;api.DeviceAddRequest{}        deviceReq.Name = deviceName        deviceReq.NodeId = nodeId        err := self.ClientObj.DeviceAdd(deviceReq)        if err != nil{            return false,err        }        return true,nil}</code></pre><h3 id="在设备中创建一个卷"><a href="#在设备中创建一个卷" class="headerlink" title="在设备中创建一个卷"></a>在设备中创建一个卷</h3><pre><code>func(self *Heketi)VolumeCreate(size int,name string,replica int,clustersIdList []string,block bool)(string,error){    volumeCreateReq := &amp;api.VolumeCreateRequest{}     volumeCreateReq.Size = size    volumeCreateReq.Clusters = clustersIdList    volumeCreateReq.Name = name    volumeCreateReq.Block  = block    volumeCreateReq.Durability.Replicate.Replica = replica    volumeInfoRes := &amp;api.VolumeInfoResponse{}    volumeInfoRes,err := self.ClientObj.VolumeCreate(volumeCreateReq)    return volumeInfoRes.VolumeInfo.Id,err}</code></pre><h3 id="卷删除"><a href="#卷删除" class="headerlink" title="卷删除"></a>卷删除</h3><pre><code>func(self *Heketi)VolumeDelete(id string)(error){    return self.ClientObj.VolumeDelete(id)}</code></pre><h3 id="卷信息获取"><a href="#卷信息获取" class="headerlink" title="卷信息获取"></a>卷信息获取</h3><pre><code>func(self *Heketi)VolumeInfo(id string){    info,_ := self.ClientObj.VolumeInfo(id)    fmt.Println(info)}</code></pre><h3 id="获取集群信息细节"><a href="#获取集群信息细节" class="headerlink" title="获取集群信息细节"></a>获取集群信息细节</h3><pre><code>func(self *Heketi)GetClusterInfoDetail(clusterId string)(map[string]interface{}){    /*        {            &quot;ClusterId&quot;:&quot;&quot;,            &quot;ClusterInfo&quot;:[                {                    &quot;NodeName&quot;:&quot;&quot;,                    &quot;NodeId&quot;:&quot;&quot;,                    &quot;NodeState&quot;:&quot;&quot;,                    &quot;DevideInfo&quot;:[                    {                        &quot;DeviceId&quot;:&quot;&quot;,                        &quot;DeviceName&quot;:&quot;&quot;,                        &quot;DeviceState&quot;:&quot;&quot;,                        &quot;DeviceTotal&quot;:0,                        &quot;DeviceUsed&quot;:0,                        &quot;DeviceFree&quot;:0,                    }                ]                }            ]        }    */    clusterInfo,_ := self.ClientObj.ClusterInfo(clusterId)    clusterInfoDetailMap := map[string]interface{}{}    var nodeList  []interface{}    clusterInfoDetailMap[&quot;ClusterId&quot;] = clusterId    //select  cluster&apos;s node    for _,node:= range clusterInfo.Nodes {        nodeInfoRes ,_:= self.ClientObj.NodeInfo(node)         var newdDviceInfoList  []interface{}        newNodeInfo := map[string]interface{}{}        newNodeInfo[&quot;NodeState&quot;] = (*nodeInfoRes).State        newNodeInfo[&quot;NodeId&quot;] = (*nodeInfoRes).NodeInfo.Id        newNodeInfo[&quot;NodeName&quot;] = (*nodeInfoRes).NodeInfo.NodeAddRequest.Hostnames.Manage        devicesInfoResList := (*nodeInfoRes).DevicesInfo           for _,deviceInfoRes := range devicesInfoResList{            deviceInfo := map[string]interface{}{}            deviceInfo[&quot;DeviceId&quot;] = deviceInfoRes.DeviceInfo.Id            deviceInfo[&quot;DeviceName&quot;] = deviceInfoRes.DeviceInfo.Device.Name            deviceInfo[&quot;DeviceUsed&quot;] = deviceInfoRes.DeviceInfo.Storage.Used            deviceInfo[&quot;DeviceFree&quot;] = deviceInfoRes.DeviceInfo.Storage.Free            deviceInfo[&quot;DeviceTotal&quot;] = deviceInfoRes.DeviceInfo.Storage.Total             deviceInfo[&quot;DeviceState&quot;] = deviceInfoRes.State            newdDviceInfoList = append(newdDviceInfoList,deviceInfo)            newNodeInfo[&quot;DevideInfo&quot;] = newdDviceInfoList                                                    }        nodeList = append(nodeList,newNodeInfo)    }    clusterInfoDetailMap[&quot;ClusterInfo&quot;] = nodeList    return clusterInfoDetailMap}</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Heketi </tag>
+            
+            <tag> Golang </tag>
             
         </tags>
       
@@ -1526,33 +1526,6 @@
     
     
     <entry>
-      <title>一条SQL语句在MySQL中如何执行的呢？</title>
-      <link href="/2019-05-10-SQL%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F/"/>
-      <url>/2019-05-10-SQL%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="MySQL架构分析以及各模块功能介绍"><a href="#MySQL架构分析以及各模块功能介绍" class="headerlink" title="MySQL架构分析以及各模块功能介绍"></a>MySQL架构分析以及各模块功能介绍</h2><p>如图是MySQL的一个简要架构图：</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/mysql_framework.png?raw=true"  alt></p><p><strong>SERVER:</strong> 如上图所示，SERVER层主要包括连接器、查询缓存、分析器、优化器、执行器等。例如存储过程、触发器、函数等功能都在这一层实现。日志模块Binlog模块也在SERVER层中实现。</p><p><strong>Storage engine:</strong> 主要负责数据的存储和读取，采用可替代的Plugin式架构，支持InnoDB、My-ISAM、Memory等多个存储引擎。</p><p><strong>Connector:</strong> 主要负责用户登录数据库，进行用户身份的认证，包括账户密码、权限等校验操作，如果校验通过，连接器会在权限表中查询该用户的所有执行权限，后续只要此连接不断开，即使管理员修改了该用户的权限，也不受影响。</p><p><strong>Query cache:</strong> 当用户在建立连接后，执行查询语句的时候，回先查询缓存，当MySQL在开始校验SQL是否已经执行过，会以key-value的形式缓存在内存中，key是查询语句，value是结果集。如果缓存key被找到，就会直接返回给客户端，如果没有找到就会执行后续的操作，当完成一次操作后也会把结果以key-value形式缓存起来(真正执行缓存查询时会先校验该用户的执行权限)。</p><p>相信读者看到这就会有了一个问号，对于数据实时更新和存储的场景，这种缓存机制显然是不可取的，在MySQL8.0版本以后该功能被直接删除掉了。</p><p><strong>Analyzer:</strong> 分析器是用来分析SQL语句，主要具体分析有以下几步：<br>第一步 词法分析：我们都知道SQL语句有很多.分为四大类DDL、DML、DQL、DCL。每条语句都是由多个字符串组成，要进行词法分析首先要提取关键字，比如‘select’,然后依次提出查询的表，提出字段名，提出查询条件等等。当此法的分析关机条件提取完成之后，会进入下一步。<br>第二步 语法分析：语法分析是根据MYSQL语法标准判断输入SQL语法是否正确。当语法分析合法之后，就进入下一步执行，但是如何执行会是最优的方式呢？此时就需要优化器。</p><p><strong>Optimizer:</strong> 优化器作用是找出最优的执行方案，例如在多索引条件下如何选择索引，多表查询的时候关联顺序的选择等等。</p><p><strong>Actuator:</strong> 在优化器选择了最终的执行方案后会交给执行器开始执行，在执行SQL方案之前会校验用户的执行权限，如果该用户没有改表的操作权限或者相应执行权限，就会直接返回错误信息。如果用户权限校验通过，执行器就会调用存储引擎的接口，并且相应返回接口执行的结果。</p><h2 id="未完待续-……"><a href="#未完待续-……" class="headerlink" title="未完待续 ……"></a>未完待续 ……</h2><p><strong>博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。</strong></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 技术笔记 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 数据库 </tag>
-            
-            <tag> MySQL </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>C++ 虚函数表、虚函数讲解</title>
       <link href="/2019-05-06-C++%E8%99%9A%E8%A1%A8%E3%80%81%E8%99%9A%E5%87%BD%E6%95%B0%E3%80%81%E8%99%9A%E6%8C%87%E9%92%88%E8%AE%B2%E8%A7%A3/"/>
       <url>/2019-05-06-C++%E8%99%9A%E8%A1%A8%E3%80%81%E8%99%9A%E5%87%BD%E6%95%B0%E3%80%81%E8%99%9A%E6%8C%87%E9%92%88%E8%AE%B2%E8%A7%A3/</url>
@@ -1572,6 +1545,33 @@
         <tags>
             
             <tag> C++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>一条SQL语句在MySQL中如何执行的呢？</title>
+      <link href="/2019-05-10-SQL%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F/"/>
+      <url>/2019-05-10-SQL%E5%9C%A8MySQL%E4%B8%AD%E5%A6%82%E4%BD%95%E6%89%A7%E8%A1%8C%E7%9A%84%EF%BC%9F/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="MySQL架构分析以及各模块功能介绍"><a href="#MySQL架构分析以及各模块功能介绍" class="headerlink" title="MySQL架构分析以及各模块功能介绍"></a>MySQL架构分析以及各模块功能介绍</h2><p>如图是MySQL的一个简要架构图：</p><p><img src="/img/loading.gif" class="lazyload" data-src="https://github.com/FrederickHou/FrederickHou.github.io/blob/master/img/mysql_framework.png?raw=true"  alt></p><p><strong>SERVER:</strong> 如上图所示，SERVER层主要包括连接器、查询缓存、分析器、优化器、执行器等。例如存储过程、触发器、函数等功能都在这一层实现。日志模块Binlog模块也在SERVER层中实现。</p><p><strong>Storage engine:</strong> 主要负责数据的存储和读取，采用可替代的Plugin式架构，支持InnoDB、My-ISAM、Memory等多个存储引擎。</p><p><strong>Connector:</strong> 主要负责用户登录数据库，进行用户身份的认证，包括账户密码、权限等校验操作，如果校验通过，连接器会在权限表中查询该用户的所有执行权限，后续只要此连接不断开，即使管理员修改了该用户的权限，也不受影响。</p><p><strong>Query cache:</strong> 当用户在建立连接后，执行查询语句的时候，回先查询缓存，当MySQL在开始校验SQL是否已经执行过，会以key-value的形式缓存在内存中，key是查询语句，value是结果集。如果缓存key被找到，就会直接返回给客户端，如果没有找到就会执行后续的操作，当完成一次操作后也会把结果以key-value形式缓存起来(真正执行缓存查询时会先校验该用户的执行权限)。</p><p>相信读者看到这就会有了一个问号，对于数据实时更新和存储的场景，这种缓存机制显然是不可取的，在MySQL8.0版本以后该功能被直接删除掉了。</p><p><strong>Analyzer:</strong> 分析器是用来分析SQL语句，主要具体分析有以下几步：<br>第一步 词法分析：我们都知道SQL语句有很多.分为四大类DDL、DML、DQL、DCL。每条语句都是由多个字符串组成，要进行词法分析首先要提取关键字，比如‘select’,然后依次提出查询的表，提出字段名，提出查询条件等等。当此法的分析关机条件提取完成之后，会进入下一步。<br>第二步 语法分析：语法分析是根据MYSQL语法标准判断输入SQL语法是否正确。当语法分析合法之后，就进入下一步执行，但是如何执行会是最优的方式呢？此时就需要优化器。</p><p><strong>Optimizer:</strong> 优化器作用是找出最优的执行方案，例如在多索引条件下如何选择索引，多表查询的时候关联顺序的选择等等。</p><p><strong>Actuator:</strong> 在优化器选择了最终的执行方案后会交给执行器开始执行，在执行SQL方案之前会校验用户的执行权限，如果该用户没有改表的操作权限或者相应执行权限，就会直接返回错误信息。如果用户权限校验通过，执行器就会调用存储引擎的接口，并且相应返回接口执行的结果。</p><h2 id="未完待续-……"><a href="#未完待续-……" class="headerlink" title="未完待续 ……"></a>未完待续 ……</h2><p><strong>博客著作权归本作者所有，任何形式的转载都请联系作者获得授权并注明出处。</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 技术笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 数据库 </tag>
+            
+            <tag> MySQL </tag>
             
         </tags>
       
