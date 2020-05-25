@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://www.frederickhou.com/2020.05-08-leetcode_03/</loc>
+    <loc>https://www.frederickhou.com/2020-05-21-why-mysq-b+/</loc>
     
-    <lastmod>2020-05-22T09:42:03.668Z</lastmod>
+    <lastmod>2020-05-25T06:31:39.526Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://www.frederickhou.com/2020-05-21-merageSort/</loc>
     
-    <lastmod>2020-05-22T09:41:54.902Z</lastmod>
+    <lastmod>2020-05-25T06:25:11.394Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020.05-08-leetcode_03/</loc>
+    
+    <lastmod>2020-05-22T09:42:03.668Z</lastmod>
     
   </url>
   
