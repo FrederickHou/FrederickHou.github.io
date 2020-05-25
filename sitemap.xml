@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.frederickhou.com/2020-05-21-Circle-of-friends/</loc>
+    
+    <lastmod>2020-05-25T09:07:51.850Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.frederickhou.com/2020-05-21-merageSort/</loc>
     
-    <lastmod>2020-05-25T09:00:10.129Z</lastmod>
+    <lastmod>2020-05-25T09:06:40.191Z</lastmod>
     
   </url>
   
@@ -19,13 +26,6 @@
     <loc>https://www.frederickhou.com/2020.05-08-leetcode_03/</loc>
     
     <lastmod>2020-05-22T09:42:03.668Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-05-21-Circle-of-friends/</loc>
-    
-    <lastmod>2020-05-22T09:41:45.620Z</lastmod>
     
   </url>
   
