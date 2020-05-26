@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.frederickhou.com/about/index.html</loc>
+    
+    <lastmod>2020-05-26T06:12:42.722Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.frederickhou.com/2020-05-21-why-mysq-b+/</loc>
     
     <lastmod>2020-05-26T03:36:25.714Z</lastmod>
@@ -320,13 +327,6 @@
     <loc>https://www.frederickhou.com/tags/index.html</loc>
     
     <lastmod>2020-04-17T06:51:27.427Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/about/index.html</loc>
-    
-    <lastmod>2020-04-17T05:31:04.238Z</lastmod>
     
   </url>
   
