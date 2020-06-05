@@ -2,6 +2,83 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.frederickhou.com/2020-06-05-tree-high/</loc>
+    
+    <lastmod>2020-06-05T10:21:09.278Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-04-28-leetcode_01/</loc>
+    
+    <lastmod>2020-06-05T09:56:36.810Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-05-08-leetcode_02/</loc>
+    
+    <lastmod>2020-06-05T09:56:28.071Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-05-08-leetcode_04/</loc>
+    
+    <lastmod>2020-06-05T09:56:23.254Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-05-09-leetcode_05/</loc>
+    
+    <lastmod>2020-06-05T09:56:18.101Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-05-11-leetcode_06/</loc>
+    
+    <lastmod>2020-06-05T09:56:13.078Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-05-12-leetcode_07/</loc>
+    
+    <lastmod>2020-06-05T09:56:05.223Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-05-18-leetcode_08/</loc>
+    
+    <lastmod>2020-06-05T09:55:57.248Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-05-21-Circle-of-friends/</loc>
+    
+    <lastmod>2020-06-05T09:55:31.934Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-05-21-merageSort/</loc>
+    
+    <lastmod>2020-06-05T09:55:23.698Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020.05-08-leetcode_03/</loc>
+    
+    <lastmod>2020-06-05T09:55:06.620Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.frederickhou.com/2020-05-27-hash-map/</loc>
     
     <lastmod>2020-05-27T07:37:19.640Z</lastmod>
@@ -23,79 +100,9 @@
   </url>
   
   <url>
-    <loc>https://www.frederickhou.com/2020-05-09-leetcode_05/</loc>
-    
-    <lastmod>2020-05-25T10:22:05.224Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-05-21-merageSort/</loc>
-    
-    <lastmod>2020-05-25T09:36:09.792Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-05-21-Circle-of-friends/</loc>
-    
-    <lastmod>2020-05-25T09:07:51.850Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020.05-08-leetcode_03/</loc>
-    
-    <lastmod>2020-05-22T09:42:03.668Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.frederickhou.com/2020-05-20-quickSort/</loc>
     
     <lastmod>2020-05-22T09:41:37.467Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-05-18-leetcode_08/</loc>
-    
-    <lastmod>2020-05-22T09:41:19.354Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-05-12-leetcode_07/</loc>
-    
-    <lastmod>2020-05-22T09:41:13.083Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-05-11-leetcode_06/</loc>
-    
-    <lastmod>2020-05-22T09:41:06.853Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-05-08-leetcode_04/</loc>
-    
-    <lastmod>2020-05-22T09:40:54.463Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-05-08-leetcode_02/</loc>
-    
-    <lastmod>2020-05-22T09:40:47.117Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-04-28-leetcode_01/</loc>
-    
-    <lastmod>2020-05-22T09:40:36.623Z</lastmod>
     
   </url>
   
