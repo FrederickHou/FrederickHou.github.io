@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.frederickhou.com/2020-06-08-live/</loc>
+    
+    <lastmod>2020-06-10T10:29:53.155Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-04-29-redis-cluster/</loc>
+    
+    <lastmod>2020-06-10T10:26:39.881Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-04-21-Golang_garbage_receive/</loc>
+    
+    <lastmod>2020-06-08T06:15:58.918Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.frederickhou.com/2020-06-05-tree-high/</loc>
     
     <lastmod>2020-06-05T10:21:09.278Z</lastmod>
@@ -233,13 +254,6 @@
   </url>
   
   <url>
-    <loc>https://www.frederickhou.com/2020-04-29-redis-cluster/</loc>
-    
-    <lastmod>2020-04-30T07:39:26.543Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.frederickhou.com/2020-04-23-mongodb-cluster/</loc>
     
     <lastmod>2020-04-30T01:51:30.150Z</lastmod>
@@ -257,13 +271,6 @@
     <loc>https://www.frederickhou.com/2020-04-27-how-to-success/</loc>
     
     <lastmod>2020-04-29T03:21:37.954Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.frederickhou.com/2020-04-21-Golang_garbage_receive/</loc>
-    
-    <lastmod>2020-04-21T07:58:32.370Z</lastmod>
     
   </url>
   
