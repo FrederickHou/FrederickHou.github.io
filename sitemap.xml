@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.frederickhou.com/2020-06-21-distributed-mutx/</loc>
+    
+    <lastmod>2020-06-23T06:09:46.539Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.frederickhou.com/2020-06-18-LRU/</loc>
+    
+    <lastmod>2020-06-23T05:48:00.375Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.frederickhou.com/2020-06-08-live/</loc>
     
     <lastmod>2020-06-10T10:29:53.155Z</lastmod>
