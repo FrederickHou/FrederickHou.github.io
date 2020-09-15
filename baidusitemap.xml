@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.frederickhou.com/2020-09-15-design-model/</loc>
+    <lastmod>2020-09-15</lastmod>
+  </url>  <url>
+    <loc>https://www.frederickhou.com/2020-04-11-Golang-factory-model/</loc>
+    <lastmod>2020-09-15</lastmod>
+  </url>  <url>
     <loc>https://www.frederickhou.com/2020-08-06-redis-sync/</loc>
     <lastmod>2020-08-26</lastmod>
   </url>  <url>
@@ -128,9 +134,6 @@
     <lastmod>2020-04-21</lastmod>
   </url>  <url>
     <loc>https://www.frederickhou.com/2020-04-14-Golang-range/</loc>
-    <lastmod>2020-04-21</lastmod>
-  </url>  <url>
-    <loc>https://www.frederickhou.com/2020-04-11-Golang-factory-model/</loc>
     <lastmod>2020-04-21</lastmod>
   </url>  <url>
     <loc>https://www.frederickhou.com/2020-04-09-Golang-interface/</loc>
