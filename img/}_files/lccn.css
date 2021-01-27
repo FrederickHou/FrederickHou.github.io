@@ -1,0 +1,19 @@
+/* Remove Explore update date */
+.explore-card-base .explore-card .top-base .date-info {
+  opacity: 0;
+}
+
+/* iOS optimization */
+/* Scroll */
+.table-responsive.question-list-table,
+.tag-category.filter-dropdown-menu-items,
+.tab-view.hide-scrollbar,
+.CodeMirror-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Homebar */
+.container__2WTi,
+.question-fast-picker__3VcA {
+  
+}

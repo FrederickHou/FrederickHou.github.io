@@ -1,0 +1,3 @@
+https://www.frederickhou.com/
+https://www.frederickhou.com/2020-04-10-Golang-client-go-analysis/
+https://www.frederickhou.com/2020-04-11-Golang-factory-model/
