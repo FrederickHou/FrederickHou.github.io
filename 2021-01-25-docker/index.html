@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>容器运行时 | 剑豪的博客 | FrederickHou Blog</title><meta name="description" content="容器运行时"><meta name="keywords" content="容器技术"><meta name="author" content="FrederickHou"><meta name="copyright" content="FrederickHou"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="https://hm.baidu.com"><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"><link rel="preconnect" href="//busuanzi.ibruce.info"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="容器运行时"><meta name="twitter:description" content="容器运行时"><meta name="twitter:image" content="https://www.frederickhou.com/img/docker_first.png"><meta property="og:type" content="article"><meta property="og:title" content="容器运行时"><meta property="og:url" content="https://www.frederickhou.com/2021-01-25-docker/"><meta property="og:site_name" content="剑豪的博客 | FrederickHou Blog"><meta property="og:description" content="容器运行时"><meta property="og:image" content="https://www.frederickhou.com/img/docker_first.png"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '2'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="https://www.frederickhou.com/2021-01-25-docker/"><link rel="prev" title="docker架构原理" href="https://www.frederickhou.com/2021-01-25-docker_infra/"><link rel="next" title="设计模式之观察者模式" href="https://www.frederickhou.com/2020-09-15-design-model/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?c9a7c17cc51ad5aae5db3c12ae1f725d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: {"text":"富强,民主,文明,和谐,自由,平等,公正,法治,爱国,敬业,诚信,友善","fontSize":"15px"},
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  baiduPush: true,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/my.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">80</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">51</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">13</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引言"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OCI产生背景"><span class="toc-number">2.</span> <span class="toc-text">OCI产生背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OCI-开放容器标准"><span class="toc-number">3.</span> <span class="toc-text">OCI(开放容器标准)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#容器运行时接口（CRI-Container-Runtime-Interface）"><span class="toc-number">4.</span> <span class="toc-text">容器运行时接口（CRI - Container Runtime Interface）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CRI架构"><span class="toc-number">4.1.</span> <span class="toc-text">CRI架构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#当前已有的容器运行时"><span class="toc-number">5.</span> <span class="toc-text">当前已有的容器运行时</span></a></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(/img/docker_first.png)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">剑豪的博客 | FrederickHou Blog</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/picture/"><i class="fa-fw fa fa-picture-o"></i><span> 相册</span></a></div><div class="menus_item"><a class="site-page" href="/message"><i class="fa-fw fa fa-comment"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">容器运行时</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2021-01-25 00:00:00"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2021-01-25</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2021-01-25 15:14:30"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2021-01-25</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/">技术笔记</a><i class="fa fa-angle-right post-meta__separator" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF/">容器技术</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon fa fa-file-word-o" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">1.2k</span><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-clock-o" aria-hidden="true"></i><span>阅读时长: 3 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon fa fa-comment-o" aria-hidden="true"></i><span>评论数:</span><a href="/2021-01-25-docker/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div id="article-container"><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>在介绍容器运行时之前，让我们先了解一下什么是容器。当一个容器被启动时，主要会发生如下活动：</p>
+<ul>
+<li>基于镜像（image），一个容器会被创建出来。镜像image就是附加一个JSON配置文件的tar包。镜像常常是嵌套的：例如Libresonic的镜像是基于Tomcat的镜像， 而Tomcat的镜像又最终基于一个Debian的镜像。这样可以防止重复的内容占用空间。此例子中Debian镜像（或者其他的中间镜像）是上层其他镜像的基础。一个容器的镜像常常可以通过使用类似docker build的命令来生成。</li>
+<li>拉取镜像：， 容器运行时会从某处下载镜像，这个地方称为registry。Registry通常是一个通过HTTP协议暴露镜像的元数据和文件以供下载的容器仓库。 之前就只有Docker Hub独一个registry， 但是现在基本上每个玩家都有自己的仓库了： 比如， Red Hat 有一个仓库服务于OpenShift项目， 微软的Azure也有一个仓库， Gitlab也有一个仓库服务于它的持续集成平台。 Registry仓库就是docker pull/push所交互的服务器。</li>
+<li>创建容器：运行时将层次化的镜像解压到支持Copy on Write（CoW）的文件系统里。通常这通过覆盖（overlay）文件系统来实现，所有的层次层层覆盖来构成一个合并的文件系统。 这个步骤通常不能通过命令行直接访问，而是当运行时创建容器时会自动在后台发生。</li>
+<li>运行容器：运行时来真正的执行容器。 它告诉内核给容器分配合适的资源限制，创建隔离的层（为进程，网络，文件系统等），使用各种机制的混合（包括cgroups，namespaces，capabilities， seccomp， AppArmor, SELinux， 等等）。 比如Docker， 当执行docker run时，它会创建并运行容器，但是底层它实际调用的是runc命令。</li>
+</ul>
+<h2 id="OCI产生背景"><a href="#OCI产生背景" class="headerlink" title="OCI产生背景"></a>OCI产生背景</h2><p>容器技术随着 Docker 的出现变得炙手可热，所有公司都在积极拥抱容器技术。此时市场上除了有 Docker 容器，还有很多其他的容器技术，比如 CoreOS 的 rkt、lxc 等。容器技术百花齐放是好事，但也出现了很多问题。比如容器技术的标准到底是什么？容器标准应该由谁来制定？</p>
+<p>也许你可能会说， Docker 已经成为了事实标准，把 Docker 作为容器技术的标准不就好了？事实并没有想象的那么简单。因为那时候不仅有容器标准之争，编排技术之争也十分激烈。当时的编排技术有三大主力，分别是 Docker Swarm、Kubernetes 和 Mesos 。Swarm 毋庸置疑，肯定愿意把 Docker 作为唯一的容器运行时，但是 Kubernetes 和 Mesos 就不同意了，因为它们不希望调度的形式过度单一。在这样的背景产产生了OCI。</p>
+<h2 id="OCI-开放容器标准"><a href="#OCI-开放容器标准" class="headerlink" title="OCI(开放容器标准)"></a>OCI(开放容器标准)</h2><p>OCI全称为开放容器标准（Open Container Initiative），它是一个轻量级、开放的治理结构。OCI组织在 Linux 基金会的大力支持下，于 2015 年 6 月份正式注册成立。基金会旨在为用户围绕工业化容器的格式和镜像运行时，制定一个开放的容器标准。目前主要有两个标准文档：容器运行时标准 （runtime spec）和容器镜像标准（image spec</p>
+<h2 id="容器运行时接口（CRI-Container-Runtime-Interface）"><a href="#容器运行时接口（CRI-Container-Runtime-Interface）" class="headerlink" title="容器运行时接口（CRI - Container Runtime Interface）"></a>容器运行时接口（CRI - Container Runtime Interface）</h2><p>CRI中定义了容器和镜像的服务的接口，因为容器运行时与镜像的生命周期是彼此隔离的，因此需要定义两个服务。该接口使用Protocol Buffer，基于gRPC。</p>
+<h3 id="CRI架构"><a href="#CRI架构" class="headerlink" title="CRI架构"></a>CRI架构</h3><p>Container Runtime实现了CRI gRPC Server，包括RuntimeService和ImageService。该gRPC Server需要监听本地的Unix socket。</p>
+<h2 id="当前已有的容器运行时"><a href="#当前已有的容器运行时" class="headerlink" title="当前已有的容器运行时"></a>当前已有的容器运行时</h2><ul>
+<li><strong>cri-o</strong> : Red Hat的一些人开始想他们可以构建一个更简单的运行时，而且这个运行时仅仅为Kubernetes所用。这样就有了“skunkworks”项目，最后定名为CRI-O， 它实现了一个最小的CRI接口。CRI-O与CRI规范兼容，并且与OCI和Docker镜像的格式也兼容。它也支持校验镜像的GPG签名。 它使用CNI的包来做网络部分，支持CNI插件，OpenShift也用它来做软件定义存储层。<strong>CRI-O最出名的特点是它支持“受信容器”和“非受信容器”的混合工作负载。</strong></li>
+</ul>
+<ul>
+<li><strong>cri-containerd</strong>：基于Containerd的Kubernetes CRI 实现。</li>
+<li><strong>rkt</strong> ：由CoreOS主推的用来跟docker抗衡的容器运行时</li>
+<li><strong>frakti</strong> ：基于hypervisor的CRI</li>
+</ul>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" rel="external nofollow noopener noreferrer" target="_blank">FrederickHou</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.frederickhou.com/2021-01-25-docker/">https://www.frederickhou.com/2021-01-25-docker/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.frederickhou.com" target="_blank">剑豪的博客 | FrederickHou Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF/">容器技术</a></div><div class="post_share"><div class="social-share" data-image="/img/docker_first.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg" alt="微信"><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg" alt="支付宝"><div class="post-qr-code__desc">支付宝</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2021-01-25-docker_infra/"><img class="prev_cover lazyload" data-src="/img/docker_first.png" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">docker架构原理</div></div></a></div><div class="next-post pull_right"><a href="/2020-09-15-design-model/"><img class="next_cover lazyload" data-src="/img/observer_model.jpg" onerror="onerror=null;src='/img/404-bg.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">设计模式之观察者模式</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2021-01-25-docker_infra/" title="docker架构原理"><img class="relatedPosts_cover lazyload" data-src="/img/docker_first.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2021-01-25</div><div class="relatedPosts_title">docker架构原理</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '9773f8d7d3b21b9b4318',
+  clientSecret: '6ded13787b3949f9722495059669573ba071d216',
+  repo: 'FrederickHou.github.io',
+  owner: 'frederickhou',
+  admin: ['frederickhou'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: false,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" style="background-image: url(/img/docker_first.png)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2021 By FrederickHou</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="external nofollow noopener noreferrer"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="external nofollow noopener noreferrer"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.frederickhou.com/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="external nofollow noopener noreferrer" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script id="ribbon_piao" mobile="false" src="/js/third-party/piao.js"></script><script src="/js/third-party/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async></script><script src="/js/third-party/ClickShowText.js"></script><script src="/js/search/local-search.js"></script></body></html>
